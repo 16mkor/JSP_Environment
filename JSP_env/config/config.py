@@ -14,7 +14,7 @@ def get_exp_config(file_name):
         config.update({'SAVE_FLAG': False})  # Save model
         config.update({'RENDER_FLAG': False})  # Render Environment # TODO: Not implemented yet
         config.update({'MULT_ENV_FLAG': False})  # Use multiple stacked environments -> Use DummyVecEnv
-        config.update({'EVAL_FLAG': False})  # Evaluate Model
+        config.update({'EVAL_FLAG': True})  # Evaluate Model
 
         """Path from/to where files loaded/saved"""
         config.update({'logging_path': "JSP_env/log/"})  # Save log files here
@@ -29,7 +29,7 @@ def get_exp_config(file_name):
             config.update({'load_path': ''})
 
         """Write to .JSON"""
-        file_name = 'JSP_env/config/' + file_name + '.json'
+        file_name = 'JSP_env/config/' + file_name[1:-2] + '.json'
         with open(file_name, 'w') as fp:
             json.dump(config, fp)
 

@@ -277,13 +277,13 @@ class ProductionEnv(gym.Env):
         self.stat_episode['stat_machines_processed_orders'] = self.statistics['stat_machines_processed_orders'].copy()
 
         # Compute KPI values and add it to export_data list
-        for stat in self.statistics['episode_statistics']:
-            if stat == 'stat_machines_processed_orders':
-                export_data.append(str(round(np.sum(self.stat_episode_diff[stat]), 5)))
-            else:
-                export_data.append(str(round(np.mean(self.stat_episode_diff[stat] / episode_length), 5)))
-
-        export_data.append(str(round(sum([np.mean(self.stat_episode_diff[stat] / episode_length) for stat in ['stat_machines_working', 'stat_machines_changeover', 'stat_machines_broken', 'stat_machines_idle']]), 5)))
+        if episode_length > 0:
+            for stat in self.statistics['episode_statistics']:
+                if stat == 'stat_machines_processed_orders':
+                    export_data.append(str(round(np.sum(self.stat_episode_diff[stat]), 5)))
+                else:
+                    export_data.append(str(round(np.mean(self.stat_episode_diff[stat] / episode_length), 5)))
+            export_data.append(str(round(sum([np.mean(self.stat_episode_diff[stat] / episode_length) for stat in ['stat_machines_working', 'stat_machines_changeover', 'stat_machines_broken', 'stat_machines_idle']]), 5)))
         export_data.append(str(self.statistics['stat_transp_selected_idle'][0]))
         export_data.append(str(self.statistics['stat_transp_forced_idle'][0]))
         export_data.append(str(self.statistics['stat_transp_threshold_waiting_reached'][0]))
@@ -325,7 +325,7 @@ class ProductionEnv(gym.Env):
         self.statistics['episode_log'].flush()
         os.fsync(self.statistics['episode_log'].fileno())
         
-        pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
+        pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv('JSP_env/log/' + self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
 
         # Reset statistics for episode
         self.last_export_time = self.env.now

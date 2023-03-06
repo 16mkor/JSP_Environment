@@ -186,8 +186,8 @@ def define_production_statistics(parameters):
 
     statistics.update({'stat_agent_reward': [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]})
 
-    statistics.update({'agent_reward_log': open(parameters['PATH_TIME'] + "JSP_env/log/_agent_reward_log.txt", "w")})
-    statistics.update({'episode_log': open(parameters['PATH_TIME'] + "JSP_env/log/_episode_log.txt", "w")})
+    statistics.update({'agent_reward_log': open('JSP_env/log/' + parameters['PATH_TIME'] + '_agent_reward_log.txt', "w")})
+    statistics.update({'episode_log': open('JSP_env/log/' + parameters['PATH_TIME'] + '_episode_log.txt', "w")})
     statistics.update({'episode_statistics': ['stat_machines_working', 'stat_machines_changeover',
                                               'stat_machines_broken', 'stat_machines_idle', 'stat_machines_processed_orders',
                                               'stat_transp_working', 'stat_transp_walking', 'stat_transp_handling',
