@@ -47,7 +47,7 @@ def define_production_parameters(env, episode):
     # 'PATH_TIME'] + "_config_parameters.txt", sep=",")
 
     # Export parameter config to json
-    file_name = 'JSP_env/' + parameters['TRANSP_AGENT_TYPE'] +  '_config_parameters' + parameters["PATH_TIME"] + '.json'
+    file_name = 'JSP_env/config/' + parameters['TRANSP_AGENT_TYPE'] +  '_config_parameters' + parameters["PATH_TIME"] + '.json'
     with open(file_name, 'w') as fp:
         json.dump(parameters, fp)
 
@@ -59,9 +59,9 @@ def define_production_parameters(env, episode):
     return parameters
 
 def _extend_agent_parameters(parameters):
-    # In this setting the RL-agent (TRPO-Algorithm) is controlling the transport decision making
+    # In this setting the RL-agent (PPO-Algorithm) is controlling the transport decision making
     #TODO: DQN & PPO implementieren
-    parameters.update({'TRANSP_AGENT_TYPE': "TRPO"})  # Alternativen: TRPO, FIFO, NJF, EMPTY, DQN, PPO
+    parameters.update({'TRANSP_AGENT_TYPE': "PPO"})  # Alternativen: TRPO, FIFO, NJF, EMPTY, DQN, PPO
     parameters.update({'TRANSP_AGENT_STATE': ['bin_buffer_fill', 'bin_machine_failure', 'bin_location', 'int_buffer_fill', 'rel_buffer_fill', 'rel_buffer_fill_in_out', 'order_waiting_time', 'distance_to_action', 'remaining_process_time', 'total_process_time']})  # Alternatives: bin_buffer_fill, bin_machine_failure, bin_location, int_buffer_fill, rel_buffer_fill, rel_buffer_fill_in_out, order_waiting_time, order_waiting_time_normalized, distance_to_action, remaining_process_time, total_process_time
     parameters.update({'TRANSP_AGENT_REWARD': "utilization"})  # Alternatives: valid_action, utilization, waiting_time_normalized, throughput, conwip, const_weighted, weighted_objectives
     parameters.update({'TRANSP_AGENT_REWARD_SPARSE': ""})  # Alternatives: valid_action, utilization, waiting_time
@@ -186,8 +186,8 @@ def define_production_statistics(parameters):
 
     statistics.update({'stat_agent_reward': [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]})
 
-    statistics.update({'agent_reward_log': open(parameters['PATH_TIME'] + "_agent_reward_log.txt", "w")})
-    statistics.update({'episode_log': open(parameters['PATH_TIME'] + "_episode_log.txt", "w")})
+    statistics.update({'agent_reward_log': open(parameters['PATH_TIME'] + "JSP_env/log/_agent_reward_log.txt", "w")})
+    statistics.update({'episode_log': open(parameters['PATH_TIME'] + "JSP_env/log/_episode_log.txt", "w")})
     statistics.update({'episode_statistics': ['stat_machines_working', 'stat_machines_changeover',
                                               'stat_machines_broken', 'stat_machines_idle', 'stat_machines_processed_orders',
                                               'stat_transp_working', 'stat_transp_walking', 'stat_transp_handling',

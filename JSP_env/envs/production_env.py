@@ -18,13 +18,14 @@ class ProductionEnv(gym.Env):
     MINUTES as basic time Unit
     """
     
-    def __init__(self, config_file: str = "config_ppo.json", config_stats: str = "config_stats.json",
-                 max_episode_timesteps: int = 1_000, **kwargs):
+    def __init__(self, parameters, **kwargs):
         super().__init__(**kwargs)
+
         self.count_episode = 0
         self.last_export_time = 0.0
         self.last_export_real_time = datetime.now()
-        self.max_episode_timesteps = max_episode_timesteps
+        self.max_episode_timesteps = parameters['max_episode_timesteps']
+
         # Simpy Environment
         self.env = simpy.Environment()
         self.counter = 0
@@ -32,24 +33,17 @@ class ProductionEnv(gym.Env):
 
         # Parameter settings of environment & agent are defined here
         # Setup parameter configuration
-        if os.path.exists('JSP_env/config/' + config_file):
-            self.parameters = json.load('JSP_env/config/' + config_file)
-        else:
+        if len(parameters) == 1:
             self.parameters = define_production_parameters(env=self.env, episode=self.count_episode)
+        else:
+            self.parameters = parameters
 
         # Setup statistics
-        if os.path.exists('JSP_env/config' + config_stats):
-            self.statistics = json.load('JSP_env/config' + config_stats)
-            self.stat_episode = {}
-            for stat in statistics['episode_statistics']:
-                self.stat_episode.update({stat: np.array([0.0] * len(statistics[stat]))})
-        else:
-            self.statistics, self.stat_episode = define_production_statistics(self.parameters)
+        self.statistics, self.stat_episode = define_production_statistics(self.parameters)
+        self.statistics['sim_start_time'] = datetime.now()
 
         self.time_calc = Time_calc(parameters=self.parameters, episode=self.count_episode)
         self.resources = define_production_resources(env=self.env, statistics=self.statistics, parameters=self.parameters, agents=self.agents, time_calc=self.time_calc)
-
-        self.statistics['sim_start_time'] = datetime.now()
 
         self.observation_space = flatten_space(spaces.Box(low=-np.inf, high=np.inf, shape=(self.states(),), dtype=np.float64))
         self.action_space = spaces.Discrete(self.actions())

@@ -11,63 +11,54 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from JSP_env.envs.production_env import ProductionEnv
 
 
-def run(model_type, load_path, save_path, logging_path,
-        LOAD_FLAG=False, LOGGER_FLAG=True, SAVE_FLAG=False,
-        MULTENV_FLAG=False, RENDER_FLAG=False, EVAL_FLAG=True):
+def run(config, parameters):
     """
     This function is used to run a reinforcement learning model with various flags for loading, logging, saving,
     and rendering. The function first sets up the environment and model based on the specified parameters,
     then trains the model, saves, and evaluates it if specified.
     If the RENDER_FLAG is set to True, the function also renders the environment after training.
-    :param model_type: the type of the model being used. Currently, PPO, DQN, A2C and TRPO are supported
-    :param load_path: the path to load a pre-existing model
-    :param save_path: the path to save the trained model
-    :param logging_path: the path to save the log files
-    :param LOAD_FLAG: a flag to indicate whether to load a pre-existing model
-    :param LOGGER_FLAG: a flag to indicate whether to enable up logging
-    :param SAVE_FLAG: a flag to indicate whether to save the trained model
-    :param MULTENV_FLAG: a flag to indicate whether to use multiple environments and therefore use 'DummyVecEnv'
-    :param RENDER_FLAG: a flag to indicate whether to render the environment after training. Currently not supported!
-    :param EVAL_FLAG: a flag to indicate whether to evaluate the trained model
+    :param config: the configuration of the experiment
+    :param parameters: the configuration parameters of the environment of the experiment
     :return: no return value
     """
 
     """Set up Environment & Model"""
-    env = _set_up_env(MULTENV_FLAG=MULTENV_FLAG)
-    model = _create_model(LOAD_FLAG=LOAD_FLAG, load_path=load_path, env=env, model_type=model_type)
+    env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters)
+    model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env, model_type=config['model_type'])
 
     """Set up Logger"""
-    if LOGGER_FLAG:
-        logger = _set_up_logger(logging_path=logging_path, model=model)
+    if config['LOGGER_FLAG']:
+        logger = _set_up_logger(logging_path=config['logging_path'], model=model)
 
     """Train Model"""
-    model.learn(total_timesteps=200_000)
+    model.learn(total_timesteps=1)
 
     """Evaluate Model"""
-    if EVAL_FLAG:
+    if config['EVAL_FLAG']:
         evaluate_policy(model=model, env=env, return_episode_rewards=False)
 
     """Save Model"""
-    if SAVE_FLAG:
-        _save_model(save_path=save_path, model_type=model_type, model=model)
+    if config['SAVE_FLAG']:
+        _save_model(save_path=config['save_path'], model_type=config['model_type'], model=model)
 
     """Render Model in Environemnt"""
-    if RENDER_FLAG:
+    if config['RENDER_FLAG']:
         _render(env=env, model=model)
 
 
-def _set_up_env(MULTENV_FLAG):
+def _set_up_env(MULT_ENV_FLAG, parameters):
     """
     Creates either a vectorized environment, if the model will be trained on multiple environments,
     or a single environment.
     Bevor returning the environment, a check on the accordance to the gym specifications is made.
     :param MULTENV_FLAG: a flag to indicate whether to use multiple environments and therefore use 'DummyVecEnv'
+    :param parameters: the configuration parameters of the environment of the experiment
     :return: the environment to train the Reinforcement Learning model
     """
-    if MULTENV_FLAG:
-        env = DummyVecEnv([lambda: ProductionEnv()])  # Vectorized Environment for multiple environments
+    if MULT_ENV_FLAG:
+        env = DummyVecEnv([lambda: ProductionEnv(parameters)])  # Vectorized Environment for multiple environments
     else:
-        env = ProductionEnv()
+        env = ProductionEnv(parameters)
     check_env(env)  # Check if Environment follows the structure of Gym. -> passed :)
 
     return env
