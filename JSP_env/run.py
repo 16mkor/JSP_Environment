@@ -7,6 +7,7 @@ from stable_baselines3.common.logger import configure
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.monitor import Monitor
 
 from JSP_env.envs.production_env import ProductionEnv
 
@@ -31,7 +32,7 @@ def run(config, parameters):
         logger = _set_up_logger(logging_path=config['logging_path'], model=model)
 
     """Train Model"""
-    model.learn(total_timesteps=1)
+    model.learn(total_timesteps=parameters['max_episode_timesteps'])
 
     """Evaluate Model"""
     if config['EVAL_FLAG']:
@@ -46,7 +47,7 @@ def run(config, parameters):
         _render(env=env, model=model)
 
 
-def _set_up_env(MULT_ENV_FLAG, parameters):
+def _set_up_env(MULT_ENV_FLAG, parameter):
     """
     Creates either a vectorized environment, if the model will be trained on multiple environments,
     or a single environment.
@@ -56,9 +57,9 @@ def _set_up_env(MULT_ENV_FLAG, parameters):
     :return: the environment to train the Reinforcement Learning model
     """
     if MULT_ENV_FLAG:
-        env = DummyVecEnv([lambda: ProductionEnv(parameters)])  # Vectorized Environment for multiple environments
+        env = DummyVecEnv([lambda: ProductionEnv(parameter)])  # Vectorized Environment for multiple environments
     else:
-        env = ProductionEnv(parameters)
+        env = Monitor(ProductionEnv(parameter))
     check_env(env)  # Check if Environment follows the structure of Gym. -> passed :)
 
     return env
