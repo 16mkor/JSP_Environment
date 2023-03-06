@@ -201,8 +201,8 @@ class ProductionEnv(gym.Env):
         # Episodic KPI logger & printout
         episode_length = self.env.now - self.last_export_time
         episode_length_real_time = datetime.now() - self.last_export_real_time
-        valid_actions = np.array(self.statistics['stat_agent_reward'])[:-1, 5]
-        sum_reward = np.array(self.statistics['stat_agent_reward'])[:-1, 4]
+        valid_actions = list(list(zip(*self.statistics['stat_agent_reward'][:-1]))[5])  # np.array(self.statistics['stat_agent_reward'])[:-1, 5]
+        sum_reward = list(list(zip(*self.statistics['stat_agent_reward'][:-1]))[4])  # np.array(self.statistics['stat_agent_reward'])[:-1, 4]
         export_data = [str(episode_counter), str(counter), str(round(self.env.now, 5)),
                        str(round(episode_length, 5)), str(round(episode_length_real_time.total_seconds(), 5)),
                        str(sum(valid_actions)), str(round(sum(sum_reward), 5))]

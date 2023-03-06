@@ -224,6 +224,7 @@ def define_production_statistics(parameters):
 
     return statistics, stat_episode
 
+
 def define_production_resources(env, statistics, parameters, agents, time_calc):
     resources = {}
 
