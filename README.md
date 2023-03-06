@@ -1,7 +1,7 @@
 # JSP_Environment
 Derived from the SimRLFab, as described below.
 
-# SimPyRLFab
+## SimPyRLFab
 Simulation and reinforcement learning framework for production planning and control of complex job shop manufacturing systems.
 
 ## Introduction
