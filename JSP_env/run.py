@@ -8,6 +8,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
+from gymnasium.wrappers.time_limit import TimeLimit
 
 from JSP_env.envs.production_env import ProductionEnv
 
@@ -25,17 +26,25 @@ def run(config, parameters):
 
     """Set up Environment & Model"""
     env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters)
-    model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env, model_type=config['model_type'])
+    model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env,
+                          model_type=config['model_type'], parameter=parameters,
+                          tensorboard_log_path=config['tensorboard_log'])
 
     """Set up Logger"""
     if config['LOGGER_FLAG']:
         logger = _set_up_logger(logging_path=config['logging_path'], model=model)
 
     """Train Model"""
-    model.learn(total_timesteps=parameters['max_episode_timesteps'])
+    print('################################')
+    print('### START TRAINING PROCEDURE ###')
+    print('################################')
+    model.learn(total_timesteps=(parameters['max_episode_timesteps']*parameters['num_episodes']), tb_log_name=config['model_type'])
 
     """Evaluate Model"""
     if config['EVAL_FLAG']:
+        print('##################################')
+        print('### START Evaluation PROCEDURE ###')
+        print('##################################')
         evaluate_policy(model=model, env=env, return_episode_rewards=False)
 
     """Save Model"""
@@ -57,9 +66,10 @@ def _set_up_env(MULT_ENV_FLAG, parameter):
     :return: the environment to train the Reinforcement Learning model
     """
     if MULT_ENV_FLAG:
-        env = DummyVecEnv([lambda: ProductionEnv(parameter)])  # Vectorized Environment for multiple environments
+        env = DummyVecEnv([lambda: TimeLimit(ProductionEnv(parameter), parameter['max_episode_timesteps'])])  # Vectorized Environment for multiple environments
     else:
-        env = Monitor(ProductionEnv(parameter))
+        # env = TimeLimit(ProductionEnv(parameter), parameter['max_episode_timesteps'])
+        env = ProductionEnv(parameter)
     check_env(env)  # Check if Environment follows the structure of Gym. -> passed :)
 
     return env
@@ -93,7 +103,7 @@ def _save_model(save_path, model_type, model):
     model.save(save_path + model_type + '/' + model_type + dt.datetime.now().strftime('%Y_%m_%d_%Hh_%Mmin_%Ssec'))
 
 
-def _load_model(load_path, model_type):
+def _load_model(load_path, model_type, tensorboard_log_path):
     """
     Loads the Reinforcement Learning model depending on the model type.
     :param load_path: the path to load a pre-existing model
@@ -101,11 +111,11 @@ def _load_model(load_path, model_type):
     :return: the reinforcement learning model
     """
     if model_type == 'PPO':
-        model = PPO.load(load_path)
+        model = PPO.load(load_path, tensorboard_log=tensorboard_log_path)
     elif model_type == 'DQN':
-        model = DQN.load(load_path)
+        model = DQN.load(load_path, tensorboard_log=tensorboard_log_path)
     elif model_type == 'A2C':
-        model = A2C.load(load_path)
+        model = A2C.load(load_path, tensorboard_log=tensorboard_log_path)
     # ToDo: TRPO needs to be integrated
     # elif model_type == 'TRPO':
         # model = TRPO.load(load_path)
@@ -115,7 +125,7 @@ def _load_model(load_path, model_type):
     return model
 
 
-def _create_model(LOAD_FLAG, load_path, env, model_type):
+def _create_model(LOAD_FLAG, load_path, env, model_type, parameter, tensorboard_log_path):
     """
     Create or load the Reinforcement Learning model depending on the model_type.
     :param LOAD_FLAG: a flag to indicate whether to load a pre-existing model
@@ -125,14 +135,17 @@ def _create_model(LOAD_FLAG, load_path, env, model_type):
     :return: the reinforcement learning model
     """
     if LOAD_FLAG:
-        model = _load_model(load_path, model_type)
+        model = _load_model(load_path, model_type, tensorboard_log_path)
     else:
         if model_type == 'PPO':
-            model = PPO("MlpPolicy", env, verbose=1)
+            model = PPO("MlpPolicy", env, verbose=1,
+                        n_steps=parameter['max_episode_timesteps'], tensorboard_log=tensorboard_log_path)
         elif model_type == 'DQN':
-            model = DQN("MlpPolicy", env, verbose=1)
+            model = DQN("MlpPolicy", env, verbose=1,
+                        tensorboard_log=tensorboard_log_path)
         elif model_type == 'A2C':
-            model = A2C("MlpPolicy", env, verbose=1)
+            model = A2C("MlpPolicy", env,
+                        verbose=1, n_steps=parameter['max_episode_timesteps'], tensorboard_log=tensorboard_log_path)
         # elif model_type == 'TRPO':
         # model = TRPO("MlpPolicy", env, verbose=1)
         else:

@@ -28,15 +28,20 @@ class ProductionEnv(gym.Env):
 
         # Simpy Environment
         self.env = simpy.Environment()
-        self.counter = 0
+        self.step_counter = 0
         self.agents = {}
 
         # Parameter settings of environment & agent are defined here
         # Setup parameter configuration
-        if len(parameters) == 1:
+        if len(parameters) == 2:
+            print('No Configuration provided!')
             self.parameters = define_production_parameters(env=self.env, episode=self.count_episode)
         else:
+            print('Configuration provided!')
             self.parameters = parameters
+            parameters.update({'stop_criteria': self.env.event()})
+            parameters.update({'step_criteria': self.env.event()})
+            parameters.update({'continue_criteria': self.env.event()})
 
         # Setup statistics
         self.statistics, self.stat_episode = define_production_statistics(self.parameters)
@@ -45,24 +50,26 @@ class ProductionEnv(gym.Env):
         self.time_calc = Time_calc(parameters=self.parameters, episode=self.count_episode)
         self.resources = define_production_resources(env=self.env, statistics=self.statistics, parameters=self.parameters, agents=self.agents, time_calc=self.time_calc)
 
-        self.observation_space = flatten_space(spaces.Box(low=-np.inf, high=np.inf, shape=(self.states(),), dtype=np.float64))
+        self.observation_space = flatten_space(spaces.Box(low=-1, high=5_000, shape=(self.states(),), dtype=np.float64))
         self.action_space = spaces.Discrete(self.actions())
 
     def step(self, actions):
         reward = None
         terminal = False
         states = None
-        self.counter += 1
+        truncated = False
+        info = {}
+        self.step_counter += 1
 
         # print(self.counter, "Agent-Action: ", int(actions))
 
-        if (self.counter % self.parameters['EXPORT_FREQUENCY'] == 0 or self.counter % self.max_episode_timesteps == 0) \
+        if (self.step_counter % self.parameters['EXPORT_FREQUENCY'] == 0 or self.step_counter % self.max_episode_timesteps == 0) \
                 and not self.parameters['EXPORT_NO_LOGS']:
-            self.export_statistics(self.counter, self.count_episode)
+            self.export_statistics(self.step_counter, self.count_episode)
 
-        if self.counter == self.max_episode_timesteps:
+        if self.step_counter == self.max_episode_timesteps:
             print("Last episode action ", datetime.now())
-            terminal = True
+            truncated = True
 
         # If multiple transport agents then for loop required
         for agent in Transport.agents_waiting_for_action:
@@ -84,7 +91,7 @@ class ProductionEnv(gym.Env):
 
             if terminal:
                 print("Last episode action ", datetime.now())
-                self.export_statistics(self.counter, self.count_episode)
+                self.export_statistics(self.step_counter, self.count_episode)
 
             agent = Transport.agents_waiting_for_action[0]
             states = agent.calculate_state()  # Calculate state for next action determination
@@ -95,15 +102,18 @@ class ProductionEnv(gym.Env):
                 self.statistics['stat_agent_reward'][-1][3] = [int(actions[0]), int(actions[1])]
             self.statistics['stat_agent_reward'][-1][4] = round(reward, 5)
             self.statistics['stat_agent_reward'][-1][5] = agent.next_action_valid
-            self.statistics['stat_agent_reward'].append([self.count_episode, self.counter, round(self.env.now, 5), None, None, None, states])
+            self.statistics['stat_agent_reward'].append([self.count_episode, self.step_counter, round(self.env.now, 5),
+                                                         None, None, None, states])
 
-            return states, reward, terminal, False, {}
+            # done = truncated or terminal
+
+            return states, reward, terminal, truncated, info
 
     def reset(self):
         print("####### Reset Environment #######")
 
         self.count_episode += 1
-        self.counter = 0    
+        self.step_counter = 0
 
         if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
             self.change_production_parameters()
