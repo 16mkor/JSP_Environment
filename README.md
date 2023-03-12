@@ -5,17 +5,34 @@ Derived from the SimRLFab, as described below.
 
 Required packages (Python 3.10): 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ## Run
 
 ```bash
-python3 main.py 'config_PPO' 'config_parameters'
+python3 main.py 
 ```
 
+### Prepared Configuration
+
+**usage:** main.py [-h] [-rl_algorithm RL]  [-max_episode_timesteps T] [-num_episodes E] [-settings S]
+               [-env_config C]
+               
+[-h, --help]              show this help message and exit      
+
+[-rl_algorithm]           provide one of the RL algorithms: PPO, TRPO, A2C, or DQN (default: PPO)
+
+[-max_episode_timesteps]  provide the number of maximum timesteps per episode (default: 1000) 
+
+[-num_episodes]           provide the number of episode (default: 1000)
+
+[-settings]               provide the filename for the configuration of the settings of the Experiment as in config folder (default: NO_SETTINGS)
+
+[-env_config]             provide the filename for the configuration of the environment as in config folder (default: NO_CONFIG)
+
 ## SimPyRLFab
-Simulation and reinforcement learning framework for production planning and control of complex job shop manufacturing systems.
+Simulation and reinforcement learning framework for production planning and control of complex job shop manufacturing systems (https://github.com/AndreasKuhnle/SimRLFab).
 
 ### Introduction
 
