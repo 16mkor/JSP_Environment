@@ -3,7 +3,7 @@ import sys
 import json
 
 
-def get_settings(file_name):
+def get_settings(file_name, model_type):
     if os.path.exists('JSP_env/config/' + file_name + '.json'):
         config = json.loads(open('JSP_env/config/' + file_name + '.json').read())
     else:
@@ -21,7 +21,7 @@ def get_settings(file_name):
         config.update({'save_path': 'JSP_env/models/'})  # Save models here
 
         """Configure Experiment"""
-        config.update({'model_type': 'DQN'})  # Type of Model used in experiment
+        config.update({'model_type': model_type})  # Type of Model used in experiment
         if config['LOAD_FLAG']:
             config.update({'model_version': 'tbd.'})  # TODO: Needs to be defined, if needed
             config.update({'load_path': config['save_path'] + config['model_type'] + '/' + config['model_version']})
@@ -30,9 +30,9 @@ def get_settings(file_name):
 
         """To use Tensorboard, a log location for the RL agent is needed"""
         config.update({'tensorboard_log': 'JSP_env/log/'})  # /tensorboard_' + config['model_type'] + '_' + time + '/'})
-        print('Tensorboard command: tensorboard --logdir ' + config['tensorboard_log'])
         if not os.path.exists(config['tensorboard_log']):
             os.makedirs(config['tensorboard_log'])
+        print('Tensorboard command: tensorboard --logdir ' + config['tensorboard_log'])
 
         """Write to .JSON"""
         # file_name = 'JSP_env/config/' + file_name[1:-2] + '.json'
@@ -46,5 +46,5 @@ def get_env_config(file_name):
     if os.path.exists('JSP_env/config/' + file_name + '.json'):
         parameters = json.loads(open('JSP_env/config/' + file_name + '.json').read())
     else:
-        parameters = file_name
+        parameters = 'NO_PARAMETERS'
     return parameters

@@ -24,9 +24,9 @@ class ProductionEnv(gym.Env):
 
         """Parameter settings of environment & agent are defined here"""
         # Setup parameter configuration
-        if parameters == 'NO_CONFIG':
+        if parameters == 'NO_PARAMETERS':
             print('No Configuration provided!')
-            self.parameters = define_production_parameters(env=self.env, model_Type=model_type)
+            self.parameters = define_production_parameters(env=self.env, model_type=model_type)
         else:
             print('Configuration provided!')
             self.parameters = parameters
