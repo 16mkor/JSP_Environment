@@ -13,17 +13,23 @@ pip3 install -r requirements.txt
 ```bash
 python3 main.py 
 ```
-usage: main.py [-h] [-max_episode_timesteps T] [-num_episodes E] [-settings S]
-               [-env_config C]
 
 ### Prepared Configuration
 
-options:
-  -h, --help                show this help message and exit                         
-  -max_episode_timesteps T  provide the filename for the configuration of the settings of the Experiment as in config folder (default: 1000) 
-  -num_episodes E           provide the filename for the configuration of the environment as in config folder (default: 1000)
-  -settings S               provide the filename for the configuration of the settings of the Experiment as in config folder (default: NO_SETTINGS)
-  -env_config C             provide the filename for the configuration of the environment as in config folder (default: NO_CONFIG)
+**usage:** main.py [-h] [-rl_algorithm RL]  [-max_episode_timesteps T] [-num_episodes E] [-settings S]
+               [-env_config C]
+               
+[-h, --help]              show this help message and exit      
+
+[-rl_algorithm]           provide one of the RL algorithms: PPO, TRPO, A2C, or DQN (default: PPO)
+
+[-max_episode_timesteps]  provide the number of maximum timesteps per episode (default: 1000) 
+
+[-num_episodes]           provide the number of episode (default: 1000)
+
+[-settings]               provide the filename for the configuration of the settings of the Experiment as in config folder (default: NO_SETTINGS)
+
+[-env_config]             provide the filename for the configuration of the environment as in config folder (default: NO_CONFIG)
 
 ## SimPyRLFab
 Simulation and reinforcement learning framework for production planning and control of complex job shop manufacturing systems (https://github.com/AndreasKuhnle/SimRLFab).
