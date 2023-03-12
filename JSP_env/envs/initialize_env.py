@@ -36,6 +36,8 @@ def define_production_parameters(env, episode):
     parameters.update(({'PATH_TIME': "_" + dt.datetime.now().strftime("%Y%m%d_%H%M%S")}))
     parameters.update(({'EXPORT_FREQUENCY': 10**3}))  # Number of steps between csv-export of log-files
     parameters.update(({'CHANGE_SCENARIO_AFTER_EPISODES': 5 * 10 ** 10}))
+    parameters.update({'max_episode_timesteps': 1_000})
+    parameters.update({'num_episodes': 1_000})
 
     """Setting of Transport Agent"""
     parameters.update({'TRANSP_AGENT_TYPE': "PPO"})  # Alternativen: TRPO, FIFO, NJF, EMPTY, DQN, PPO
