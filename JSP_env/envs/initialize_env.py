@@ -18,7 +18,7 @@ from collections import Counter
 from collections import defaultdict
 
 
-def define_production_parameters(env, episode):
+def define_production_parameters(env, model_type):
     """
     Describe production system parameters
     """
@@ -40,7 +40,7 @@ def define_production_parameters(env, episode):
     parameters.update({'num_episodes': 1_000})
 
     """Setting of Transport Agent"""
-    parameters.update({'TRANSP_AGENT_TYPE': "PPO"})  # Alternativen: TRPO, FIFO, NJF, EMPTY, DQN, PPO
+    parameters.update({'TRANSP_AGENT_TYPE': model_type})  # Alternativen: TRPO, FIFO, NJF, EMPTY, DQN, PPO
     parameters.update({'TRANSP_AGENT_STATE': ['total_process_time']})  # ['bin_buffer_fill', 'bin_machine_failure', 'bin_location', 'int_buffer_fill', 'rel_buffer_fill', 'rel_buffer_fill_in_out', 'order_waiting_time', 'distance_to_action', 'remaining_process_time', 'total_process_time']})  # Alternatives: bin_buffer_fill, bin_machine_failure, bin_location, int_buffer_fill, rel_buffer_fill, rel_buffer_fill_in_out, order_waiting_time, order_waiting_time_normalized, distance_to_action, remaining_process_time, total_process_time
     parameters.update({'TRANSP_AGENT_REWARD': "utilization"})  # Alternatives: valid_action, utilization, waiting_time_normalized, throughput, conwip, const_weighted, weighted_objectives
     parameters.update({'TRANSP_AGENT_REWARD_SPARSE': ""})  # Alternatives: valid_action, utilization, waiting_time

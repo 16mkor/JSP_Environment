@@ -12,7 +12,7 @@ from JSP_env.envs.logger import *
 
 class ProductionEnv(gym.Env):
 
-    def __init__(self, parameters, **kwargs):
+    def __init__(self, parameters, model_type, **kwargs):
         super(ProductionEnv, self).__init__(**kwargs)
 
         """Counter"""
@@ -24,9 +24,9 @@ class ProductionEnv(gym.Env):
 
         """Parameter settings of environment & agent are defined here"""
         # Setup parameter configuration
-        if len(parameters) == 2:
+        if len(parameters) == 0:
             print('No Configuration provided!')
-            self.parameters = define_production_parameters(env=self.env, episode=self.count_episode)
+            self.parameters = define_production_parameters(env=self.env, model_Type=model_type)
         else:
             print('Configuration provided!')
             self.parameters = parameters

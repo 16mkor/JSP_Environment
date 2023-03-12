@@ -25,7 +25,7 @@ def run(config, parameters):
     """
 
     """Set up Environment & Model"""
-    env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters)
+    env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters, model_type=config['model_type'])
     model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env,
                           model_type=config['model_type'], parameter=parameters,
                           tensorboard_log_path=config['tensorboard_log'])
@@ -57,7 +57,7 @@ def run(config, parameters):
         _render(env=env, model=model)
 
 
-def _set_up_env(MULT_ENV_FLAG, parameter):
+def _set_up_env(MULT_ENV_FLAG, parameter, model_type):
     """
     Creates either a vectorized environment, if the model will be trained on multiple environments,
     or a single environment.
@@ -67,10 +67,10 @@ def _set_up_env(MULT_ENV_FLAG, parameter):
     :return: the environment to train the Reinforcement Learning model
     """
     if MULT_ENV_FLAG:
-        env = DummyVecEnv([lambda: TimeLimit(ProductionEnv(parameter), parameter['max_episode_timesteps'])])  # Vectorized Environment for multiple environments
+        env = DummyVecEnv([lambda: Monitor(ProductionEnv(parameter, model_type))])  # Vectorized Environment for multiple environments
     else:
         # env = TimeLimit(ProductionEnv(parameter), parameter['max_episode_timesteps'])
-        env = Monitor(ProductionEnv(parameter))
+        env = Monitor(ProductionEnv(parameter, model_type))
     check_env(env)  # Check if Environment follows the structure of Gym. -> passed :)
 
     return env
