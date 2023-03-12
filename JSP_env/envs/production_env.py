@@ -1,37 +1,28 @@
-import sys
 import gymnasium as gym
-import numpy as np
 from gymnasium import spaces
-from gymnasium.spaces.utils import flatten, flatten_space
-import os
-import json
+from gymnasium.spaces.utils import flatten_space
+import numpy as np
+from datetime import datetime
+
 from JSP_env.envs.initialize_env import *
+from JSP_env.envs.initialize_env import _get_criteria_events
 from JSP_env.envs.time_calc import Time_calc
 from JSP_env.envs.logger import *
-from datetime import datetime
 
 
 class ProductionEnv(gym.Env):
-    """
-    Python-Packages: numpy, progressbar2, simpy, pandas
 
-    MINUTES as basic time Unit
-    """
-    
     def __init__(self, parameters, **kwargs):
-        super().__init__(**kwargs)
+        super(ProductionEnv, self).__init__(**kwargs)
 
+        """Counter"""
         self.count_episode = 0
-        self.last_export_time = 0.0
-        self.last_export_real_time = datetime.now()
-        self.max_episode_timesteps = parameters['max_episode_timesteps']
+        self.count_steps = 0
 
-        # Simpy Environment
+        """Create Simpy Environment"""
         self.env = simpy.Environment()
-        self.step_counter = 0
-        self.agents = {}
 
-        # Parameter settings of environment & agent are defined here
+        """Parameter settings of environment & agent are defined here"""
         # Setup parameter configuration
         if len(parameters) == 2:
             print('No Configuration provided!')
@@ -39,42 +30,42 @@ class ProductionEnv(gym.Env):
         else:
             print('Configuration provided!')
             self.parameters = parameters
-            parameters.update({'stop_criteria': self.env.event()})
-            parameters.update({'step_criteria': self.env.event()})
-            parameters.update({'continue_criteria': self.env.event()})
+            self.parameters = _get_criteria_events(env=self.env, parameters=parameters)
+        # Dict of Agents
+        self.agents = {}
 
-        # Setup statistics
+        """Statistic parameter"""
+        self.last_export_time = 0.0
+        self.last_export_real_time = datetime.now()
         self.statistics, self.stat_episode = define_production_statistics(self.parameters)
         self.statistics['sim_start_time'] = datetime.now()
 
+        """Initialize production system"""
         self.time_calc = Time_calc(parameters=self.parameters, episode=self.count_episode)
-        self.resources = define_production_resources(env=self.env, statistics=self.statistics, parameters=self.parameters, agents=self.agents, time_calc=self.time_calc)
+        self.resources = define_production_resources(env=self.env, statistics=self.statistics,
+                                                     parameters=self.parameters, agents=self.agents,
+                                                     time_calc=self.time_calc)
 
-        self.observation_space = flatten_space(spaces.Box(low=-1, high=5_000, shape=(self.states(),), dtype=np.float64))
-        self.action_space = spaces.Discrete(self.actions())
+        """Observation and action space"""
+        self.observation_space = flatten_space(spaces.Box(low=-1, high=100, shape=(self._state_size(),), dtype=np.float64))
+        self.action_space = spaces.Discrete(self._action_size())
 
     def step(self, actions):
-        reward = None
-        terminal = False
-        states = None
         truncated = False
         info = {}
-        self.step_counter += 1
+        self.count_steps += 1
 
-        # print(self.counter, "Agent-Action: ", int(actions))
-
-        if (self.step_counter % self.parameters['EXPORT_FREQUENCY'] == 0 or self.step_counter % self.max_episode_timesteps == 0) \
+        if (self.step_counter % self.parameters['EXPORT_FREQUENCY'] == 0
+            or self.step_counter % self.max_episode_timesteps == 0) \
                 and not self.parameters['EXPORT_NO_LOGS']:
             self.export_statistics(self.step_counter, self.count_episode)
 
-        if self.step_counter == self.max_episode_timesteps:
-            print("Last episode action ", datetime.now())
+        if self.step_counter == self.parameters['max_episode_timesteps']:
             truncated = True
 
         # If multiple transport agents then for loop required
-        for agent in Transport.agents_waiting_for_action:
+        for _ in Transport.agents_waiting_for_action:
             agent = Transport.agents_waiting_for_action.pop(0)
-
             if self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'direct':
                 agent.next_action = [int(actions)]
             elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
@@ -84,14 +75,15 @@ class ProductionEnv(gym.Env):
             self.parameters['continue_criteria'].succeed()
             self.parameters['continue_criteria'] = self.env.event()
 
-            self.env.run(until=self.parameters['step_criteria'])  # Waiting until action is processed in simulation environment
+            self.env.run(until=self.parameters[
+                'step_criteria'])  # Waiting until action is processed in simulation environment
             # Simulation is now in state after action processing
 
             reward, terminal = agent.calculate_reward(actions)
 
             if terminal:
                 print("Last episode action ", datetime.now())
-                self.export_statistics(self.step_counter, self.count_episode)
+                self._export_statistics(self.count_steps, self.count_episode)
 
             agent = Transport.agents_waiting_for_action[0]
             states = agent.calculate_state()  # Calculate state for next action determination
@@ -102,23 +94,23 @@ class ProductionEnv(gym.Env):
                 self.statistics['stat_agent_reward'][-1][3] = [int(actions[0]), int(actions[1])]
             self.statistics['stat_agent_reward'][-1][4] = round(reward, 5)
             self.statistics['stat_agent_reward'][-1][5] = agent.next_action_valid
-            self.statistics['stat_agent_reward'].append([self.count_episode, self.step_counter, round(self.env.now, 5),
-                                                         None, None, None, states])
-
-            # done = truncated or terminal
+            self.statistics['stat_agent_reward'].append(
+                [self.count_episode, self.count_steps, round(self.env.now, 5),
+                 None, None, None, states])
 
             return states, reward, terminal, truncated, info
 
     def reset(self):
         print("####### Reset Environment #######")
-
-        self.count_episode += 1
-        self.step_counter = 0
-
-        if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
-            self.change_production_parameters()
-
         print("Sim start time: ", self.statistics['sim_start_time'])
+
+        """Reset counter"""
+        self.count_episode += 1  # increase episode by one
+        self.count_steps = 0  # reset the counter of timesteps
+
+        """Change parameter to new szenario"""
+        if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
+            self._change_production_parameters()
 
         # Setup and start simulation
         if self.env.now == 0.0:
@@ -131,8 +123,9 @@ class ProductionEnv(gym.Env):
 
     def close(self):
         print("####### Close Environment #######")
+        """Export statistics of closed environment"""
         if not self.parameters['EXPORT_NO_LOGS']:
-            self.statistics.update({'time_end' : self.env.now})
+            self.statistics.update({'time_end': self.env.now})
             export_statistics_logging(statistics=self.statistics, parameters=self.parameters, resources=self.resources)
         super().close()
 
@@ -140,10 +133,9 @@ class ProductionEnv(gym.Env):
         print("####### Render Environment #######")
         pass
 
-    def states(self):
+    def _state_size(self):
         state_type = 'bool'
         number = 0
-        space = {}
         # Avaliable Action are always part of state vector
         if self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'direct':
             number = len(self.resources['transps'][0].mapping)
@@ -184,164 +176,18 @@ class ProductionEnv(gym.Env):
         print("State space size: ", number)
         return number  # dict(type=state_type, shape=(number))
 
-    def actions(self):
+    def _action_size(self):
         if self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'direct':
             number = len(self.resources['transps'][0].mapping)
         elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
-            shape = (2,)
             number = len(self.resources['transps'][0].mapping)
-            return dict(type='int', num_values=number, shape=shape)
+            # return dict(type='int', num_values=number, shape=(2,))
         print("Action space size: ", number)
-        return number  # , dict(type='int', num_values=number)
+        return number  # dict(type='int', num_values=number)
 
-    def change_production_parameters(self):
+    def _change_production_parameters(self):
         print("CHANGE_OF_PRODUCTION_PARAMETERS")
-        for mach in self.resources['machines']:
-            mach.capacity = mach.capacity * 2
-        self.parameters['TRANSP_TIME'] = [[x / 3.0 for x in y] for y in self.parameters['TRANSP_TIME']]
-        self.parameters['TRANSP_SPEED'] = self.parameters['TRANSP_SPEED'] * 3.0
+        pass
 
-    def export_statistics(self, counter, episode_counter):
-        # Episodic KPI logger & printout
-        episode_length = self.env.now - self.last_export_time
-        episode_length_real_time = datetime.now() - self.last_export_real_time
-        valid_actions = list(list(zip(*self.statistics['stat_agent_reward'][:-1]))[5])  # np.array(self.statistics['stat_agent_reward'])[:-1, 5]
-        sum_reward = list(list(zip(*self.statistics['stat_agent_reward'][:-1]))[4])  # np.array(self.statistics['stat_agent_reward'])[:-1, 4]
-        export_data = [str(episode_counter), str(counter), str(round(self.env.now, 5)),
-                       str(round(episode_length, 5)), str(round(episode_length_real_time.total_seconds(), 5)),
-                       str(sum(valid_actions)), str(round(sum(sum_reward), 5))]
-
-        # Export all episode statistics
-        # Procedure consideres epsiode overlaps in case operations reach over the episode length
-        self.stat_episode_diff = dict()
-        for stat in self.statistics['episode_statistics']:
-            self.stat_episode_diff[stat] = self.statistics[stat] - self.stat_episode[stat]
-        for mach in range(self.parameters['NUM_MACHINES']):
-            list_of_stats = ['stat_machines_working', 'stat_machines_changeover',
-                             'stat_machines_broken', 'stat_machines_idle']
-            for stat in list_of_stats:
-                if stat == 'stat_machines_working' and self.resources['machines'][mach].buffer_processing != None:
-                    if self.resources['machines'][mach].broken:
-                        if self.resources['machines'][mach].last_broken_start > self.last_export_time + self.parameters['EPSILON']:  # Begin broken in mid of episode
-                            self.stat_episode_diff[stat][mach] = self.statistics[stat][mach] - self.stat_episode[stat][mach] - self.resources['machines'][mach].last_process_time + (self.resources['machines'][mach].last_broken_start - self.resources['machines'][mach].last_process_start)
-                            self.resources['machines'][mach].last_process_time -= (self.resources['machines'][mach].last_broken_start - self.resources['machines'][mach].last_process_start)
-                            self.resources['machines'][mach].last_process_start = self.resources['machines'][mach].last_broken_start + self.resources['machines'][mach].last_broken_time
-                        elif self.resources['machines'][mach].last_broken_time > episode_length:  # Entire episode broken
-                            self.stat_episode_diff[stat][mach] = 0.0
-                        else:
-                            raise Exception("Unexcpected case!")
-                        # Update broken statistic
-                        self.stat_episode_diff['stat_machines_broken'][mach] = self.statistics['stat_machines_broken'][mach] - self.stat_episode['stat_machines_broken'][mach] - self.resources['machines'][mach].last_broken_time + (self.env.now - self.resources['machines'][mach].last_broken_start)
-                        self.resources['machines'][mach].last_broken_time -= (self.env.now - self.resources['machines'][mach].last_broken_start)
-                        self.resources['machines'][mach].last_broken_start = self.env.now
-                        self.stat_episode['stat_machines_broken'][mach] = self.stat_episode['stat_machines_broken'][mach] + self.stat_episode_diff['stat_machines_broken'][mach]
-                    else:
-                        # Process interrupted by breakdown
-                        if self.resources['machines'][mach].last_broken_start > self.resources['machines'][mach].last_process_start and self.resources['machines'][mach].last_broken_start + self.resources['machines'][mach].last_broken_time < self.env.now:
-                            self.stat_episode_diff[stat][mach] = self.statistics[stat][mach] - self.stat_episode[stat][mach] - self.resources['machines'][mach].last_process_time + (self.env.now - self.resources['machines'][mach].last_process_start) - self.resources['machines'][mach].last_broken_time
-                            self.resources['machines'][mach].last_process_time -= (self.env.now - self.resources['machines'][mach].last_process_start) - self.resources['machines'][mach].last_broken_time
-                            self.resources['machines'][mach].last_process_start = self.env.now
-                        else:
-                            self.stat_episode_diff[stat][mach] = self.statistics[stat][mach] - self.stat_episode[stat][mach] - self.resources['machines'][mach].last_process_time + (self.env.now - self.resources['machines'][mach].last_process_start)
-                            self.resources['machines'][mach].last_process_time -= (self.env.now - self.resources['machines'][mach].last_process_start)
-                            self.resources['machines'][mach].last_process_start = self.env.now
-                    self.stat_episode[stat][mach] = self.stat_episode[stat][mach] + self.stat_episode_diff[stat][mach]
-                elif stat == 'stat_machines_broken' and self.resources['machines'][mach].broken and self.resources['machines'][mach].buffer_processing == None:
-                    self.stat_episode_diff[stat][mach] = self.statistics[stat][mach] - self.stat_episode[stat][mach] - self.resources['machines'][mach].last_broken_time + (self.env.now - self.resources['machines'][mach].last_broken_start)
-                    self.resources['machines'][mach].last_broken_time -= (self.env.now - self.resources['machines'][mach].last_broken_start)
-                    self.resources['machines'][mach].last_broken_start = self.env.now
-                    self.stat_episode[stat][mach] = self.stat_episode[stat][mach] + self.stat_episode_diff[stat][mach]
-                elif stat == 'stat_machines_idle' and self.resources['machines'][mach].idle.triggered:
-                    if self.resources['machines'][mach].broken:
-                        self.stat_episode[stat][mach] = self.statistics[stat][mach]
-                    else:
-                        if self.stat_episode[stat][mach] <= self.statistics[stat][mach]:
-                            self.stat_episode_diff[stat][mach] = self.statistics[stat][mach] - self.stat_episode[stat][mach] + (self.env.now - self.resources['machines'][mach].time_start_idle_stat)  # max(0.0, self.statistics[stat][mach] - self.stat_episode[stat][mach])
-                        else:
-                            self.stat_episode_diff[stat][mach] = episode_length
-                        self.stat_episode[stat][mach] = max(self.stat_episode[stat][mach] + self.stat_episode_diff[stat][mach], self.statistics[stat][mach])
-                else:
-                    if stat == 'stat_machines_broken' and self.resources['machines'][mach].buffer_processing != None and self.resources['machines'][mach].broken:
-                        continue
-                    self.stat_episode[stat][mach] = self.statistics[stat][mach]
-        for transp in range(self.parameters['NUM_TRANSP_AGENTS']):
-            list_of_stats = ['stat_transp_working', 'stat_transp_walking', 'stat_transp_handling', 'stat_transp_idle']
-            for stat in list_of_stats:
-                if (stat == 'stat_transp_working' or stat == 'stat_transp_walking') and self.resources['transps'][transp].current_order != None:
-                    if self.env.now > self.stat_episode[stat][transp].last_handling_time + self.stat_episode[stat][transp].last_handling_start:  # Handling over
-                        self.stat_episode_diff[stat][transp] = self.statistics[stat][transp] - self.stat_episode[stat][transp] - self.resources['transps'][transp].last_transport_time + (self.env.now - self.resources['transps'][transp].last_transport_start)
-                        self.stat_episode[stat][transp] = self.stat_episode[stat][transp] + self.stat_episode_diff[stat][transp]
-                elif stat == 'stat_transp_handling' and self.resources['transps'][transp].current_order != None:
-                    if self.env.now < self.stat_episode[stat][transp].last_handling_time + self.stat_episode[stat][transp].last_handling_start:
-                        self.stat_episode_diff[stat][transp] = self.statistics[stat][transp] - self.stat_episode[stat][transp] - self.resources['transps'][transp].last_handling_time + (self.env.now - self.resources['transps'][transp].last_handling_start)
-                        self.stat_episode[stat][transp] = self.stat_episode[stat][transp] + self.stat_episode_diff[stat][transp]
-                elif stat == 'stat_transp_idle' and self.resources['transps'][transp].idle.triggered:
-                    if self.stat_episode[stat][transp] <= self.statistics[stat][transp]:
-                        self.stat_episode_diff[stat][transp] = self.statistics[stat][transp] - self.stat_episode[stat][transp] + (self.env.now - self.resources['transps'][transp].time_start_idle)
-                    else:
-                        self.stat_episode_diff[stat][transp] = episode_length
-                    self.stat_episode[stat][transp] = self.stat_episode[stat][transp] + self.stat_episode_diff[stat][transp]
-                else:
-                    self.stat_episode[stat][transp] = self.statistics[stat][transp]
-
-        self.stat_episode['stat_machines_processed_orders'] = self.statistics['stat_machines_processed_orders'].copy()
-
-        # Compute KPI values and add it to export_data list
-        if episode_length > 0:
-            for stat in self.statistics['episode_statistics']:
-                if stat == 'stat_machines_processed_orders':
-                    export_data.append(str(round(np.sum(self.stat_episode_diff[stat]), 5)))
-                else:
-                    export_data.append(str(round(np.mean(self.stat_episode_diff[stat] / episode_length), 5)))
-            export_data.append(str(round(sum([np.mean(self.stat_episode_diff[stat] / episode_length) for stat in ['stat_machines_working', 'stat_machines_changeover', 'stat_machines_broken', 'stat_machines_idle']]), 5)))
-        export_data.append(str(self.statistics['stat_transp_selected_idle'][0]))
-        export_data.append(str(self.statistics['stat_transp_forced_idle'][0]))
-        export_data.append(str(self.statistics['stat_transp_threshold_waiting_reached'][0]))
-        indices = [k for k, v in self.statistics['stat_order_eop'].items() if v > self.last_export_time]
-        # Number of finished orders
-        export_data.append(str(len(indices)))
-        if len(indices) > 0:
-            # Avg order waiting time
-            waiting_time = np.mean([self.statistics['stat_order_waiting'][id] for id in indices])
-            export_data.append(str(round(waiting_time, 5)))
-            # Alpha factor
-            cycle_time = np.mean([self.statistics['stat_order_leadtime'][id] for id in indices])
-            process_time = np.mean([self.statistics['stat_order_processing'][id] for id in indices])
-            dynFF = cycle_time / process_time
-            util = np.sum(self.stat_episode_diff['stat_machines_working']) / (np.sum(self.stat_episode_diff['stat_machines_working']) + np.sum(self.stat_episode_diff['stat_machines_idle']))
-            alpha = max(0.0, (dynFF - 1) * (1 - util) / util)
-            export_data.append(str(round(alpha, 5)))
-        else:
-            export_data.append(str(np.nan))
-            export_data.append(str(np.nan))
-        # Weighted avg inventory
-        self.statistics['stat_inv_episode'] = np.array(self.statistics['stat_inv_episode'])
-        export_data.append(str(round(np.average(self.statistics['stat_inv_episode'][:,1], axis=0, weights=self.statistics['stat_inv_episode'][:,0]), 5)))
-
-        # Console printout
-        string = ""
-        for text in export_data:
-            string = string + str(text) + ","
-        string = string[:-1]
-        titel = self.statistics['episode_log_header']
-        os.system('cls' if os.name == 'nt' else "printf '\033c'")
-        for index in range(len(export_data)):
-            sys.stdout.write("\n " + titel[index] + ": \t" + export_data[index])
-        sys.stdout.write("\n")
-        sys.stdout.flush()
-
-        # Export in log files
-        self.statistics['episode_log'].write("%s\n" % (string))
-        self.statistics['episode_log'].flush()
-        os.fsync(self.statistics['episode_log'].fileno())
-        
-        pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv('JSP_env/log/' + self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
-
-        # Reset statistics for episode
-        self.last_export_time = self.env.now
-        self.last_export_real_time = datetime.now()
-        self.statistics['stat_inv_episode'] = [self.statistics['stat_inv_episode'][-1]]
-        self.statistics['stat_agent_reward'] = [self.statistics['stat_agent_reward'][-1]]
-        self.statistics['stat_transp_selected_idle'] = np.array([0] * self.parameters['NUM_TRANSP_AGENTS'])
-        self.statistics['stat_transp_forced_idle'] = np.array([0] * self.parameters['NUM_TRANSP_AGENTS'])
-        self.statistics['stat_transp_threshold_waiting_reached'] = np.array([0] * self.parameters['NUM_TRANSP_AGENTS'])
+    def _export_statistics(self, counter, episode_counter):
+        pass

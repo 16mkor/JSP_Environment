@@ -38,7 +38,8 @@ def run(config, parameters):
     print('################################')
     print('### START TRAINING PROCEDURE ###')
     print('################################')
-    model.learn(total_timesteps=(parameters['max_episode_timesteps']*parameters['num_episodes']), tb_log_name=config['model_type'])
+    model.learn(total_timesteps=(parameters['max_episode_timesteps']*parameters['num_episodes']),
+                tb_log_name=config['model_type'])
 
     """Evaluate Model"""
     if config['EVAL_FLAG']:
@@ -69,7 +70,7 @@ def _set_up_env(MULT_ENV_FLAG, parameter):
         env = DummyVecEnv([lambda: TimeLimit(ProductionEnv(parameter), parameter['max_episode_timesteps'])])  # Vectorized Environment for multiple environments
     else:
         # env = TimeLimit(ProductionEnv(parameter), parameter['max_episode_timesteps'])
-        env = ProductionEnv(parameter)
+        env = Monitor(ProductionEnv(parameter))
     check_env(env)  # Check if Environment follows the structure of Gym. -> passed :)
 
     return env

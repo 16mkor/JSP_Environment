@@ -141,7 +141,6 @@ class Transport(Resource):
 
     def get_next_action(self):
         self.counter += 1
-
         # Transport when order waiting time threshold reached
         for order in [x for x in Transport.all_transp_orders if x.get_total_waiting_time() > self.parameters['WAITING_TIME_THRESHOLD'] and not x.reserved]:
             if order.get_next_step().type == 'machine':

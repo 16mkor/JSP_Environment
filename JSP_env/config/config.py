@@ -21,7 +21,7 @@ def get_exp_config(file_name):
         config.update({'save_path': 'JSP_env/models/'})  # Save models here
 
         """Configure Experiment"""
-        config.update({'model_type': 'DQN'})  # Type of Model used in experiment
+        config.update({'model_type': 'PPO'})  # Type of Model used in experiment
         if config['LOAD_FLAG']:
             config.update({'model_version': 'tbd.'})  # TODO: Needs to be defined, if needed
             config.update({'load_path': config['save_path'] + config['model_type'] + '/' + config['model_version']})
@@ -29,22 +29,21 @@ def get_exp_config(file_name):
             config.update({'load_path': ''})
 
         """To use Tensorboard, a log location for the RL agent is needed"""
-        time = dt.now().strftime('%Y%m%d_%H%M')
         config.update({'tensorboard_log': 'JSP_env/log/'})  # /tensorboard_' + config['model_type'] + '_' + time + '/'})
         print('Tensorboard command: tensorboard --logdir ' + config['tensorboard_log'])
         if not os.path.exists(config['tensorboard_log']):
             os.makedirs(config['tensorboard_log'])
 
         """Write to .JSON"""
-        file_name = 'JSP_env/config/' + file_name[1:-2] + '.json'
-        with open(file_name, 'w') as fp:
-            json.dump(config, fp)
+        # file_name = 'JSP_env/config/' + file_name[1:-2] + '.json'
+        # with open(file_name, 'w') as fp:
+        #     json.dump(config, fp)
 
     return config
 
 
 def get_env_config(file_name):
-    if os.path.exists('JSP_env/config/' + sys.argv[2] + '.json'):
+    if os.path.exists('JSP_env/config/_' + sys.argv[2] + '.json'):
         parameters = json.loads(open('JSP_env/config/' + file_name + '.json').read())
         parameters.update({'max_episode_timesteps': 1_000})
         parameters.update({'num_episodes': 1_000})
