@@ -5,17 +5,28 @@ Derived from the SimRLFab, as described below.
 
 Required packages (Python 3.10): 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ## Run
 
 ```bash
-python3 main.py 'config_PPO' 'config_parameters'
+python3 main.py 
 ```
+usage: main.py [-h] [-max_episode_timesteps T] [-num_episodes E] [-settings S]
+               [-env_config C]
+
+### Prepared Configuration
+
+options:
+  -h, --help                show this help message and exit                         
+  -max_episode_timesteps T  provide the filename for the configuration of the settings of the Experiment as in config folder (default: 1000) 
+  -num_episodes E           provide the filename for the configuration of the environment as in config folder (default: 1000)
+  -settings S               provide the filename for the configuration of the settings of the Experiment as in config folder (default: NO_SETTINGS)
+  -env_config C             provide the filename for the configuration of the environment as in config folder (default: NO_CONFIG)
 
 ## SimPyRLFab
-Simulation and reinforcement learning framework for production planning and control of complex job shop manufacturing systems.
+Simulation and reinforcement learning framework for production planning and control of complex job shop manufacturing systems (https://github.com/AndreasKuhnle/SimRLFab).
 
 ### Introduction
 
