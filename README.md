@@ -9,7 +9,10 @@ pip install -r requirements.txt
 ```
 
 ## Run
+
+```bash
 python3 main.py 'config_PPO' 'config_parameters'
+```
 
 ## SimPyRLFab
 Simulation and reinforcement learning framework for production planning and control of complex job shop manufacturing systems.
