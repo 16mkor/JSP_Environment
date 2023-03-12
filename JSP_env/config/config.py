@@ -46,5 +46,5 @@ def get_env_config(file_name):
     if os.path.exists('JSP_env/config/' + file_name + '.json'):
         parameters = json.loads(open('JSP_env/config/' + file_name + '.json').read())
     else:
-        parameters = {}
+        parameters = file_name
     return parameters
