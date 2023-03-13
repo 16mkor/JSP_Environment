@@ -1,7 +1,7 @@
 import os
 import datetime as dt
 
-# from stable_baselines import TRPO
+from sb3_contrib import TRPO
 from stable_baselines3 import PPO, DQN, A2C
 from stable_baselines3.common.logger import configure
 from stable_baselines3.common.vec_env import DummyVecEnv
@@ -12,30 +12,41 @@ from stable_baselines3.common.monitor import Monitor
 from JSP_env.envs.production_env import ProductionEnv
 
 
-def run(config, parameters):
+def run(config, parameters, timesteps, episodes):
     """
     This function is used to run a reinforcement learning model with various flags for loading, logging, saving,
     and rendering. The function first sets up the environment and model based on the specified parameters,
     then trains the model, saves, and evaluates it if specified.
     If the RENDER_FLAG is set to True, the function also renders the environment after training.
+    :param timesteps:
+    :param episodes:
     :param config: the configuration of the experiment
     :param parameters: the configuration parameters of the environment of the experiment
     :return: no return value
     """
 
     """Set up Environment & Model"""
-    env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters)
-    model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env, model_type=config['model_type'])
+    env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters, model_type=config['model_type'])
+    model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env,
+                          model_type=config['model_type'], timesteps=timesteps,
+                          tensorboard_log_path=config['tensorboard_log'])
 
     """Set up Logger"""
     if config['LOGGER_FLAG']:
         logger = _set_up_logger(logging_path=config['logging_path'], model=model)
 
     """Train Model"""
-    model.learn(total_timesteps=parameters['max_episode_timesteps'])
+    print('################################')
+    print('### START TRAINING PROCEDURE ###')
+    print('################################')
+    model.learn(total_timesteps=(timesteps * episodes),
+                tb_log_name=config['model_type'])
 
     """Evaluate Model"""
     if config['EVAL_FLAG']:
+        print('##################################')
+        print('### START Evaluation PROCEDURE ###')
+        print('##################################')
         evaluate_policy(model=model, env=env, return_episode_rewards=False)
 
     """Save Model"""
@@ -47,7 +58,7 @@ def run(config, parameters):
         _render(env=env, model=model)
 
 
-def _set_up_env(MULT_ENV_FLAG, parameter):
+def _set_up_env(MULT_ENV_FLAG, parameter, model_type):
     """
     Creates either a vectorized environment, if the model will be trained on multiple environments,
     or a single environment.
@@ -57,9 +68,9 @@ def _set_up_env(MULT_ENV_FLAG, parameter):
     :return: the environment to train the Reinforcement Learning model
     """
     if MULT_ENV_FLAG:
-        env = DummyVecEnv([lambda: ProductionEnv(parameter)])  # Vectorized Environment for multiple environments
+        env = DummyVecEnv([lambda: Monitor(ProductionEnv(parameter, model_type))])  # Vectorized Environment for multiple environments
     else:
-        env = Monitor(ProductionEnv(parameter))
+        env = Monitor(ProductionEnv(parameter, model_type))
     check_env(env)  # Check if Environment follows the structure of Gym. -> passed :)
 
     return env
@@ -93,7 +104,7 @@ def _save_model(save_path, model_type, model):
     model.save(save_path + model_type + '/' + model_type + dt.datetime.now().strftime('%Y_%m_%d_%Hh_%Mmin_%Ssec'))
 
 
-def _load_model(load_path, model_type):
+def _load_model(load_path, model_type, tensorboard_log_path):
     """
     Loads the Reinforcement Learning model depending on the model type.
     :param load_path: the path to load a pre-existing model
@@ -101,21 +112,20 @@ def _load_model(load_path, model_type):
     :return: the reinforcement learning model
     """
     if model_type == 'PPO':
-        model = PPO.load(load_path)
+        model = PPO.load(load_path, tensorboard_log=tensorboard_log_path)
     elif model_type == 'DQN':
-        model = DQN.load(load_path)
+        model = DQN.load(load_path, tensorboard_log=tensorboard_log_path)
     elif model_type == 'A2C':
-        model = A2C.load(load_path)
-    # ToDo: TRPO needs to be integrated
-    # elif model_type == 'TRPO':
-        # model = TRPO.load(load_path)
+        model = A2C.load(load_path, tensorboard_log=tensorboard_log_path)
+    elif model_type == 'TRPO':
+        model = TRPO.load(load_path, tensorboard_log=tensorboard_log_path)
     else:
         print(model_type, 'not found!')
 
     return model
 
 
-def _create_model(LOAD_FLAG, load_path, env, model_type):
+def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, tensorboard_log_path):
     """
     Create or load the Reinforcement Learning model depending on the model_type.
     :param LOAD_FLAG: a flag to indicate whether to load a pre-existing model
@@ -125,16 +135,17 @@ def _create_model(LOAD_FLAG, load_path, env, model_type):
     :return: the reinforcement learning model
     """
     if LOAD_FLAG:
-        model = _load_model(load_path, model_type)
+        model = _load_model(load_path, model_type, tensorboard_log_path)
     else:
         if model_type == 'PPO':
-            model = PPO("MlpPolicy", env, verbose=1)
+            model = PPO("MlpPolicy", env, verbose=1,
+                        n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == 'DQN':
-            model = DQN("MlpPolicy", env, verbose=1)
+            model = DQN("MlpPolicy", env, verbose=1, tensorboard_log=tensorboard_log_path)
         elif model_type == 'A2C':
-            model = A2C("MlpPolicy", env, verbose=1)
-        # elif model_type == 'TRPO':
-        # model = TRPO("MlpPolicy", env, verbose=1)
+            model = A2C("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+        elif model_type == 'TRPO':
+            model = TRPO("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         else:
             print(model_type, 'not found!')
 

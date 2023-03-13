@@ -5,6 +5,7 @@ from JSP_env.envs.transport import *
 from JSP_env.envs.order import *
 import simpy
 
+
 class Source(Resource):
     counter_order = 0
 
@@ -48,7 +49,6 @@ class Source(Resource):
         return False
 
     def get_max_waiting_time(self):
-        max_wt = None
         max_wt = max([order.get_total_waiting_time() for order in self.buffer_out])
         return max_wt
 

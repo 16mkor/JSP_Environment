@@ -141,7 +141,6 @@ class Transport(Resource):
 
     def get_next_action(self):
         self.counter += 1
-
         # Transport when order waiting time threshold reached
         for order in [x for x in Transport.all_transp_orders if x.get_total_waiting_time() > self.parameters['WAITING_TIME_THRESHOLD'] and not x.reserved]:
             if order.get_next_step().type == 'machine':
@@ -169,7 +168,8 @@ class Transport(Resource):
         self.last_action_id = self.next_action[0]
 
         # If agent type is a heuristic, then use heuristic decision agents
-        if self.agent_type != "TRPO" and self.agent_type != "DQN" and self.agent_type != "PPO":
+        if self.agent_type != "TRPO" and self.agent_type != "DQN" \
+                and self.agent_type != "PPO" and self.agent_type != "A2C":
             result_order, result_destination = self.agent.act(Transport.all_transp_orders)
             result_origin = self.next_action_origin = result_order.current_location
             result_destination = self.next_action_destination = result_destination

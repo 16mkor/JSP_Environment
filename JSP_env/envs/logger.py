@@ -19,9 +19,7 @@ def export_statistics_logging(statistics, parameters, resources):
     ce = Console_export(path)
     ce.printLog("Start logger ", datetime.now())
 
-    """ 
-    Statistics & Logging 
-    """
+    """Statistics & Logging"""
     # Cut-off last processes at end of simulation
     for mach in range(parameters['NUM_MACHINES']):
         list_of_stats = ['stat_machines_working', 'stat_machines_changeover', 'stat_machines_broken',

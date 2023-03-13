@@ -1,10 +1,40 @@
 # JSP_Environment
 Derived from the SimRLFab, as described below.
 
-## SimPyRLFab
-Simulation and reinforcement learning framework for production planning and control of complex job shop manufacturing systems.
+## Installation of JSP_Environemnt
 
-## Introduction
+Required packages (Python 3.10): 
+```bash
+pip3 install -r requirements.txt
+```
+
+## Run
+
+```bash
+python3 main.py 
+```
+
+### Prepared Configuration
+
+**usage:** main.py [-h] [-rl_algorithm RL]  [-max_episode_timesteps T] [-num_episodes E] [-settings S]
+               [-env_config C]
+               
+[-h, --help]              show this help message and exit      
+
+[-rl_algorithm]           provide one of the RL algorithms: PPO, TRPO, A2C, or DQN (default: PPO)
+
+[-max_episode_timesteps]  provide the number of maximum timesteps per episode (default: 1000) 
+
+[-num_episodes]           provide the number of episode (default: 1000)
+
+[-settings]               provide the filename for the configuration of the settings of the Experiment as in config folder (default: NO_SETTINGS)
+
+[-env_config]             provide the filename for the configuration of the environment as in config folder (default: NO_CONFIG)
+
+## SimPyRLFab
+Simulation and reinforcement learning framework for production planning and control of complex job shop manufacturing systems (https://github.com/AndreasKuhnle/SimRLFab).
+
+### Introduction
 
 Complex job shop manufacturing systems are motivated by the manufacturing characteristics of the semiconductor wafer fabrication. A job shop consists of several machines (processing resources) that process jobs (products, orders) based on a defined list or process steps. After every process, the job is dispatched and transported to the next processing machine. Machines are usually grouped in sub-areas by the type processing type, i.e. similar processing capabilities are next to each other. 
 
@@ -22,7 +52,7 @@ According to Mönch (2013) there are several characteristics that cause the comp
 
 This framework provides an integrated simulation and reinforcement learning model to investigate the potential of data-driven reinforcement learning in production planning and control of complex job shop systems. The simulation model allows parametrization of a broad range of job shop-like manufacturing systems. Furthermore, performance statistics and logging of performance indicators are provided. Reinforcement learning is implemented to control the order dispatching and several dispatchin heuristics provide benchmarks that are used in practice. 
 
-## Features
+### Features
 
 The simulation model covers the following features (`initialize_env.py`):
 - Number of resources:
@@ -77,7 +107,7 @@ The default configuration provided in this package is based on a semiconductor s
 
 > Kuhnle, A., Schäfer, L., Stricker, N., & Lanza, G. (2019). "Design, Implementation and Evaluation of Reinforcement Learning for an Adaptive Order Dispatching in Job Shop Manufacturing Systems". Procedia CIRP, p. 234-239.
 
-## Running guide
+### Running guide
 
 Set up and run a simulation and training experiment:
 1. Define production parameters and agent configuration (see above, `initialize_env.py`)
@@ -86,14 +116,14 @@ Set up and run a simulation and training experiment:
 4. Run
 5. Analyse performance in log-files
 
-## Installation
+### Installation of the former SimPyRLFab
 
 Required packages (Python 3.6): 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Extensions (not yet implemented)
+### Extensions (not yet implemented)
 
 - Job due dates
 - Batch processing

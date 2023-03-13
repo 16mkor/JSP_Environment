@@ -1,8 +1,9 @@
-from JSP_env.envs.time_calc import *
+import numpy as np
+import simpy
+
 from JSP_env.envs.heuristics import *
 from JSP_env.envs.resources import *
-import simpy
-import numpy as np
+
 
 class Machine(Resource):
     agent = None
@@ -88,7 +89,7 @@ class Machine(Resource):
                 self.track_in_use.remove(interval)
         if self.buffer_processing != None and not self.broken:
             working_time += end - max(self.last_process_start_stat, start)
-        
+
         for interval in self.track_failures:
             if start < interval[1] and interval[0] < end:  # len(interval) > 0 and 
                 failure_time += min(end, interval[1]) - max(start, interval[0])
@@ -101,11 +102,12 @@ class Machine(Resource):
         if time_period - failure_time == 0.0:
             return 1.0
         result_utilization = working_time / (time_period - failure_time)
-        if result_utilization > 1.0 + self.parameters['EPSILON'] or result_utilization < 0.0 - self.parameters['EPSILON']:
+        if result_utilization > 1.0 + self.parameters['EPSILON'] or result_utilization < 0.0 - self.parameters[
+            'EPSILON']:
             print(working_time, time_period)
             print(result_utilization)
             raise Exception("Step utilization infeasible!")
-        
+
         return result_utilization
 
     def reactivate_transport_if_idle(self):
@@ -261,9 +263,11 @@ class Machine(Resource):
                                                                       next_variant=order.get_next_step(),
                                                                       statistics=self.statistics,
                                                                       parameters=self.parameters)
-                    self.machine_log.append(["changeover", round(self.env.now, 5), self.id, str([self.current_mounted_variant, "->", order.get_next_step()])])
+                    self.machine_log.append(["changeover", round(self.env.now, 5), self.id,
+                                             str([self.current_mounted_variant, "->", order.get_next_step()])])
                     self.current_mounted_variant = order.get_next_step()
-                time_processing += self.time_calc.processing_time(machine=self, statistics=self.statistics, parameters=self.parameters, order=order)
+                time_processing += self.time_calc.processing_time(machine=self, statistics=self.statistics,
+                                                                  parameters=self.parameters, order=order)
                 order.time_processing += time_processing
                 self.statistics['stat_order_processing'][order.id] += time_processing
                 self.machine_log.append(["processing", round(self.env.now, 5), self.id, round(time_processing, 5)])
@@ -288,7 +292,8 @@ class Machine(Resource):
                         # Request a repairman. This will preempt its "other_job".
                         with self.resources['repairman'].request(priority=1) as req:
                             yield req
-                            if self.parameters['PRINT_CONSOLE']: print("Machine", self.id, "is repaired in", self.last_repair_time)
+                            if self.parameters['PRINT_CONSOLE']: print("Machine", self.id, "is repaired in",
+                                                                       self.last_repair_time)
                             self.machine_log.append(
                                 ["breakdown", round(self.env.now, 5), self.id, round(self.last_repair_time, 5)])
                             start_time = self.env.now
@@ -342,6 +347,7 @@ class Machine(Resource):
                         self.time_start_idle_stat = self.env.now
                 else:
                     self.process.interrupt()
+
 
 def other_jobs(env, repairman):
     """    The repairman's other (unimportant) job.    """
