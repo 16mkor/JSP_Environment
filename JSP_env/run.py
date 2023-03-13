@@ -70,7 +70,6 @@ def _set_up_env(MULT_ENV_FLAG, parameter, model_type):
     if MULT_ENV_FLAG:
         env = DummyVecEnv([lambda: Monitor(ProductionEnv(parameter, model_type))])  # Vectorized Environment for multiple environments
     else:
-        # env = TimeLimit(ProductionEnv(parameter), timesteps)
         env = Monitor(ProductionEnv(parameter, model_type))
     check_env(env)  # Check if Environment follows the structure of Gym. -> passed :)
 
@@ -142,11 +141,9 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, tensorboard_
             model = PPO("MlpPolicy", env, verbose=1,
                         n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == 'DQN':
-            model = DQN("MlpPolicy", env, verbose=1,
-                        tensorboard_log=tensorboard_log_path)
+            model = DQN("MlpPolicy", env, verbose=1, tensorboard_log=tensorboard_log_path)
         elif model_type == 'A2C':
-            model = A2C("MlpPolicy", env,
-                        verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+            model = A2C("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == 'TRPO':
             model = TRPO("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         else:

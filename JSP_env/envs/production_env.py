@@ -75,8 +75,7 @@ class ProductionEnv(gym.Env):
             self.parameters['continue_criteria'].succeed()
             self.parameters['continue_criteria'] = self.env.event()
 
-            self.env.run(until=self.parameters[
-                'step_criteria'])  # Waiting until action is processed in simulation environment
+            self.env.run(until=self.parameters['step_criteria'])  # Waiting until action is processed in simulation environment
             # Simulation is now in state after action processing
 
             reward, terminal = agent.calculate_reward(actions)

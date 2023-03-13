@@ -19,6 +19,8 @@ def get_settings(file_name, model_type):
         """Path from/to where files loaded/saved"""
         config.update({'logging_path': "JSP_env/log/"})  # Save log files here
         config.update({'save_path': 'JSP_env/models/'})  # Save models here
+        if not os.path.exists(config['save_path']):
+            os.makedirs(config['save_path'])
 
         """Configure Experiment"""
         config.update({'model_type': model_type})  # Type of Model used in experiment
