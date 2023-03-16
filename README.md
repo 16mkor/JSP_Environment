@@ -3,7 +3,7 @@ Derived from the SimRLFab, as described below.
 
 ## Installation of JSP_Environemnt
 
-Required packages (Python 3.10): 
+Required packages (Python 3.9): 
 ```bash
 pip3 install -r requirements.txt
 ```
