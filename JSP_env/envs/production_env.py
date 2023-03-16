@@ -389,8 +389,8 @@ class ProductionEnv(gym.Env):
         self.statistics['episode_log'].flush()
         os.fsync(self.statistics['episode_log'].fileno())
 
-        pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(
-            self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
+        # pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(
+            # self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
 
         # Reset statistics for episode
         self.last_export_time = self.env.now
