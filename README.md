@@ -21,7 +21,7 @@ python3 main.py
                
 [-h, --help]              show this help message and exit      
 
-[-rl_algorithm]           provide one of the RL algorithms: PPO, TRPO, A2C, or DQN (default: PPO)
+[-rl_algorithm]           provide one of the RL algorithms: PPO, or DQN (default: PPO)
 
 [-max_episode_timesteps]  provide the number of maximum timesteps per episode (default: 1000) 
 
