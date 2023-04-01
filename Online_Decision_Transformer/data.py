@@ -52,7 +52,7 @@ class TransformSamplingSubTraj:
         state_mean,
         state_std,
         reward_scale,
-        action_range,
+        # action_range,
     ):
         super().__init__()
         self.max_len = max_len
@@ -66,7 +66,7 @@ class TransformSamplingSubTraj:
         # for the SquahsedNormal distribution. The inversed tanh transformation will
         # produce NAN when computing the log-likelihood. We clamp them to be within
         # the user defined action range.
-        self.action_range = action_range
+        # self.action_range = action_range
 
     def __call__(self, traj):
         si = random.randint(0, traj["rewards"].shape[0] - 1)
@@ -115,7 +115,7 @@ class TransformSamplingSubTraj:
         padding_mask = np.concatenate([np.zeros(self.max_len - tlen), np.ones(tlen)])
 
         ss = torch.from_numpy(ss).to(dtype=torch.float32)
-        aa = torch.from_numpy(aa).to(dtype=torch.float32).clamp(*self.action_range)
+        aa = torch.from_numpy(aa).to(dtype=torch.float32)  # .clamp(*self.action_range)
         rr = torch.from_numpy(rr).to(dtype=torch.float32)
         dd = torch.from_numpy(dd).to(dtype=torch.long)
         rtg = torch.from_numpy(rtg).to(dtype=torch.float32)
@@ -136,7 +136,7 @@ def create_dataloader(
     state_mean,
     state_std,
     reward_scale,
-    action_range,
+    # action_range,
     num_workers=24,
 ):
     # total number of subt-rajectories you need to sample
@@ -150,7 +150,7 @@ def create_dataloader(
         state_mean=state_mean,
         state_std=state_std,
         reward_scale=reward_scale,
-        action_range=action_range,
+        # action_range=action_range,
     )
 
     subset = SubTrajectory(trajectories, sampling_ind=sampling_ind, transform=transform)

@@ -1,4 +1,4 @@
-name: odt
+name: odt2
 channels:
   - pytorch
 dependencies:

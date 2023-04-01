@@ -86,7 +86,10 @@ class Decision_Heuristic_Transp_EMPTY(Decision_Heuristic):
                     min_fill_level = fill_level
                     result_order = order
                     result_dest = dest
-        result_order = states.pop(states.index(result_order))
+        try:
+            result_order = states.pop(states.index(result_order))
+        except:
+            pass
         result_order.reserved = True
         return result_order, result_dest
 

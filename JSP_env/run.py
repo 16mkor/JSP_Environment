@@ -12,7 +12,7 @@ from stable_baselines3.common.monitor import Monitor
 from JSP_env.envs.production_env import ProductionEnv
 
 
-def run(config, parameters, timesteps, episodes):
+def run(config, parameters, timesteps, seed, episodes):
     """
     This function is used to run a reinforcement learning model with various flags for loading, logging, saving,
     and rendering. The function first sets up the environment and model based on the specified parameters,
@@ -26,7 +26,8 @@ def run(config, parameters, timesteps, episodes):
     """
 
     """Set up Environment & Model"""
-    env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters, model_type=config['model_type'])
+    env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters,
+                      seed=seed, time_steps=timesteps, num_episodes=episodes, model_type=config['model_type'])
     model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env,
                           model_type=config['model_type'], timesteps=timesteps,
                           tensorboard_log_path=config['tensorboard_log'])
@@ -35,30 +36,42 @@ def run(config, parameters, timesteps, episodes):
     if config['LOGGER_FLAG']:
         logger = _set_up_logger(logging_path=config['logging_path'], model=model)
 
-    """Train Model"""
-    print('################################')
-    print('### START TRAINING PROCEDURE ###')
-    print('################################')
-    model.learn(total_timesteps=(timesteps * episodes),
-                tb_log_name=config['model_type'])
+    if model != "Heuristic":
+        """Train Model"""
+        print('################################')
+        print('### START TRAINING PROCEDURE ###')
+        print('################################')
+        model.learn(total_timesteps=(timesteps * episodes),
+                    tb_log_name=config['model_type'])
 
-    """Evaluate Model"""
-    if config['EVAL_FLAG']:
-        print('##################################')
-        print('### START Evaluation PROCEDURE ###')
-        print('##################################')
-        evaluate_policy(model=model, env=env, return_episode_rewards=False)
+        """Evaluate Model"""
+        if config['EVAL_FLAG']:
+            print('##################################')
+            print('### START Evaluation PROCEDURE ###')
+            print('##################################')
+            evaluate_policy(model=model, env=env, return_episode_rewards=False)
 
-    """Save Model"""
-    if config['SAVE_FLAG']:
-        _save_model(save_path=config['save_path'], model_type=config['model_type'], model=model)
+        """Save Model"""
+        if config['SAVE_FLAG']:
+            _save_model(save_path=config['save_path'], model_type=config['model_type'], model=model)
 
-    """Render Model in Environemnt"""
-    if config['RENDER_FLAG']:
-        _render(env=env, model=model)
+        """Render Model in Environemnt"""
+        if config['RENDER_FLAG']:
+            _render(env=env, model=model)
+    else:
+        for _ in range(episodes):
+            time_steps = 0
+            terminated, truncated = False, False
+            __ = env.reset()
+            while not (terminated or truncated):
+                if config['model_type'] == 'RANDOM':
+                    action = env.action_space.sample()
+                else:
+                    action = env.env.resources['transps'][0].next_action[0]
+                state, reward, terminated, truncated, info = env.step(action)
+                time_steps += 1
 
-
-def _set_up_env(MULT_ENV_FLAG, parameter, model_type):
+def _set_up_env(MULT_ENV_FLAG, parameter, seed, time_steps, num_episodes, model_type):
     """
     Creates either a vectorized environment, if the model will be trained on multiple environments,
     or a single environment.
@@ -68,9 +81,9 @@ def _set_up_env(MULT_ENV_FLAG, parameter, model_type):
     :return: the environment to train the Reinforcement Learning model
     """
     if MULT_ENV_FLAG:
-        env = DummyVecEnv([lambda: Monitor(ProductionEnv(parameter, model_type))])  # Vectorized Environment for multiple environments
+        env = DummyVecEnv([lambda: Monitor(ProductionEnv(parameter, seed, time_steps, num_episodes, model_type))])  # Vectorized Environment for multiple environments
     else:
-        env = Monitor(ProductionEnv(parameter, model_type))
+        env = Monitor(ProductionEnv(parameter, seed, time_steps, num_episodes, model_type))
     check_env(env)  # Check if Environment follows the structure of Gym. -> passed :)
 
     return env
@@ -119,6 +132,8 @@ def _load_model(load_path, model_type, tensorboard_log_path):
         model = A2C.load(load_path, tensorboard_log=tensorboard_log_path)
     elif model_type == 'TRPO':
         model = TRPO.load(load_path, tensorboard_log=tensorboard_log_path)
+    elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
+        model = "Heuristic"
     else:
         print(model_type, 'not found!')
 
@@ -138,14 +153,16 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, tensorboard_
         model = _load_model(load_path, model_type, tensorboard_log_path)
     else:
         if model_type == 'PPO':
-            model = PPO("MlpPolicy", env, verbose=1,
+            model = PPO("MlpPolicy", env, verbose=1,  seed=10,
                         n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == 'DQN':
-            model = DQN("MlpPolicy", env, verbose=1, tensorboard_log=tensorboard_log_path)
+            model = DQN("MlpPolicy", env, verbose=1, seed=10, tensorboard_log=tensorboard_log_path)
         elif model_type == 'A2C':
-            model = A2C("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+            model = A2C("MlpPolicy", env, verbose=1, seed=10, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == 'TRPO':
-            model = TRPO("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+            model = TRPO("MlpPolicy", env, verbose=1, seed=10, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+        elif model_type == "FIFO" or model_type=="NJF" or model_type=="EMPTY" or model_type == 'RANDOM':
+            model = "Heuristic"
         else:
             print(model_type, 'not found!')
 

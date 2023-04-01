@@ -3,6 +3,8 @@ from gymnasium import spaces
 from gymnasium.spaces.utils import flatten_space
 import numpy as np
 from datetime import datetime
+from datetime import timedelta
+import torch
 import sys
 from JSP_env.envs.initialize_env import *
 from JSP_env.envs.initialize_env import _get_criteria_events
@@ -12,12 +14,16 @@ from JSP_env.envs.logger import *
 
 class ProductionEnv(gym.Env):
 
-    def __init__(self, parameters, model_type, **kwargs):
+    def __init__(self, parameters, seed, time_steps, num_episodes, model_type, **kwargs):
         super(ProductionEnv, self).__init__(**kwargs)
 
         """Counter"""
         self.count_episode = 0
         self.count_steps = 0
+
+        """Seed"""
+        self.seed = seed
+        self._seed_everything(self.seed)
 
         """Create Simpy Environment"""
         self.env = simpy.Environment()
@@ -26,7 +32,8 @@ class ProductionEnv(gym.Env):
         # Setup parameter configuration
         if parameters == 'NO_PARAMETERS':
             print('No Configuration provided!')
-            self.parameters = define_production_parameters(env=self.env, model_type=model_type)
+            self.parameters = define_production_parameters(env=self.env, seed=seed, time_steps=time_steps,
+                                                           num_episodes=num_episodes, model_type=model_type)
         else:
             print('Configuration provided!')
             self.parameters = parameters
@@ -46,8 +53,18 @@ class ProductionEnv(gym.Env):
                                                      parameters=self.parameters, agents=self.agents,
                                                      time_calc=self.time_calc)
 
+        """Store Trajectories"""
+        self.trajectories = []
+        """self.trajectories = [{
+            'observations': np.empty(shape=(self.parameters['max_episode_timesteps'], self._state_size())),
+            'next_observations': np.empty(shape=(self.parameters['max_episode_timesteps'], self._state_size())),
+            'actions': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
+            'rewards': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
+            'terminals': np.empty(shape=(self.parameters['max_episode_timesteps'],))
+        }]"""
+
         """Observation and action space"""
-        self.observation_space = flatten_space(spaces.Box(low=-1, high=100, shape=(self._state_size(),), dtype=np.float64))
+        self.observation_space = flatten_space(spaces.Box(low=-1, high=1000, shape=(self._state_size(),), dtype=np.float64))
         self.action_space = spaces.Discrete(self._action_size())
 
     def step(self, actions):
@@ -70,6 +87,8 @@ class ProductionEnv(gym.Env):
                 agent.next_action = [int(actions)]
             elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
                 agent.next_action = [int(actions[0]), int(actions[1])]
+            if 300_000 >= self.count_episode > 400_000:
+                self.trajectories[self.count_episode-300_000]['observations'][self.count_steps] = agent.state_before
             agent.state_before = None
 
             self.parameters['continue_criteria'].succeed()
@@ -96,16 +115,35 @@ class ProductionEnv(gym.Env):
             self.statistics['stat_agent_reward'].append(
                 [self.count_episode, self.count_steps, round(self.env.now, 5),
                  None, None, None, states])
+            if 300_000 >= self.count_episode > 400_000:
+                self.trajectories[self.count_episode-300_000]['next_observations'][self.count_steps] = states
+                self.trajectories[self.count_episode-300_000]['actions'][self.count_steps] = agent.next_action
+                self.trajectories[self.count_episode-300_000]['rewards'][self.count_steps] = reward
+                self.trajectories[self.count_episode-300_000]['terminals'][self.count_steps] = terminal
 
             return states, reward, terminal, truncated, info
 
     def reset(self):
         print("####### Reset Environment #######")
         print("Sim start time: ", self.statistics['sim_start_time'])
+        super().reset(seed=self.seed)
 
         """Reset counter"""
         self.count_episode += 1  # increase episode by one
         self.count_steps = 0  # reset the counter of timesteps
+
+        if 300 <= self.count_episode < 401:
+            self.trajectories.append({
+                'observations': np.empty(shape=(self.parameters['max_episode_timesteps'], self._state_size())),
+                'next_observations': np.empty(shape=(self.parameters['max_episode_timesteps'], self._state_size())),
+                'actions': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
+                'rewards': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
+                'terminals': np.empty(shape=(self.parameters['max_episode_timesteps'],))
+                                  })
+        elif self.count_episode ==401:
+            import pickle
+            with open('JSP_env/data/_trajectories_ppo.pkl', 'wb') as f:
+                pickle.dump(self.trajectories, f)
 
         """Change parameter to new szenario"""
         if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
@@ -123,7 +161,8 @@ class ProductionEnv(gym.Env):
     def close(self):
         print("####### Close Environment #######")
         """Export statistics of closed environment"""
-        if not self.parameters['EXPORT_NO_LOGS']:
+        if not self.parameters['EXPORT_NO_LOGS'] and \
+                self.statistics['sim_start_time']-datetime.now() > timedelta(seconds=1):
             self.statistics.update({'time_end': self.env.now})
             export_statistics_logging(statistics=self.statistics, parameters=self.parameters, resources=self.resources)
         super().close()
@@ -389,8 +428,8 @@ class ProductionEnv(gym.Env):
         self.statistics['episode_log'].flush()
         os.fsync(self.statistics['episode_log'].fileno())
 
-        pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(
-            self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
+        #pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(
+            #self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
 
         # Reset statistics for episode
         self.last_export_time = self.env.now
@@ -400,3 +439,12 @@ class ProductionEnv(gym.Env):
         self.statistics['stat_transp_selected_idle'] = np.array([0] * self.parameters['NUM_TRANSP_AGENTS'])
         self.statistics['stat_transp_forced_idle'] = np.array([0] * self.parameters['NUM_TRANSP_AGENTS'])
         self.statistics['stat_transp_threshold_waiting_reached'] = np.array([0] * self.parameters['NUM_TRANSP_AGENTS'])
+
+    def _seed_everything(self, seed):
+        random.seed(seed)
+        np.random.seed(seed)
+        os.environ['PYTHONHASHSEED'] = str(seed)
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        torch.backends.cudnn.deterministic = True
+        #super.seed(seed)

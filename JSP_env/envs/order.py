@@ -50,7 +50,13 @@ class Order(Resource):
             self.finished = True
 
     def get_next_step(self):
-        return self.prod_steps[self.actual_step]
+        try:
+            if self.actual_step > 2:
+                print('wait')
+            return self.prod_steps[self.actual_step]
+        except:
+            print('wait')
+        # return self.prod_steps[self.actual_step]
 
     def get_total_waiting_time(self):
         result = self.env.now - self.sop - self.time_processing - self.time_handling

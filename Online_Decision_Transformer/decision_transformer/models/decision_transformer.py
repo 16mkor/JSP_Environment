@@ -16,8 +16,8 @@ import torch.nn as nn
 
 import transformers
 
-from decision_transformer.models.model import TrajectoryModel
-from decision_transformer.models.trajectory_gpt2 import GPT2Model
+from Online_Decision_Transformer.decision_transformer.models.model import TrajectoryModel
+from Online_Decision_Transformer.decision_transformer.models.trajectory_gpt2 import GPT2Model
 import math
 import numpy as np
 import torch.nn.functional as F
@@ -135,7 +135,7 @@ class DecisionTransformer(TrajectoryModel):
         state_dim,
         act_dim,
         hidden_size,
-        action_range,
+        # action_range,
         ordering=0,
         max_length=None,
         eval_context_length=None,
@@ -154,7 +154,7 @@ class DecisionTransformer(TrajectoryModel):
             n_embd=hidden_size,
             **kwargs
         )
-
+        config.n_ctx = 1024
         # note: the only difference between this GPT2Model and the default Huggingface version
         # is that the positional embeddings are removed (since we'll add those ourselves)
         self.transformer = GPT2Model(config)
@@ -182,7 +182,7 @@ class DecisionTransformer(TrajectoryModel):
         self.stochastic_policy = stochastic_policy
         self.eval_context_length = eval_context_length
         self.ordering = ordering
-        self.action_range = action_range
+        # self.action_range = action_range
 
         if stochastic_policy:
             self.log_temperature = torch.tensor(np.log(init_temperature))
@@ -387,5 +387,5 @@ class DecisionTransformer(TrajectoryModel):
                 return_preds[:, -1],
             )
 
-    def clamp_action(self, action):
-        return action.clamp(*self.action_range)
+    # def clamp_action(self, action):
+        # return action.clamp(*self.action_range)

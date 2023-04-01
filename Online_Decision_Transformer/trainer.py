@@ -17,7 +17,7 @@ class SequenceTrainer:
         optimizer,
         log_temperature_optimizer,
         scheduler=None,
-        device="cuda",
+        device="cpu",
     ):
         self.model = model
         self.optimizer = optimizer

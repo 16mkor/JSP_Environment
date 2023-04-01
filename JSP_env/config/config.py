@@ -15,6 +15,7 @@ def get_settings(file_name, model_type):
         config.update({'RENDER_FLAG': False})  # Render Environment # TODO: Not implemented yet
         config.update({'MULT_ENV_FLAG': False})  # Use multiple stacked environments -> Use DummyVecEnv
         config.update({'EVAL_FLAG': True})  # Evaluate Model
+        config.update({'TRAJ_FLAG': True})  # Save Trajectories of Form (s_t, a_t, r_t, t_t, s_t+1)
 
         """Path from/to where files loaded/saved"""
         config.update({'logging_path': "JSP_env/log/"})  # Save log files here
@@ -35,6 +36,11 @@ def get_settings(file_name, model_type):
         if not os.path.exists(config['tensorboard_log']):
             os.makedirs(config['tensorboard_log'])
         print('Tensorboard command: tensorboard --logdir ' + config['tensorboard_log'])
+
+        if config['TRAJ_FLAG']:
+            config.update({'traj_path': 'JSP_env/data/'})
+            if not os.path.exists(config['traj_path']):
+                os.makedirs(config['traj_path'])
 
         """Write to .JSON"""
         # file_name = 'JSP_env/config/' + file_name[1:-2] + '.json'

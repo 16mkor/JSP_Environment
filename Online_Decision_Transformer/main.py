@@ -5,34 +5,42 @@ This source code is licensed under the CC BY-NC license found in the
 LICENSE.md file in the root directory of this source tree.
 """
 
-from torch.utils.tensorboard import SummaryWriter
 import argparse
 import pickle
 import random
 import time
-import gym
-import d4rl
-import torch
-import numpy as np
-
-import utils
-from replay_buffer import ReplayBuffer
-from lamb import Lamb
-from stable_baselines3.common.vec_env import SubprocVecEnv
 from pathlib import Path
-from data import create_dataloader
-from decision_transformer.models.decision_transformer import DecisionTransformer
-from evaluation import create_vec_eval_episodes_fn, vec_evaluate_episode_rtg
-from trainer import SequenceTrainer
-from logger import Logger
+
+import numpy as np
+import torch
+from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.vec_env import SubprocVecEnv
+from torch.utils.tensorboard import SummaryWriter
+
+from JSP_env.envs.production_env import ProductionEnv
+import Online_Decision_Transformer.utils as utils
+from Online_Decision_Transformer.data import create_dataloader
+from Online_Decision_Transformer.decision_transformer.models.decision_transformer import DecisionTransformer
+from Online_Decision_Transformer.evaluation import create_vec_eval_episodes_fn, vec_evaluate_episode_rtg
+from Online_Decision_Transformer.lamb import Lamb
+from Online_Decision_Transformer.logger import Logger
+from Online_Decision_Transformer.replay_buffer import ReplayBuffer
+from Online_Decision_Transformer.trainer import SequenceTrainer
+
+# import gym
+# import d4rl
+
 
 MAX_EPISODE_LEN = 1000
 
 
 class Experiment:
-    def __init__(self, variant):
+    def __init__(self, variant, parameters, model_type):
 
-        self.state_dim, self.act_dim, self.action_range = self._get_env_spec(variant)
+        self.parameters = parameters
+        self.model_type = model_type
+        # self.state_dim, self.act_dim, self.action_range = self._get_env_spec(self.parameters, self.model_type)
+        self.state_dim, self.act_dim = self._get_env_spec(self.parameters, self.model_type)
         self.offline_trajs, self.state_mean, self.state_std = self._load_dataset(
             variant["env"]
         )
@@ -46,7 +54,7 @@ class Experiment:
         self.model = DecisionTransformer(
             state_dim=self.state_dim,
             act_dim=self.act_dim,
-            action_range=self.action_range,
+            # action_range=self.action_range,
             max_length=variant["K"],
             eval_context_length=variant["eval_context_length"],
             max_ep_len=MAX_EPISODE_LEN,
@@ -89,16 +97,16 @@ class Experiment:
         self.reward_scale = 1.0 if "antmaze" in variant["env"] else 0.001
         self.logger = Logger(variant)
 
-    def _get_env_spec(self, variant):
-        env = gym.make(variant["env"])
+    def _get_env_spec(self, parameter, model_type='ODT'):
+        env = Monitor(ProductionEnv(parameter, model_type))  # gym.make(variant["env"])
         state_dim = env.observation_space.shape[0]
-        act_dim = env.action_space.shape[0]
-        action_range = [
+        act_dim = env.action_space.n
+        """action_range = [
             float(env.action_space.low.min()) + 1e-6,
             float(env.action_space.high.max()) - 1e-6,
-        ]
+        ]"""
         env.close()
-        return state_dim, act_dim, action_range
+        return state_dim, act_dim  # , action_range
 
     def _save_model(self, path_prefix, is_pretrain_model=False):
         to_save = {
@@ -144,7 +152,8 @@ class Experiment:
 
     def _load_dataset(self, env_name):
 
-        dataset_path = f"./data/{env_name}.pkl"
+        # dataset_path = f"./data/{env_name}.pkl"
+        dataset_path = f"JSP_env/data/trajectories_ppo.pkl"
         with open(dataset_path, "rb") as f:
             trajectories = pickle.load(f)
 
@@ -154,6 +163,7 @@ class Experiment:
             traj_lens.append(len(path["observations"]))
             returns.append(path["rewards"].sum())
         traj_lens, returns = np.array(traj_lens), np.array(returns)
+        returns[np.isnan(returns)] = 0
 
         # used for input normalization
         states = np.concatenate(states, axis=0)
@@ -257,10 +267,10 @@ class Experiment:
                 max_len=self.variant["K"],
                 state_dim=self.state_dim,
                 act_dim=self.act_dim,
+                # action_range=self.action_range,
                 state_mean=self.state_mean,
                 state_std=self.state_std,
-                reward_scale=self.reward_scale,
-                action_range=self.action_range,
+                reward_scale=self.reward_scale
             )
 
             train_outputs = trainer.train_iteration(
@@ -341,10 +351,10 @@ class Experiment:
                 max_len=self.variant["K"],
                 state_dim=self.state_dim,
                 act_dim=self.act_dim,
+                # action_range=self.action_range,
                 state_mean=self.state_mean,
                 state_std=self.state_std,
-                reward_scale=self.reward_scale,
-                action_range=self.action_range,
+                reward_scale=self.reward_scale
             )
 
             # finetuning
@@ -385,9 +395,9 @@ class Experiment:
 
     def __call__(self):
 
-        utils.set_seed_everywhere(args.seed)
+        # utils.set_seed_everywhere(args.seed)
 
-        import d4rl
+        # import d4rl
 
         def loss_fn(
             a_hat_dist,
@@ -409,18 +419,18 @@ class Experiment:
 
         def get_env_builder(seed, env_name, target_goal=None):
             def make_env_fn():
-                import d4rl
+                # import d4rl
 
-                env = gym.make(env_name)
-                env.seed(seed)
+                env = Monitor(ProductionEnv(self.parameters, self.model_type))  # gym.make(variant["env"])
+                # env.seed(seed)
                 if hasattr(env.env, "wrapped_env"):
                     env.env.wrapped_env.seed(seed)
                 elif hasattr(env.env, "seed"):
                     env.env.seed(seed)
                 else:
                     pass
-                env.action_space.seed(seed)
-                env.observation_space.seed(seed)
+                # env.action_space.seed(seed)
+                # env.observation_space.seed(seed)
 
                 if target_goal:
                     env.set_target_goal(target_goal)
@@ -432,7 +442,7 @@ class Experiment:
         print("\n\nMaking Eval Env.....")
         env_name = self.variant["env"]
         if "antmaze" in env_name:
-            env = gym.make(env_name)
+            env = Monitor(ProductionEnv(self.parameter, self.model_type))  # gym.make(variant["env"])
             target_goal = env.target_goal
             env.close()
             print(f"Generated the fixed target goal: {target_goal}")
@@ -463,55 +473,10 @@ class Experiment:
         eval_envs.close()
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--seed", type=int, default=10)
-    parser.add_argument("--env", type=str, default="hopper-medium-v2")
-
-    # model options
-    parser.add_argument("--K", type=int, default=20)
-    parser.add_argument("--embed_dim", type=int, default=512)
-    parser.add_argument("--n_layer", type=int, default=4)
-    parser.add_argument("--n_head", type=int, default=4)
-    parser.add_argument("--activation_function", type=str, default="relu")
-    parser.add_argument("--dropout", type=float, default=0.1)
-    parser.add_argument("--eval_context_length", type=int, default=5)
-    # 0: no pos embedding others: absolute ordering
-    parser.add_argument("--ordering", type=int, default=0)
-
-    # shared evaluation options
-    parser.add_argument("--eval_rtg", type=int, default=3600)
-    parser.add_argument("--num_eval_episodes", type=int, default=10)
-
-    # shared training options
-    parser.add_argument("--init_temperature", type=float, default=0.1)
-    parser.add_argument("--batch_size", type=int, default=256)
-    parser.add_argument("--learning_rate", "-lr", type=float, default=1e-4)
-    parser.add_argument("--weight_decay", "-wd", type=float, default=5e-4)
-    parser.add_argument("--warmup_steps", type=int, default=10000)
-
-    # pretraining options
-    parser.add_argument("--max_pretrain_iters", type=int, default=1)
-    parser.add_argument("--num_updates_per_pretrain_iter", type=int, default=5000)
-
-    # finetuning options
-    parser.add_argument("--max_online_iters", type=int, default=1500)
-    parser.add_argument("--online_rtg", type=int, default=7200)
-    parser.add_argument("--num_online_rollouts", type=int, default=1)
-    parser.add_argument("--replay_size", type=int, default=1000)
-    parser.add_argument("--num_updates_per_online_iter", type=int, default=300)
-    parser.add_argument("--eval_interval", type=int, default=10)
-
-    # environment options
-    parser.add_argument("--device", type=str, default="cpu")
-    parser.add_argument("--log_to_tb", "-w", type=bool, default=True)
-    parser.add_argument("--save_dir", type=str, default="./exp")
-    parser.add_argument("--exp_name", type=str, default="default")
-
-    args = parser.parse_args()
-
+# if __name__ == "__main__":
+def odt_experiment(args, exp_config, parameters):
     utils.set_seed_everywhere(args.seed)
-    experiment = Experiment(vars(args))
+    experiment = Experiment(vars(args), parameters, exp_config['model_type'])
 
     print("=" * 50)
     experiment()

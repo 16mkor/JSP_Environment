@@ -73,6 +73,7 @@ class Source(Resource):
                 yield self.env.timeout(self.time_calc.time_to_order_generation(self, self.statistics, self.parameters))
 
             prod_steps, variant = self.time_calc.create_intermediate_production_steps_and_variant(statistics=self.statistics, parameters=self.parameters, resources=self.resources, at_resource=self)
+
             order = Order(env=self.env, id=Source.counter_order,prod_steps=prod_steps, variant=variant, statistics=self.statistics, parameters=self.parameters, resources=self.resources, agents=self.agents, time_calc=self.time_calc)
             Source.counter_order += 1
 
