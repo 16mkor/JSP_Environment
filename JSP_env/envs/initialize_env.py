@@ -61,9 +61,9 @@ def define_production_parameters(env, model_type):
     """Configuration of production system"""
     # TODO: Still Hardcoded -> Importing from JSON file
     parameters.update({'NUM_TRANSP_AGENTS': 1})  # Number of transportation resources
-    parameters.update({'NUM_MACHINES': 8})  # Number of machines in the machine shop
-    parameters.update({'NUM_SOURCES': 3})
-    parameters.update({'NUM_SINKS': 3})
+    parameters.update({'NUM_MACHINES': 20})  # Number of machines in the machine shop
+    parameters.update({'NUM_SOURCES': 4})
+    parameters.update({'NUM_SINKS': 4})
     parameters.update({'NUM_RESOURCES': parameters['NUM_MACHINES'] + parameters['NUM_SOURCES'] + parameters['NUM_SINKS']})
     parameters.update({'NUM_PROD_VARIANTS': 1})
     parameters.update({'NUM_PROD_STEPS': 1})
@@ -81,7 +81,14 @@ def define_production_parameters(env, model_type):
 
     """Machine parameters"""
     parameters.update({'MACHINE_AGENT_TYPE': "FIFO"})  # Alternatives: FIFO -> Decision rule for selecting the next available order from the load
-    parameters.update({'MACHINE_GROUPS': [2, 1, 1, 1, 1, 3, 3, 3]})
+    parameters.update({'MACHINE_GROUPS': [1, 1, 1, 2, 2,
+                                          2, 2, 2, 2, 2,
+                                          3, 3, 3, 3, 3,
+                                          4, 4, 4, 4, 4,
+                                          #5, 5, 5, 5, 5,
+                                          #6, 6, 6, 6, 6
+                                          ]})
+    # parameters.update({'MACHINE_GROUPS': [2, 1, 1, 1, 1, 3, 3, 3]})
     # parameters.update({'MACHINE_GROUPS': [i % parameters['NUM_SOURCES'] + 1 for i in range(parameters['NUM_MACHINES'])]})
     parameters.update({'MIN_PROCESS_TIME': [0.5] * parameters['NUM_MACHINES']})
     parameters.update({'AVERAGE_PROCESS_TIME': [60.0] * parameters['NUM_MACHINES']})
