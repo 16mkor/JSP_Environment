@@ -1,5 +1,5 @@
 import gymnasium as gym
-from gym import spaces
+# from gym import spaces
 from gymnasium.spaces.utils import flatten_space
 import numpy as np
 from datetime import datetime
@@ -64,9 +64,8 @@ class ProductionEnv(gym.Env):
         }]"""
 
         """Observation and action space"""
-        self.observation_space = spaces.Box(low=-1, high=100, shape=(self._state_size(),), dtype=np.float64)
-        #self.observation_space = flatten_space(spaces.Box(low=-1, high=1000, shape=(self._state_size(),), dtype=np.float64))
-        self.action_space = spaces.Discrete(self._action_size())
+        self.observation_space = gym.spaces.Box(low=-1, high=100, shape=(self._state_size(),), dtype=np.float64)
+        self.action_space = gym.spaces.Discrete(self._action_size())
 
     def step(self, actions):
         truncated = False
@@ -159,8 +158,8 @@ class ProductionEnv(gym.Env):
             self.env.run(until=self.parameters['step_criteria'])
 
         obs = np.array(self.resources['transps'][0].calculate_state())
-
-        return obs
+	info = {}
+        return obs, info
 
     def close(self):
         print("####### Close Environment #######")
