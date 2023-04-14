@@ -62,7 +62,7 @@ def run(config, parameters, timesteps, seed, episodes):
         for _ in range(episodes):
             time_steps = 0
             terminated, truncated = False, False
-            __ = env.reset()
+            __, _ = env.reset()
             while not (terminated or truncated):
                 if config['model_type'] == 'RANDOM':
                     action = env.action_space.sample()
@@ -177,7 +177,7 @@ def _render(env, model):
     :return: no return value
     """
     # TODO: Not visualy implemented yet
-    obs = env.reset()
+    obs, info = env.reset()
     for i in range(2_000):
         action, _states = model.predict(obs)
         obs, rewards, done, info = env.step(action)
