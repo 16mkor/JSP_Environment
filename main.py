@@ -1,6 +1,6 @@
 import sys
-from JSP_env.config import config
-from JSP_env.run import run
+from JSP_Environments.config import config
+from JSP_Environments.run import run
 from Online_Decision_Transformer.main import odt_experiment
 import argparse
 

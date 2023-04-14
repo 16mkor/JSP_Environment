@@ -16,7 +16,7 @@ import numpy as np
 from pathlib import Path
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import SubprocVecEnv
-from JSP_env.envs.production_env import ProductionEnv
+from JSP_Environments.envs.production_env import ProductionEnv
 import Online_Decision_Transformer.utils as utils
 from Online_Decision_Transformer.replay_buffer import ReplayBuffer
 from Online_Decision_Transformer.lamb import Lamb
@@ -145,7 +145,7 @@ class Experiment:
 
     def _load_dataset(self, env_name, dataset='test_trajectories.pkl'):
 
-        dataset_path = "JSP_env/data/" + dataset
+        dataset_path = "JSP_Environments/data/" + dataset
         with open(dataset_path, "rb") as f:
             trajectories = pickle.load(f)
 

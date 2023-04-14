@@ -1,13 +1,13 @@
 import random
 from collections import deque
-from JSP_env.envs.time_calc import *
-from JSP_env.envs.heuristics import *
-from JSP_env.envs.resources import *
-from JSP_env.envs.transport import *
-from JSP_env.envs.machine import *
-from JSP_env.envs.sink import *
-from JSP_env.envs.source import *
-from JSP_env.envs.production_env import *
+from JSP_Environments.envs.time_calc import *
+from JSP_Environments.envs.heuristics import *
+from JSP_Environments.envs.resources import *
+from JSP_Environments.envs.transport import *
+from JSP_Environments.envs.machine import *
+from JSP_Environments.envs.sink import *
+from JSP_Environments.envs.source import *
+from JSP_Environments.envs.production_env import *
 import numpy as np
 import pandas as pd
 import json
@@ -121,7 +121,7 @@ def define_production_parameters(env, model_type, time_steps, num_episodes, seed
     parameters.update({'MAX_TRANSP_TIME': np.array(parameters['TRANSP_TIME']).max()})
 
     """Export parameter config to json"""
-    file_name = 'JSP_env/config/' + parameters['TRANSP_AGENT_TYPE'] + '_config_parameters' + parameters[
+    file_name = 'JSP_Environments/config/' + parameters['TRANSP_AGENT_TYPE'] + '_config_parameters' + parameters[
         "PATH_TIME"] + '.json'
     with open(file_name, 'w') as fp:
         json.dump(parameters, fp)
@@ -190,9 +190,9 @@ def define_production_statistics(parameters):
 
     """Reward statistics"""
     statistics.update({'stat_agent_reward': [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]})
-    statistics.update({'agent_reward_log': open('JSP_env/log/' + parameters['TRANSP_AGENT_TYPE'] + '_' + str(parameters['NUM_SOURCES']) +
+    statistics.update({'agent_reward_log': open('JSP_Environments/log/' + parameters['TRANSP_AGENT_TYPE'] + '_' + str(parameters['NUM_SOURCES']) +
                        str(parameters['NUM_MACHINES']) + str(parameters['NUM_SINKS']) + '_' + parameters['PATH_TIME'] + '_agent_reward_log.txt', "w")})
-    statistics.update({'episode_log': open('JSP_env/log/' + parameters['TRANSP_AGENT_TYPE'] + '_' + str(parameters['NUM_SOURCES']) +
+    statistics.update({'episode_log': open('JSP_Environments/log/' + parameters['TRANSP_AGENT_TYPE'] + '_' + str(parameters['NUM_SOURCES']) +
                        str(parameters['NUM_MACHINES']) + str(parameters['NUM_SINKS']) + '_' + parameters['PATH_TIME'] + '_episode_log.txt', "w")})
     statistics.update({'episode_statistics': ['stat_machines_working', 'stat_machines_changeover',
                                               'stat_machines_broken', 'stat_machines_idle', 'stat_machines_processed_orders',
@@ -227,7 +227,7 @@ def define_production_statistics(parameters):
 
     """Export Statistics"""
     # Export parameter config to json
-    # file_name = 'JSP_env/' + parameters['TRANSP_AGENT_TYPE'] + '_config_stats' + parameters["PATH_TIME"] + '.json'
+    # file_name = 'JSP_Environments/' + parameters['TRANSP_AGENT_TYPE'] + '_config_stats' + parameters["PATH_TIME"] + '.json'
     # with open(file_name, 'w') as fp:
         # json.dump(parameters, fp)
 

@@ -73,7 +73,7 @@ def vec_evaluate_episode_rtg(
     state_std = torch.from_numpy(state_std).to(device=device)
 
     num_envs = vec_env.num_envs
-    state = vec_env.reset()
+    state, _ = vec_env.reset()
 
     # we keep all the histories on the device
     # note that the latest action and reward will be "padding"

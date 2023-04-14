@@ -1,4 +1,5 @@
-import gymnasium as gym
+import gymnasium
+import gym
 # from gym import spaces
 from gymnasium.spaces.utils import flatten_space
 import numpy as np
@@ -6,10 +7,10 @@ from datetime import datetime
 from datetime import timedelta
 import torch
 import sys
-from JSP_env.envs.initialize_env import *
-from JSP_env.envs.initialize_env import _get_criteria_events
-from JSP_env.envs.time_calc import Time_calc
-from JSP_env.envs.logger import *
+from JSP_Environments.envs.initialize_env import *
+from JSP_Environments.envs.initialize_env import _get_criteria_events
+from JSP_Environments.envs.time_calc import Time_calc
+from JSP_Environments.envs.logger import *
 
 
 class ProductionEnv(gym.Env):
@@ -88,13 +89,14 @@ class ProductionEnv(gym.Env):
             elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
                 agent.next_action = [int(actions[0]), int(actions[1])]
             if 300_000 >= self.count_episode > 400_000:
-                self.trajectories[self.count_episode-300_000]['observations'][self.count_steps] = agent.state_before
+                self.trajectories[self.count_episode - 300_000]['observations'][self.count_steps] = agent.state_before
             agent.state_before = None
 
             self.parameters['continue_criteria'].succeed()
             self.parameters['continue_criteria'] = self.env.event()
 
-            self.env.run(until=self.parameters['step_criteria'])  # Waiting until action is processed in simulation environment
+            self.env.run(
+                until=self.parameters['step_criteria'])  # Waiting until action is processed in simulation environment
             # Simulation is now in state after action processing
 
             reward, terminal = agent.calculate_reward(actions)
@@ -117,19 +119,19 @@ class ProductionEnv(gym.Env):
                  None, None, None, states])
 
             if 300_000 >= self.count_episode > 400_000:
-                self.trajectories[self.count_episode-300_000]['next_observations'][self.count_steps] = states
-                self.trajectories[self.count_episode-300_000]['actions'][self.count_steps] = agent.next_action
-                self.trajectories[self.count_episode-300_000]['rewards'][self.count_steps] = reward
-                self.trajectories[self.count_episode-300_000]['terminals'][self.count_steps] = terminal
-	
-	    # done = terminal or truncated
-            # return states, reward, done, info
-            return states, reward, terminal, truncated, info
+                self.trajectories[self.count_episode - 300_000]['next_observations'][self.count_steps] = states
+                self.trajectories[self.count_episode - 300_000]['actions'][self.count_steps] = agent.next_action
+                self.trajectories[self.count_episode - 300_000]['rewards'][self.count_steps] = reward
+                self.trajectories[self.count_episode - 300_000]['terminals'][self.count_steps] = terminal
+
+            done = terminal or truncated
+            return states, reward, done, info
+            # return states, reward, terminal, truncated, info
 
     def reset(self):
         print("####### Reset Environment #######")
         print("Sim start time: ", self.statistics['sim_start_time'])
-        super().reset(seed=self.seed)
+        # super().reset()
 
         """Reset counter"""
         self.count_episode += 1  # increase episode by one
@@ -142,10 +144,10 @@ class ProductionEnv(gym.Env):
                 'actions': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
                 'rewards': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
                 'terminals': np.empty(shape=(self.parameters['max_episode_timesteps'],))
-                                  })
-        elif self.count_episode ==401:
+            })
+        elif self.count_episode == 401:
             import pickle
-            with open('JSP_env/data/_trajectories_ppo.pkl', 'wb') as f:
+            with open('JSP_Environments/data/_trajectories_ppo.pkl', 'wb') as f:
                 pickle.dump(self.trajectories, f)
 
         """Change parameter to new szenario"""
@@ -158,14 +160,14 @@ class ProductionEnv(gym.Env):
             self.env.run(until=self.parameters['step_criteria'])
 
         obs = np.array(self.resources['transps'][0].calculate_state())
-        info = {}
-        return obs, info
+        # info = {}
+        return obs  # , info
 
     def close(self):
         print("####### Close Environment #######")
         """Export statistics of closed environment"""
         if not self.parameters['EXPORT_NO_LOGS'] and \
-                self.statistics['sim_start_time']-datetime.now() > timedelta(seconds=1):
+                self.statistics['sim_start_time'] - datetime.now() > timedelta(seconds=1):
             self.statistics.update({'time_end': self.env.now})
             export_statistics_logging(statistics=self.statistics, parameters=self.parameters, resources=self.resources)
         super().close()
@@ -258,13 +260,13 @@ class ProductionEnv(gym.Env):
                             'EPSILON']:  # Begin broken in mid of episode
                             self.stat_episode_diff[stat][mach] = self.statistics[stat][mach] - self.stat_episode[stat][
                                 mach] - self.resources['machines'][mach].last_process_time + (
-                                                                             self.resources['machines'][
-                                                                                 mach].last_broken_start -
-                                                                             self.resources['machines'][
-                                                                                 mach].last_process_start)
+                                                                         self.resources['machines'][
+                                                                             mach].last_broken_start -
+                                                                         self.resources['machines'][
+                                                                             mach].last_process_start)
                             self.resources['machines'][mach].last_process_time -= (
-                                        self.resources['machines'][mach].last_broken_start - self.resources['machines'][
-                                    mach].last_process_start)
+                                    self.resources['machines'][mach].last_broken_start - self.resources['machines'][
+                                mach].last_process_start)
                             self.resources['machines'][mach].last_process_start = self.resources['machines'][
                                                                                       mach].last_broken_start + \
                                                                                   self.resources['machines'][
@@ -280,11 +282,11 @@ class ProductionEnv(gym.Env):
                                                                                    'stat_machines_broken'][mach] - \
                                                                                self.resources['machines'][
                                                                                    mach].last_broken_time + (
-                                                                                           self.env.now -
-                                                                                           self.resources['machines'][
-                                                                                               mach].last_broken_start)
+                                                                                       self.env.now -
+                                                                                       self.resources['machines'][
+                                                                                           mach].last_broken_start)
                         self.resources['machines'][mach].last_broken_time -= (
-                                    self.env.now - self.resources['machines'][mach].last_broken_start)
+                                self.env.now - self.resources['machines'][mach].last_broken_start)
                         self.resources['machines'][mach].last_broken_start = self.env.now
                         self.stat_episode['stat_machines_broken'][mach] = self.stat_episode['stat_machines_broken'][
                                                                               mach] + self.stat_episode_diff[
@@ -296,8 +298,8 @@ class ProductionEnv(gym.Env):
                                 self.resources['machines'][mach].last_broken_time < self.env.now:
                             self.stat_episode_diff[stat][mach] = self.statistics[stat][mach] - self.stat_episode[stat][
                                 mach] - self.resources['machines'][mach].last_process_time + (
-                                                                             self.env.now - self.resources['machines'][
-                                                                         mach].last_process_start) - \
+                                                                         self.env.now - self.resources['machines'][
+                                                                     mach].last_process_start) - \
                                                                  self.resources['machines'][mach].last_broken_time
                             self.resources['machines'][mach].last_process_time -= (self.env.now -
                                                                                    self.resources['machines'][
@@ -308,20 +310,20 @@ class ProductionEnv(gym.Env):
                         else:
                             self.stat_episode_diff[stat][mach] = self.statistics[stat][mach] - self.stat_episode[stat][
                                 mach] - self.resources['machines'][mach].last_process_time + (
-                                                                             self.env.now - self.resources['machines'][
-                                                                         mach].last_process_start)
+                                                                         self.env.now - self.resources['machines'][
+                                                                     mach].last_process_start)
                             self.resources['machines'][mach].last_process_time -= (
-                                        self.env.now - self.resources['machines'][mach].last_process_start)
+                                    self.env.now - self.resources['machines'][mach].last_process_start)
                             self.resources['machines'][mach].last_process_start = self.env.now
                     self.stat_episode[stat][mach] = self.stat_episode[stat][mach] + self.stat_episode_diff[stat][mach]
                 elif stat == 'stat_machines_broken' and self.resources['machines'][mach].broken and \
                         self.resources['machines'][mach].buffer_processing == None:
                     self.stat_episode_diff[stat][mach] = self.statistics[stat][mach] - self.stat_episode[stat][mach] - \
                                                          self.resources['machines'][mach].last_broken_time + (
-                                                                     self.env.now - self.resources['machines'][
-                                                                 mach].last_broken_start)
+                                                                 self.env.now - self.resources['machines'][
+                                                             mach].last_broken_start)
                     self.resources['machines'][mach].last_broken_time -= (
-                                self.env.now - self.resources['machines'][mach].last_broken_start)
+                            self.env.now - self.resources['machines'][mach].last_broken_start)
                     self.resources['machines'][mach].last_broken_start = self.env.now
                     self.stat_episode[stat][mach] = self.stat_episode[stat][mach] + self.stat_episode_diff[stat][mach]
                 elif stat == 'stat_machines_idle' and self.resources['machines'][mach].idle.triggered:
@@ -351,8 +353,8 @@ class ProductionEnv(gym.Env):
                         transp].last_handling_start:  # Handling over
                         self.stat_episode_diff[stat][transp] = self.statistics[stat][transp] - self.stat_episode[stat][
                             transp] - self.resources['transps'][transp].last_transport_time + (
-                                                                           self.env.now - self.resources['transps'][
-                                                                       transp].last_transport_start)
+                                                                       self.env.now - self.resources['transps'][
+                                                                   transp].last_transport_start)
                         self.stat_episode[stat][transp] = self.stat_episode[stat][transp] + \
                                                           self.stat_episode_diff[stat][transp]
                 elif stat == 'stat_transp_handling' and self.resources['transps'][transp].current_order != None:
@@ -360,8 +362,8 @@ class ProductionEnv(gym.Env):
                         transp].last_handling_start:
                         self.stat_episode_diff[stat][transp] = self.statistics[stat][transp] - self.stat_episode[stat][
                             transp] - self.resources['transps'][transp].last_handling_time + (
-                                                                           self.env.now - self.resources['transps'][
-                                                                       transp].last_handling_start)
+                                                                       self.env.now - self.resources['transps'][
+                                                                   transp].last_handling_start)
                         self.stat_episode[stat][transp] = self.stat_episode[stat][transp] + \
                                                           self.stat_episode_diff[stat][transp]
                 elif stat == 'stat_transp_idle' and self.resources['transps'][transp].idle.triggered:
@@ -402,8 +404,8 @@ class ProductionEnv(gym.Env):
             process_time = np.mean([self.statistics['stat_order_processing'][id] for id in indices])
             dynFF = cycle_time / process_time
             util = np.sum(self.stat_episode_diff['stat_machines_working']) / (
-                        np.sum(self.stat_episode_diff['stat_machines_working']) + np.sum(
-                    self.stat_episode_diff['stat_machines_idle']))
+                    np.sum(self.stat_episode_diff['stat_machines_working']) + np.sum(
+                self.stat_episode_diff['stat_machines_idle']))
             alpha = max(0.0, (dynFF - 1) * (1 - util) / util)
             export_data.append(str(round(alpha, 5)))
         else:
@@ -432,8 +434,7 @@ class ProductionEnv(gym.Env):
         os.fsync(self.statistics['episode_log'].fileno())
 
         # pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(
-            # self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
-
+        # self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
 
         # Reset statistics for episode
         self.last_export_time = self.env.now
@@ -451,4 +452,4 @@ class ProductionEnv(gym.Env):
         torch.manual_seed(seed)
         torch.cuda.manual_seed(seed)
         torch.backends.cudnn.deterministic = True
-        #super.seed(seed)
+        # super.seed(seed)

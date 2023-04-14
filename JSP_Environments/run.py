@@ -9,7 +9,7 @@ from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 
-from JSP_env.envs.production_env import ProductionEnv
+from JSP_Environments.envs.production_env import ProductionEnv
 
 
 def run(config, parameters, timesteps, seed, episodes):

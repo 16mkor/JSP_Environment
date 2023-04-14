@@ -3,8 +3,9 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/jsp_env" />
+      <excludeFolder url="file://$MODULE_DIR$/env" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.10 (JSP_Environment)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.9 (env)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

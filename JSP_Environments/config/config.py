@@ -4,8 +4,8 @@ import json
 
 
 def get_settings(file_name, model_type):
-    if os.path.exists('JSP_env/config/' + file_name + '.json'):
-        config = json.loads(open('JSP_env/config/' + file_name + '.json').read())
+    if os.path.exists('JSP_Environments/config/' + file_name + '.json'):
+        config = json.loads(open('JSP_Environments/config/' + file_name + '.json').read())
     else:
         config = {}
         """Flags to indicate whether certain task should be done"""
@@ -18,8 +18,8 @@ def get_settings(file_name, model_type):
         config.update({'TRAJ_FLAG': True})  # Save Trajectories of Form (s_t, a_t, r_t, t_t, s_t+1)
 
         """Path from/to where files loaded/saved"""
-        config.update({'logging_path': "JSP_env/log/"})  # Save log files here
-        config.update({'save_path': 'JSP_env/models/'})  # Save models here
+        config.update({'logging_path': "JSP_Environments/log/"})  # Save log files here
+        config.update({'save_path': 'JSP_Environments/models/'})  # Save models here
         if not os.path.exists(config['save_path']):
             os.makedirs(config['save_path'])
 
@@ -32,18 +32,18 @@ def get_settings(file_name, model_type):
             config.update({'load_path': ''})
 
         """To use Tensorboard, a log location for the RL agent is needed"""
-        config.update({'tensorboard_log': 'JSP_env/log/'})  # /tensorboard_' + config['model_type'] + '_' + time + '/'})
+        config.update({'tensorboard_log': 'JSP_Environments/log/'})  # /tensorboard_' + config['model_type'] + '_' + time + '/'})
         if not os.path.exists(config['tensorboard_log']):
             os.makedirs(config['tensorboard_log'])
         print('Tensorboard command: tensorboard --logdir ' + config['tensorboard_log'])
 
         if config['TRAJ_FLAG']:
-            config.update({'traj_path': 'JSP_env/data/'})
+            config.update({'traj_path': 'JSP_Environments/data/'})
             if not os.path.exists(config['traj_path']):
                 os.makedirs(config['traj_path'])
 
         """Write to .JSON"""
-        # file_name = 'JSP_env/config/' + file_name[1:-2] + '.json'
+        # file_name = 'JSP_Environments/config/' + file_name[1:-2] + '.json'
         # with open(file_name, 'w') as fp:
         #     json.dump(config, fp)
 
@@ -51,8 +51,8 @@ def get_settings(file_name, model_type):
 
 
 def get_env_config(file_name):
-    if os.path.exists('JSP_env/config/' + file_name + '.json'):
-        parameters = json.loads(open('JSP_env/config/' + file_name + '.json').read())
+    if os.path.exists('JSP_Environments/config/' + file_name + '.json'):
+        parameters = json.loads(open('JSP_Environments/config/' + file_name + '.json').read())
     else:
         parameters = 'NO_PARAMETERS'
     return parameters

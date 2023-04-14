@@ -1,7 +1,7 @@
-from JSP_env.envs.time_calc import *
-from JSP_env.envs.heuristics import *
-from JSP_env.envs.resources import *
-from JSP_env.envs.transport import *
+from JSP_Environments.envs.time_calc import *
+from JSP_Environments.envs.heuristics import *
+from JSP_Environments.envs.resources import *
+from JSP_Environments.envs.transport import *
 import simpy
 
 class Order(Resource):
