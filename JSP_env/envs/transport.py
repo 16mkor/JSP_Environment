@@ -124,12 +124,7 @@ class Transport(Resource):
                 # TODO: Still Hard Coded for 3 Sinks
                 if order.get_next_step() != result_destination:
                     order.prod_steps[order.actual_step] = result_destination
-                    if order.prod_steps[-2].id < 2:
-                        order.prod_steps[-1] = self.resources['sinks'][0]
-                    elif order.prod_steps[-2].id < 5:
-                        order.prod_steps[-1] = self.resources['sinks'][1]
-                    elif order.prod_steps[-2].id < 8:
-                        order.prod_steps[-1] = self.resources['sinks'][2]
+                    num_sink = order.prod_steps[-2].id // len(self.resources['sinks']) - 1
         else:  # Destination is sink -> always free
             if order.current_location == origin and \
                     order.get_next_step() == destination:
