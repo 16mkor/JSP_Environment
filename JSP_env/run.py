@@ -153,7 +153,7 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, tensorboard_
         model = _load_model(load_path, model_type, tensorboard_log_path)
     else:
         if model_type == 'PPO':
-            model = PPO("MlpPolicy", env, verbose=1,  seed=10,
+            model = PPO("MlpPolicy", env, verbose=1,
                         n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == 'DQN':
             model = DQN("MlpPolicy", env, verbose=1, seed=10, tensorboard_log=tensorboard_log_path)

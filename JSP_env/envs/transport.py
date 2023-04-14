@@ -126,7 +126,7 @@ class Transport(Resource):
                 # Adjust new destination machine and sink resource in process steps list of the order
                 if order.get_next_step() != result_destination:
                     order.prod_steps[order.actual_step] = result_destination
-                    num_sink = order.prod_steps[-2].id // (len(self.resources['sinks'])-1)
+                    num_sink = order.prod_steps[-2].id // len(self.resources['sinks']) - 1
                     order.prod_steps[-1] = self.resources['sinks'][num_sink]
         else:  # Destination is sink -> always free
             if order.current_location == origin and \

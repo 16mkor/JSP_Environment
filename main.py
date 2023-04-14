@@ -13,11 +13,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Prepared Configuration')
     parser.add_argument('-rl', '--rl_algorithm', metavar='RL', type=str, nargs=1, default='PPO',
                         help='provide one of the RL algorithms: PPO, EMPTY, FIFO, RANDOM, NJF, A2C, or DQN (default: PPO)')
-    parser.add_argument('-max_e', '--max_episode_timesteps', metavar='T', type=int, nargs=1, default=2_048,
-                        help='provide the number of maximum timesteps per episode (default: 2048)')
+    parser.add_argument('-max_e', '--max_episode_timesteps', metavar='T', type=int, nargs=1, default=1_000,
+                        help='provide the number of maximum timesteps per episode (default: 1_000)')
     parser.add_argument('-num_e', '--num_episodes', metavar='E', type=int, nargs=1, default=5_000,
                         help='provide the number of episode (default: 5000)')
     parser.add_argument('-se', '--seed', metavar='s', type=int, nargs=1, default=10,
+                        help='Seed for the pseudo random generators (default: 10)')
+    parser.add_argument('-da', '--dataset', metavar='d', type=str, nargs=1, default='test_trajectories.pkl',
                         help='Seed for the pseudo random generators (default: 10)')
     parser.add_argument('-s', '--settings', metavar='S', type=str, nargs=1, default='NO_SETTINGS',
                         help='provide the filename for the configuration of the settings of the Experiment'
@@ -35,11 +37,11 @@ if __name__ == "__main__":
             seed=args['seed'], episodes=args['num_episodes'])
     else:
         # parser = argparse.ArgumentParser()
-        parser.add_argument("--seed", type=int, default=10)
+        # parser.add_argument("--seed", type=int, default=10)
         parser.add_argument("--env", type=str, default="JSP_Env")
 
         # model options
-        parser.add_argument("--K", type=int, default=35)  # 20
+        parser.add_argument("--K", type=int, default=20)
         parser.add_argument("--embed_dim", type=int, default=512)
         parser.add_argument("--n_layer", type=int, default=4)
         parser.add_argument("--n_head", type=int, default=4)
