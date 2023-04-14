@@ -40,10 +40,11 @@ class Experiment:
         self.parameters = parameters
         self.model_type = model_type
         # self.state_dim, self.act_dim, self.action_range = self._get_env_spec(self.parameters, self.model_type)
-        self.state_dim, self.act_dim = self._get_env_spec(self.parameters, self.model_type)
-        self.offline_trajs, self.state_mean, self.state_std = self._load_dataset(
-            variant["env"]
-        )
+        self.state_dim, self.act_dim = self._get_env_spec(self.parameters, seed=variant['seed'],
+                                                          time_steps=variant['max_episode_timesteps'],
+                                                          num_episodes=variant['num_episodes'],
+                                                          model_type=self.model_type)
+        self.offline_trajs, self.state_mean, self.state_std = self._load_dataset(variant["env"], variant['dataset'])
         # initialize by offline trajs
         self.replay_buffer = ReplayBuffer(variant["replay_size"], self.offline_trajs)
 
@@ -97,10 +98,10 @@ class Experiment:
         self.reward_scale = 1.0 if "antmaze" in variant["env"] else 0.001
         self.logger = Logger(variant)
 
-    def _get_env_spec(self, parameter, model_type='ODT'):
-        env = Monitor(ProductionEnv(parameter, model_type))  # gym.make(variant["env"])
+    def _get_env_spec(self, parameter, seed=10, time_steps=1000, num_episodes=1000, model_type='ODT'):
+        env = Monitor(ProductionEnv(parameter, seed, time_steps, num_episodes, model_type))  # gym.make(variant["env"])
         state_dim = env.observation_space.shape[0]
-        act_dim = env.action_space.n
+        act_dim = 1 #env.action_space.n is number of possible actions not dimension of actions
         """action_range = [
             float(env.action_space.low.min()) + 1e-6,
             float(env.action_space.high.max()) - 1e-6,
@@ -150,10 +151,10 @@ class Experiment:
             torch.set_rng_state(checkpoint["pytorch"])
             print(f"Model loaded at {path_prefix}/model.pt")
 
-    def _load_dataset(self, env_name):
+    def _load_dataset(self, env_name, dataset='test_trajectories.pkl'):
 
         # dataset_path = f"./data/{env_name}.pkl"
-        dataset_path = f"JSP_env/data/trajectories_ppo.pkl"
+        dataset_path = "JSP_env/data/" + dataset
         with open(dataset_path, "rb") as f:
             trajectories = pickle.load(f)
 
@@ -406,7 +407,11 @@ class Experiment:
             entropy_reg,
         ):
             # a_hat is a SquashedNormal Distribution
-            log_likelihood = a_hat_dist.log_likelihood(a)[attention_mask > 0].mean()
+            min_val = a.min()
+            max_val = a.max()
+            _a = (a - min_val) / (max_val - min_val)
+
+            log_likelihood = a_hat_dist.log_likelihood(_a)[attention_mask > 0].mean()
 
             entropy = a_hat_dist.entropy().mean()
             loss = -(log_likelihood + entropy_reg * entropy)
@@ -417,16 +422,16 @@ class Experiment:
                 entropy,
             )
 
-        def get_env_builder(seed, env_name, target_goal=None):
+        def get_env_builder(seed, time_steps, num_episodes, target_goal=None):
             def make_env_fn():
                 # import d4rl
 
-                env = Monitor(ProductionEnv(self.parameters, self.model_type))  # gym.make(variant["env"])
+                env = Monitor(ProductionEnv(self.parameters, seed, time_steps, num_episodes, self.model_type))  # gym.make(variant["env"])
                 # env.seed(seed)
                 if hasattr(env.env, "wrapped_env"):
                     env.env.wrapped_env.seed(seed)
-                elif hasattr(env.env, "seed"):
-                    env.env.seed(seed)
+                #elif hasattr(env.env, "seed"):
+                    #env.env.seed(seed)
                 else:
                     pass
                 # env.action_space.seed(seed)
@@ -450,7 +455,8 @@ class Experiment:
             target_goal = None
         eval_envs = SubprocVecEnv(
             [
-                get_env_builder(i, env_name=env_name, target_goal=target_goal)
+                get_env_builder(seed=self.variant['seed'], time_steps=self.variant['max_episode_timesteps'],
+                                num_episodes=self.variant['num_episodes'], target_goal=target_goal)
                 for i in range(self.variant["num_eval_episodes"])
             ]
         )
@@ -463,7 +469,8 @@ class Experiment:
             print("\n\nMaking Online Env.....")
             online_envs = SubprocVecEnv(
                 [
-                    get_env_builder(i + 100, env_name=env_name, target_goal=target_goal)
+                    get_env_builder(seed=self.variant['seed'], time_steps=self.variant['max_episode_timesteps'],
+                                    num_episodes=self.variant['num_episodes'], target_goal=target_goal)
                     for i in range(self.variant["num_online_rollouts"])
                 ]
             )
