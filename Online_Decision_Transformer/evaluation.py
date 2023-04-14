@@ -132,7 +132,7 @@ def vec_evaluate_episode_rtg(
         action = action_dist.sample().reshape(num_envs, -1, act_dim)[:, -1]
         if use_mean:
             action = action_dist.mean.reshape(num_envs, -1, act_dim)[:, -1]
-        # action = action.clamp(*model.action_range)
+        action = action.clamp(*model.action_range)
 
         state, reward, done, _ = vec_env.step(action.detach().cpu().numpy())
 

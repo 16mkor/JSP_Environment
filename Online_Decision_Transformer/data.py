@@ -69,7 +69,8 @@ class TransformSamplingSubTraj:
         # self.action_range = action_range
 
     def __call__(self, traj):
-        si = random.randint(0, traj["rewards"].shape[0] - 1 - self.max_len)
+        si = random.randint(0, traj["rewards"].shape[0] - 1)
+
         # get sequences from dataset
         ss = traj["observations"][si : si + self.max_len].reshape(-1, self.state_dim)
         aa = traj["actions"][si : si + self.max_len].reshape(-1, self.act_dim)
@@ -88,7 +89,9 @@ class TransformSamplingSubTraj:
         ordering[ordering == -1] = ordering.max()
         timesteps[timesteps >= MAX_EPISODE_LEN] = MAX_EPISODE_LEN - 1  # padding cutoff
 
-        rtg = discount_cumsum(traj["rewards"][si:], gamma=1.0)[: tlen + 1].reshape(-1, 1)
+        rtg = discount_cumsum(traj["rewards"][si:], gamma=1.0)[: tlen + 1].reshape(
+            -1, 1
+        )
         if rtg.shape[0] <= tlen:
             rtg = np.concatenate([rtg, np.zeros((1, 1))])
 

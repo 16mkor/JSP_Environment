@@ -17,7 +17,7 @@ class SequenceTrainer:
         optimizer,
         log_temperature_optimizer,
         scheduler=None,
-        device="cpu",
+        device="cuda",
     ):
         self.model = model
         self.optimizer = optimizer
@@ -38,8 +38,6 @@ class SequenceTrainer:
 
         self.model.train()
         for _, trajs in enumerate(dataloader):
-            if _ == 1:
-                print("NAN")
             loss, nll, entropy = self.train_step_stochastic(loss_fn, trajs)
             losses.append(loss)
             nlls.append(nll)
@@ -99,7 +97,9 @@ class SequenceTrainer:
         self.optimizer.step()
 
         self.log_temperature_optimizer.zero_grad()
-        temperature_loss = (self.model.temperature() * (entropy - self.model.target_entropy).detach())
+        temperature_loss = (
+            self.model.temperature() * (entropy - self.model.target_entropy).detach()
+        )
         temperature_loss.backward()
         self.log_temperature_optimizer.step()
 

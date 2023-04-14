@@ -64,8 +64,6 @@ class SquashedNormal(pyd.transformed_distribution.TransformedDistribution):
     """
 
     def __init__(self, loc, std):
-        if torch.isnan(loc).any() or torch.isnan(std).any():
-            print("NAN")
         self.loc = loc
         self.std = std
         self.base_dist = pyd.Normal(loc, std)
@@ -93,9 +91,7 @@ class SquashedNormal(pyd.transformed_distribution.TransformedDistribution):
         # log_prob(x): (batch_size, context_len, action_dim)
         # sum up along the action dimensions
         # Return tensor shape: (batch_size, context_len)
-        log_li = self.log_prob(x).sum(axis=2)
-        log_li[torch.isnan(log_li)] = 1e-10
-        return log_li
+        return self.log_prob(x).sum(axis=2)
 
 
 class DiagGaussianActor(nn.Module):
@@ -125,8 +121,6 @@ class DiagGaussianActor(nn.Module):
         log_std_min, log_std_max = self.log_std_bounds
         log_std = log_std_min + 0.5 * (log_std_max - log_std_min) * (log_std + 1.0)
         std = log_std.exp()
-        if torch.isnan(std).any():
-            print("NAN")
         return SquashedNormal(mu, std)
 
 
@@ -160,9 +154,10 @@ class DecisionTransformer(TrajectoryModel):
             n_embd=hidden_size,
             **kwargs
         )
-        config.n_ctx = 1024
+
         # note: the only difference between this GPT2Model and the default Huggingface version
         # is that the positional embeddings are removed (since we'll add those ourselves)
+        config.n_ctx = 1024
         self.transformer = GPT2Model(config)
 
         self.embed_timestep = nn.Embedding(max_ep_len, hidden_size)
@@ -220,8 +215,6 @@ class DecisionTransformer(TrajectoryModel):
 
         # embed each modality with a different head
         state_embeddings = self.embed_state(states)
-        if torch.isnan(state_embeddings).any():
-            print("NAN")
         action_embeddings = self.embed_action(actions)
         returns_embeddings = self.embed_return(returns_to_go)
 
@@ -271,9 +264,6 @@ class DecisionTransformer(TrajectoryModel):
         # predict next action given state
         action_preds = self.predict_action(x[:, 1])
 
-        if torch.isnan(return_preds).any() or torch.isnan(state_preds).any() or torch.isnan(action_preds.sample()).any():
-            print("NAN")
-
         return state_preds, action_preds, return_preds
 
     def get_predictions(
@@ -289,7 +279,7 @@ class DecisionTransformer(TrajectoryModel):
         timesteps = timesteps.reshape(num_envs, -1)
 
         # max_length is the DT context length (should be input length of the subsequence)
-        # eval_context_length is the how long you want to use the history for your prediction
+        # eval_context_length is how long you want to use the history for your prediction
         if self.max_length is not None:
             states = states[:, -self.eval_context_length :]
             actions = actions[:, -self.eval_context_length :]
@@ -394,8 +384,9 @@ class DecisionTransformer(TrajectoryModel):
         else:
             return (
                 state_preds[:, -1],
-                self.clamp_action(action_preds[:, -1]),
-                return_preds[:, -1],
+                # self.clamp_action(action_preds[:, -1]),
+                action_preds[:, -1],
+                return_preds[:, -1]
             )
 
     # def clamp_action(self, action):
