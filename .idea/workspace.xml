@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="270f341f-3c9f-4c21-ba74-8a9a87f940c5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_env/envs/initialize_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_env/envs/initialize_env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_env/envs/time_calc.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_env/envs/time_calc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_env/envs/transport.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_env/envs/transport.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_env/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_env/run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Online_Decision_Transformer/data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/decision_transformer/models/decision_transformer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Online_Decision_Transformer/decision_transformer/models/decision_transformer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Online_Decision_Transformer/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Online_Decision_Transformer/trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,20 +28,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/merlin/Documents/GitHub/online-dt&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/home/merlin/Documents/GitHub/TEST_JSP_Environment",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/JSP_env/log/heuristics" />
@@ -73,7 +63,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-rl ODT" />
+      <option name="PARAMETERS" value="-rl PPO" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -123,7 +113,7 @@
       <workItem from="1679745241551" duration="4114000" />
       <workItem from="1680021685731" duration="3052000" />
       <workItem from="1680337377472" duration="46064000" />
-      <workItem from="1680771383124" duration="12564000" />
+      <workItem from="1680771383124" duration="14021000" />
     </task>
     <servers />
   </component>

@@ -158,7 +158,7 @@ class ProductionEnv(gym.Env):
             self.env.run(until=self.parameters['step_criteria'])
 
         obs = np.array(self.resources['transps'][0].calculate_state())
-	info = {}
+        info = {}
         return obs, info
 
     def close(self):
