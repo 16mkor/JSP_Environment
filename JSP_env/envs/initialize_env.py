@@ -18,15 +18,15 @@ from collections import Counter
 from collections import defaultdict
 
 
-def define_production_parameters(env, model_type):
+def define_production_parameters(env, model_type, time_steps, num_episodes, seed=10):
     """
     Describe production system parameters
     """
     parameters = {}
 
     """General configurations"""
-    parameters.update(({'SEED': 10}))
-    random.seed(parameters['SEED'])
+    parameters.update(({'SEED': seed}))
+    #random.seed(parameters['SEED'])
     parameters.update({'NUM_ORDERS': 10 ** 8})  # Default: large number to not run out of orders
     parameters.update({'time_end': 0.0})
     parameters.update(({'EXPONENTIAL_SMOOTHING': 0.01}))  # Default: 0.01
@@ -34,14 +34,14 @@ def define_production_parameters(env, model_type):
     parameters.update(({'PRINT_CONSOLE': False}))  # Extended print out during running, particularly for debugging
     parameters.update(({'EXPORT_NO_LOGS': False}))  # Turn on/off export of log-files
     parameters.update(({'PATH_TIME': "_" + dt.datetime.now().strftime("%Y%m%d_%H%M%S")}))
-    parameters.update(({'EXPORT_FREQUENCY': 10**3}))  # Number of steps between csv-export of log-files
+    parameters.update(({'EXPORT_FREQUENCY': time_steps}))  # Number of steps between csv-export of log-files
     parameters.update(({'CHANGE_SCENARIO_AFTER_EPISODES': 5 * 10 ** 10}))
-    parameters.update({'max_episode_timesteps': 1_000})
-    parameters.update({'num_episodes': 1_000})
+    parameters.update({'max_episode_timesteps': time_steps})
+    parameters.update({'num_episodes': num_episodes})
 
     """Setting of Transport Agent"""
     parameters.update({'TRANSP_AGENT_TYPE': model_type})  # Alternativen: TRPO, FIFO, NJF, EMPTY, DQN, PPO
-    parameters.update({'TRANSP_AGENT_STATE': ['total_process_time']})  # 'bin_buffer_fill', 'bin_machine_failure', 'bin_location', 'int_buffer_fill', 'rel_buffer_fill', 'rel_buffer_fill_in_out', 'remaining_process_time', 'total_process_time']})  # Alternatives: bin_buffer_fill, bin_machine_failure, bin_location, int_buffer_fill, rel_buffer_fill, rel_buffer_fill_in_out, order_waiting_time, order_waiting_time_normalized, distance_to_action, remaining_process_time, total_process_time
+    parameters.update({'TRANSP_AGENT_STATE':  ['total_process_time']})#['bin_buffer_fill', 'bin_machine_failure', 'bin_location', 'int_buffer_fill', 'rel_buffer_fill', 'rel_buffer_fill_in_out', 'remaining_process_time', 'total_process_time']})  # Alternatives: bin_buffer_fill, bin_machine_failure, bin_location, int_buffer_fill, rel_buffer_fill, rel_buffer_fill_in_out, order_waiting_time, order_waiting_time_normalized, distance_to_action, remaining_process_time, total_process_time
     parameters.update({'TRANSP_AGENT_REWARD': "utilization"})  # Alternatives: valid_action, utilization, waiting_time_normalized, throughput, conwip, const_weighted, weighted_objectives
     parameters.update({'TRANSP_AGENT_REWARD_SPARSE': ""})  # Alternatives: valid_action, utilization, waiting_time
     parameters.update({'TRANSP_AGENT_REWARD_EPISODE_LIMIT': 0})  # Episode limit counter, default = 0
@@ -73,14 +73,15 @@ def define_production_parameters(env, model_type):
     parameters.update({'RESP_AREA_TRANSP': [[[True for i in range(parameters['NUM_RESOURCES'])] for j in range(parameters['NUM_RESOURCES'])] for k in range(parameters['NUM_TRANSP_AGENTS'])]})
 
     """Source parameters"""
-    parameters.update({'SOURCE_CAPACITIES': [3] * parameters['NUM_SOURCES']})  # Number of load ports
-    parameters.update({'RESP_AREA_SOURCE': [[0, 1], [2, 3, 4], [5, 6, 7]]})  # Orders for which machines are created in the specific source
-    # parameters.update({'RESP_AREA_SOURCE': [[i for i in range(int(j * parameters['NUM_MACHINES'] / parameters['NUM_SOURCES']), int((j+1) * parameters['NUM_MACHINES'] / parameters['NUM_SOURCES']))] for j in range(parameters['NUM_SOURCES'])]})
+    parameters.update({'SOURCE_CAPACITIES': [5] * parameters['NUM_SOURCES']})  # Number of load ports
+    # parameters.update({'RESP_AREA_SOURCE': [[0, 1, 3], [2, 3, 4], [5, 6, 7]]})  # Orders for which machines are created in the specific source
+    parameters.update({'RESP_AREA_SOURCE': [[i for i in range(int(j * parameters['NUM_MACHINES'] / parameters['NUM_SOURCES']), int((j+1) * parameters['NUM_MACHINES'] / parameters['NUM_SOURCES']))] for j in range(parameters['NUM_SOURCES'])]})
     parameters.update({'MTOG': [10.0] * parameters['NUM_SOURCES']})  # Mean Time Order Generation
     parameters.update({'SOURCE_ORDER_GENERATION_TYPE': "ALWAYS_FILL_UP"})  # Alternatives: ALWAYS_FILL_UP, MEAN_ARRIVAL_TIME
 
     """Machine parameters"""
     parameters.update({'MACHINE_AGENT_TYPE': "FIFO"})  # Alternatives: FIFO -> Decision rule for selecting the next available order from the load
+    # parameters.update({'MACHINE_GROUPS': [2, 1, 1, 1, 1, 3, 3, 3]})
     parameters.update({'MACHINE_GROUPS': [1, 1, 1, 2, 2,
                                           2, 2, 2, 2, 2,
                                           3, 3, 3, 3, 3,
@@ -88,7 +89,6 @@ def define_production_parameters(env, model_type):
                                           #5, 5, 5, 5, 5,
                                           #6, 6, 6, 6, 6
                                           ]})
-    # parameters.update({'MACHINE_GROUPS': [2, 1, 1, 1, 1, 3, 3, 3]})
     # parameters.update({'MACHINE_GROUPS': [i % parameters['NUM_SOURCES'] + 1 for i in range(parameters['NUM_MACHINES'])]})
     parameters.update({'MIN_PROCESS_TIME': [0.5] * parameters['NUM_MACHINES']})
     parameters.update({'AVERAGE_PROCESS_TIME': [60.0] * parameters['NUM_MACHINES']})
@@ -190,8 +190,10 @@ def define_production_statistics(parameters):
 
     """Reward statistics"""
     statistics.update({'stat_agent_reward': [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]})
-    statistics.update({'agent_reward_log': open('JSP_env/log/' + parameters['PATH_TIME'] + '_agent_reward_log.txt', "w")})
-    statistics.update({'episode_log': open('JSP_env/log/' + parameters['PATH_TIME'] + '_episode_log.txt', "w")})
+    statistics.update({'agent_reward_log': open('JSP_env/log/' + parameters['TRANSP_AGENT_TYPE'] + '_' + str(parameters['NUM_SOURCES']) +
+                       str(parameters['NUM_MACHINES']) + str(parameters['NUM_SINKS']) + '_' + parameters['PATH_TIME'] + '_agent_reward_log.txt', "w")})
+    statistics.update({'episode_log': open('JSP_env/log/' + parameters['TRANSP_AGENT_TYPE'] + '_' + str(parameters['NUM_SOURCES']) +
+                       str(parameters['NUM_MACHINES']) + str(parameters['NUM_SINKS']) + '_' + parameters['PATH_TIME'] + '_episode_log.txt', "w")})
     statistics.update({'episode_statistics': ['stat_machines_working', 'stat_machines_changeover',
                                               'stat_machines_broken', 'stat_machines_idle', 'stat_machines_processed_orders',
                                               'stat_transp_working', 'stat_transp_walking', 'stat_transp_handling',

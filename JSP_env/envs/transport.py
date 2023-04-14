@@ -42,18 +42,21 @@ class Transport(Resource):
         if self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'direct':
             # TODO: Still Hardcoded -> depending on production network
             self.mapping = []
-            for mach in [x for x in self.resources['machines'] if x.id in [0,1,2,3,4]]:
-                self.mapping.append([self.resources['sources'][0], mach])
-            for mach in [x for x in self.resources['machines'] if x.id in [1,2,3,4]]:
-                self.mapping.append([self.resources['sources'][1], mach])
-            for mach in [x for x in self.resources['machines'] if x.id in [5,6,7]]:
-                self.mapping.append([self.resources['sources'][2], mach])
-            for mach in [x for x in self.resources['machines'] if x.id in [0,1]]:
-                self.mapping.append([mach, self.resources['sinks'][0]])
-            for mach in [x for x in self.resources['machines'] if x.id in [2,3,4]]:
-                self.mapping.append([mach, self.resources['sinks'][1]])
-            for mach in [x for x in self.resources['machines'] if x.id in [5,6,7]]:
-                self.mapping.append([mach, self.resources['sinks'][2]])
+
+            m_per_so = len(self.resources['machines']) // len(self.resources['sources'])
+            ma_so_mapping = [[m.id for m in self.resources['machines'][_ * m_per_so:_ * m_per_so + m_per_so]]
+                             for _ in range(len(self.resources['sources']))]
+            for i in range(len(self.resources['sources'])):
+                for mach in [x for x in self.resources['machines'] if x.id in ma_so_mapping[i]]:
+                    self.mapping.append([self.resources['sources'][i], mach])
+
+            m_per_si = len(self.resources['machines']) // len(self.resources['sinks'])
+            ma_si_mapping = [[m.id for m in self.resources['machines'][_ * m_per_si:_ * m_per_si + m_per_si]] for _ in
+                             range(len(self.resources['sources']))]
+            for j in range(len(self.resources['sinks'])):
+                for mach in [x for x in self.resources['machines'] if x.id in ma_si_mapping[j]]:
+                    self.mapping.append([mach, self.resources['sinks'][j]])
+
             print("Action mapping: ", [[x[0].id, x[1].id] for x in self.mapping])
             if self.parameters['TRANSP_AGENT_EMPTY_ACTION']:
                 self.mapping.extend([[-1, x] for x in self.resources['all_resources']])
@@ -121,10 +124,10 @@ class Transport(Resource):
                 result_origin = order.current_location
                 result_destination = destination
                 # Adjust new destination machine and sink resource in process steps list of the order
-                # TODO: Still Hard Coded for 3 Sinks
                 if order.get_next_step() != result_destination:
                     order.prod_steps[order.actual_step] = result_destination
                     num_sink = order.prod_steps[-2].id // len(self.resources['sinks']) - 1
+                    order.prod_steps[-1] = self.resources['sinks'][num_sink]
         else:  # Destination is sink -> always free
             if order.current_location == origin and \
                     order.get_next_step() == destination:
@@ -165,14 +168,20 @@ class Transport(Resource):
         # If agent type is a heuristic, then use heuristic decision agents
         if self.agent_type != "TRPO" and self.agent_type != "DQN" \
                 and self.agent_type != "PPO" and self.agent_type != "A2C":
-            result_order, result_destination = self.agent.act(Transport.all_transp_orders)
-            result_origin = self.next_action_origin = result_order.current_location
-            result_destination = self.next_action_destination = result_destination
-            result_valid = self.next_action_valid = True
-            if result_destination.id >= self.parameters['NUM_MACHINES']:
-                self.next_action[0] = result_destination.id - self.parameters['NUM_SOURCES']
+
+            try:
+                result_order, result_destination = self.agent.act(Transport.all_transp_orders)
+            except:
+                result_order = result_destination = -1
+                result_valid = self.next_action_valid = True
             else:
-                self.next_action[0] = result_destination.id
+                result_origin = self.next_action_origin = result_order.current_location
+                result_destination = self.next_action_destination = result_destination
+                result_valid = self.next_action_valid = True
+                if result_destination.id >= self.parameters['NUM_MACHINES']:
+                    self.next_action[0] = result_destination.id - self.parameters['NUM_SOURCES']
+                else:
+                    self.next_action[0] = result_destination.id
             return result_order, result_destination
 
         result_order = None
