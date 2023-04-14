@@ -5,46 +5,41 @@ This source code is licensed under the CC BY-NC license found in the
 LICENSE.md file in the root directory of this source tree.
 """
 
+from torch.utils.tensorboard import SummaryWriter
 import argparse
 import pickle
 import random
 import time
-from pathlib import Path
-
-import numpy as np
+import gymnasium as gym
 import torch
+import numpy as np
+from pathlib import Path
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import SubprocVecEnv
-from torch.utils.tensorboard import SummaryWriter
-
 from JSP_env.envs.production_env import ProductionEnv
 import Online_Decision_Transformer.utils as utils
+from Online_Decision_Transformer.replay_buffer import ReplayBuffer
+from Online_Decision_Transformer.lamb import Lamb
 from Online_Decision_Transformer.data import create_dataloader
 from Online_Decision_Transformer.decision_transformer.models.decision_transformer import DecisionTransformer
 from Online_Decision_Transformer.evaluation import create_vec_eval_episodes_fn, vec_evaluate_episode_rtg
-from Online_Decision_Transformer.lamb import Lamb
-from Online_Decision_Transformer.logger import Logger
-from Online_Decision_Transformer.replay_buffer import ReplayBuffer
 from Online_Decision_Transformer.trainer import SequenceTrainer
-
-# import gym
-# import d4rl
-
+from Online_Decision_Transformer.logger import Logger
 
 MAX_EPISODE_LEN = 1000
 
 
 class Experiment:
     def __init__(self, variant, parameters, model_type):
-
         self.parameters = parameters
         self.model_type = model_type
-        # self.state_dim, self.act_dim, self.action_range = self._get_env_spec(self.parameters, self.model_type)
         self.state_dim, self.act_dim = self._get_env_spec(self.parameters, seed=variant['seed'],
-                                                          time_steps=variant['max_episode_timesteps'],
-                                                          num_episodes=variant['num_episodes'],
-                                                          model_type=self.model_type)
-        self.offline_trajs, self.state_mean, self.state_std = self._load_dataset(variant["env"], variant['dataset'])
+                                                                   time_steps=variant['max_episode_timesteps'],
+                                                                   num_episodes=variant['num_episodes'],
+                                                                   model_type=self.model_type)  # , self.action_range
+        self.offline_trajs, self.state_mean, self.state_std = self._load_dataset(
+            variant["env"], variant['dataset']
+        )
         # initialize by offline trajs
         self.replay_buffer = ReplayBuffer(variant["replay_size"], self.offline_trajs)
 
@@ -55,7 +50,7 @@ class Experiment:
         self.model = DecisionTransformer(
             state_dim=self.state_dim,
             act_dim=self.act_dim,
-            # action_range=self.action_range,
+            #action_range=self.action_range,
             max_length=variant["K"],
             eval_context_length=variant["eval_context_length"],
             max_ep_len=MAX_EPISODE_LEN,
@@ -101,11 +96,8 @@ class Experiment:
     def _get_env_spec(self, parameter, seed=10, time_steps=1000, num_episodes=1000, model_type='ODT'):
         env = Monitor(ProductionEnv(parameter, seed, time_steps, num_episodes, model_type))  # gym.make(variant["env"])
         state_dim = env.observation_space.shape[0]
-        act_dim = 1 #env.action_space.n is number of possible actions not dimension of actions
-        """action_range = [
-            float(env.action_space.low.min()) + 1e-6,
-            float(env.action_space.high.max()) - 1e-6,
-        ]"""
+        act_dim = 1  # env.action_space.shape[0]
+        # action_range = [0,68]
         env.close()
         return state_dim, act_dim  # , action_range
 
@@ -153,7 +145,6 @@ class Experiment:
 
     def _load_dataset(self, env_name, dataset='test_trajectories.pkl'):
 
-        # dataset_path = f"./data/{env_name}.pkl"
         dataset_path = "JSP_env/data/" + dataset
         with open(dataset_path, "rb") as f:
             trajectories = pickle.load(f)
@@ -164,7 +155,6 @@ class Experiment:
             traj_lens.append(len(path["observations"]))
             returns.append(path["rewards"].sum())
         traj_lens, returns = np.array(traj_lens), np.array(returns)
-        returns[np.isnan(returns)] = 0
 
         # used for input normalization
         states = np.concatenate(states, axis=0)
@@ -268,10 +258,10 @@ class Experiment:
                 max_len=self.variant["K"],
                 state_dim=self.state_dim,
                 act_dim=self.act_dim,
-                # action_range=self.action_range,
                 state_mean=self.state_mean,
                 state_std=self.state_std,
-                reward_scale=self.reward_scale
+                reward_scale=self.reward_scale,
+                # action_range=self.action_range,
             )
 
             train_outputs = trainer.train_iteration(
@@ -352,10 +342,10 @@ class Experiment:
                 max_len=self.variant["K"],
                 state_dim=self.state_dim,
                 act_dim=self.act_dim,
-                # action_range=self.action_range,
                 state_mean=self.state_mean,
                 state_std=self.state_std,
-                reward_scale=self.reward_scale
+                reward_scale=self.reward_scale,
+                # action_range=self.action_range,
             )
 
             # finetuning
@@ -396,22 +386,16 @@ class Experiment:
 
     def __call__(self):
 
-        # utils.set_seed_everywhere(args.seed)
-
-        # import d4rl
-
         def loss_fn(
             a_hat_dist,
             a,
             attention_mask,
             entropy_reg,
         ):
+            a_normalized = (a - a.min()) / (a.max() - a.min())
+            a_normalized = torch.where(a_normalized == 1.0000, torch.tensor(0.9999), a_normalized)
             # a_hat is a SquashedNormal Distribution
-            min_val = a.min()
-            max_val = a.max()
-            _a = (a - min_val) / (max_val - min_val)
-
-            log_likelihood = a_hat_dist.log_likelihood(_a)[attention_mask > 0].mean()
+            log_likelihood = a_hat_dist.log_likelihood(a_normalized)[attention_mask > 0].mean()
 
             entropy = a_hat_dist.entropy().mean()
             loss = -(log_likelihood + entropy_reg * entropy)
@@ -424,9 +408,8 @@ class Experiment:
 
         def get_env_builder(seed, time_steps, num_episodes, target_goal=None):
             def make_env_fn():
-                # import d4rl
-
-                env = Monitor(ProductionEnv(self.parameters, seed, time_steps, num_episodes, self.model_type))  # gym.make(variant["env"])
+                env = Monitor(ProductionEnv(self.parameters, seed, time_steps, num_episodes,
+                                            self.model_type))  # gym.make(variant["env"])
                 # env.seed(seed)
                 if hasattr(env.env, "wrapped_env"):
                     env.env.wrapped_env.seed(seed)
@@ -434,8 +417,8 @@ class Experiment:
                     #env.env.seed(seed)
                 else:
                     pass
-                # env.action_space.seed(seed)
-                # env.observation_space.seed(seed)
+                #env.action_space.seed(seed)
+                #env.observation_space.seed(seed)
 
                 if target_goal:
                     env.set_target_goal(target_goal)
@@ -447,7 +430,7 @@ class Experiment:
         print("\n\nMaking Eval Env.....")
         env_name = self.variant["env"]
         if "antmaze" in env_name:
-            env = Monitor(ProductionEnv(self.parameter, self.model_type))  # gym.make(variant["env"])
+            env = gym.make(env_name)
             target_goal = env.target_goal
             env.close()
             print(f"Generated the fixed target goal: {target_goal}")
@@ -480,7 +463,6 @@ class Experiment:
         eval_envs.close()
 
 
-# if __name__ == "__main__":
 def odt_experiment(args, exp_config, parameters):
     utils.set_seed_everywhere(args.seed)
     experiment = Experiment(vars(args), parameters, exp_config['model_type'])
