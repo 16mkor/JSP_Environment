@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/JSP_Environments/episodic-transformer-memory-ppo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/episodic-transformer-memory-ppo" vcs="Git" />
   </component>
 </project>

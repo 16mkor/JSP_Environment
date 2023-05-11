@@ -41,6 +41,7 @@ class ProductionEnv(gym.Env):
             self.parameters = _get_criteria_events(env=self.env, parameters=parameters)
         # Dict of Agents
         self.agents = {}
+        self.max_episode_steps = time_steps
 
         """Statistic parameter"""
         self.last_export_time = 0.0
@@ -54,23 +55,13 @@ class ProductionEnv(gym.Env):
                                                      parameters=self.parameters, agents=self.agents,
                                                      time_calc=self.time_calc)
 
-        """Store Trajectories"""
-        self.trajectories = []
-        """self.trajectories = [{
-            'observations': np.empty(shape=(self.parameters['max_episode_timesteps'], self._state_size())),
-            'next_observations': np.empty(shape=(self.parameters['max_episode_timesteps'], self._state_size())),
-            'actions': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
-            'rewards': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
-            'terminals': np.empty(shape=(self.parameters['max_episode_timesteps'],))
-        }]"""
-
         """Observation and action space"""
-        self.observation_space = gym.spaces.Box(low=-1, high=100, shape=(self._state_size(),), dtype=np.float64)
+        self.observation_space = gym.spaces.Box(low=-1, high=150, shape=(self._state_size(),), dtype=np.float64)
         self.action_space = gym.spaces.Discrete(self._action_size())
 
     def step(self, actions):
         truncated = False
-        info = {}
+        info = {'terminal_observation': -1}
         self.count_steps += 1
 
         if (self.count_steps % self.parameters['EXPORT_FREQUENCY'] == 0
@@ -88,9 +79,6 @@ class ProductionEnv(gym.Env):
                 agent.next_action = [int(actions)]
             elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
                 agent.next_action = [int(actions[0]), int(actions[1])]
-            if 300_000 >= self.count_episode > 400_000:
-                self.trajectories[self.count_episode - 300_000]['observations'][self.count_steps] = agent.state_before
-            agent.state_before = None
 
             self.parameters['continue_criteria'].succeed()
             self.parameters['continue_criteria'] = self.env.event()
@@ -107,6 +95,7 @@ class ProductionEnv(gym.Env):
 
             agent = Transport.agents_waiting_for_action[0]
             states = agent.calculate_state()  # Calculate state for next action determination
+            agent.state_before = states
 
             if self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'direct':
                 self.statistics['stat_agent_reward'][-1][3] = [int(actions)]
@@ -117,14 +106,8 @@ class ProductionEnv(gym.Env):
             self.statistics['stat_agent_reward'].append(
                 [self.count_episode, self.count_steps, round(self.env.now, 5),
                  None, None, None, states])
-
-            if 300_000 >= self.count_episode > 400_000:
-                self.trajectories[self.count_episode - 300_000]['next_observations'][self.count_steps] = states
-                self.trajectories[self.count_episode - 300_000]['actions'][self.count_steps] = agent.next_action
-                self.trajectories[self.count_episode - 300_000]['rewards'][self.count_steps] = reward
-                self.trajectories[self.count_episode - 300_000]['terminals'][self.count_steps] = terminal
-
             done = terminal or truncated
+
             return states, reward, done, info
             # return states, reward, terminal, truncated, info
 
@@ -136,19 +119,6 @@ class ProductionEnv(gym.Env):
         """Reset counter"""
         self.count_episode += 1  # increase episode by one
         self.count_steps = 0  # reset the counter of timesteps
-
-        if 300 <= self.count_episode < 401:
-            self.trajectories.append({
-                'observations': np.empty(shape=(self.parameters['max_episode_timesteps'], self._state_size())),
-                'next_observations': np.empty(shape=(self.parameters['max_episode_timesteps'], self._state_size())),
-                'actions': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
-                'rewards': np.empty(shape=(self.parameters['max_episode_timesteps'],)),
-                'terminals': np.empty(shape=(self.parameters['max_episode_timesteps'],))
-            })
-        elif self.count_episode == 401:
-            import pickle
-            with open('JSP_Environments/data/_trajectories_ppo.pkl', 'wb') as f:
-                pickle.dump(self.trajectories, f)
 
         """Change parameter to new szenario"""
         if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
@@ -433,8 +403,8 @@ class ProductionEnv(gym.Env):
         self.statistics['episode_log'].flush()
         os.fsync(self.statistics['episode_log'].fileno())
 
-        # pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(
-        # self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
+        #pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(
+        #self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
 
         # Reset statistics for episode
         self.last_export_time = self.env.now

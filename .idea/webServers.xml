@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="c27b1331-9e1d-4ca9-8b4c-da9a364f2358" name="NewTesla">
+        <fileTransfer rootFolder="/mnt/data/" accessType="SFTP" host="tesla.in.tu-clausthal.de" port="3023" sshConfigId="2c2207e3-19f6-4c5d-b470-a4b5013f1b2e" sshConfig="root@tesla.in.tu-clausthal.de:3023 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

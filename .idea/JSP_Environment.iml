@@ -4,8 +4,13 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/jsp_env" />
       <excludeFolder url="file://$MODULE_DIR$/env" />
+      <excludeFolder url="file://$MODULE_DIR$/env-3.10" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (env)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.10 (env-3.10)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="requirements2.txt" />
+    <option name="removeUnused" value="true" />
   </component>
 </module>

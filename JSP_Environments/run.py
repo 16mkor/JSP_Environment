@@ -1,15 +1,17 @@
 import os
 import datetime as dt
+import json
 
 from sb3_contrib import TRPO
 from stable_baselines3 import PPO, DQN, A2C
 from stable_baselines3.common.logger import configure
-from stable_baselines3.common.vec_env import DummyVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 
 from JSP_Environments.envs.production_env import ProductionEnv
+from JSP_Environments.GTrXL_PPO.main import GTrXL_experiment
 
 
 def run(config, parameters, timesteps, seed, episodes):
@@ -36,7 +38,12 @@ def run(config, parameters, timesteps, seed, episodes):
     if config['LOGGER_FLAG']:
         logger = _set_up_logger(logging_path=config['logging_path'], model=model)
 
-    if model != "Heuristic":
+    """Start Experiments"""
+    if model == 'GTrXL-PPO':
+        config = json.loads(open('JSP_Environments/config/config_GTrXL.json').read())
+        GTrXL_experiment(env, config)
+
+    elif model != "Heuristic" and model != "GTrXL-PPO":
         """Train Model"""
         print('################################')
         print('### START TRAINING PROCEDURE ###')
@@ -53,35 +60,40 @@ def run(config, parameters, timesteps, seed, episodes):
 
         """Save Model"""
         if config['SAVE_FLAG']:
+            print('Model saved!')
             _save_model(save_path=config['save_path'], model_type=config['model_type'], model=model)
 
         """Render Model in Environemnt"""
         if config['RENDER_FLAG']:
             _render(env=env, model=model)
     else:
+        start = True
         for _ in range(episodes):
             time_steps = 0
-            terminated, truncated = False, False
-            __, _ = env.reset()
-            while not (terminated or truncated):
-                if config['model_type'] == 'RANDOM':
+            done = False  # terminated, truncated = False, False
+            _ = env.reset()
+            while not done:  # (terminated or truncated):
+                if config['model_type'] == 'RANDOM' or start == True:
                     action = env.action_space.sample()
+                    start = False
                 else:
                     action = env.env.resources['transps'][0].next_action[0]
-                state, reward, terminated, truncated, info = env.step(action)
+                state, reward, done, info = env.step(action)
                 time_steps += 1
+
 
 def _set_up_env(MULT_ENV_FLAG, parameter, seed, time_steps, num_episodes, model_type):
     """
     Creates either a vectorized environment, if the model will be trained on multiple environments,
     or a single environment.
     Bevor returning the environment, a check on the accordance to the gym specifications is made.
-    :param MULTENV_FLAG: a flag to indicate whether to use multiple environments and therefore use 'DummyVecEnv'
+    :param MULTENV_FLAG: a flag to indicate whether to use multiple environments and therefore use 'SubprocVecEnv'
     :param parameters: the configuration parameters of the environment of the experiment
     :return: the environment to train the Reinforcement Learning model
     """
     if MULT_ENV_FLAG:
-        env = DummyVecEnv([lambda: Monitor(ProductionEnv(parameter, seed, time_steps, num_episodes, model_type))])  # Vectorized Environment for multiple environments
+        env = SubprocVecEnv([lambda: Monitor(ProductionEnv(parameter, seed, time_steps, num_episodes,
+                                                           model_type))])  # Vectorized Environment for multiple environments
     else:
         env = Monitor(ProductionEnv(parameter, seed, time_steps, num_episodes, model_type))
     check_env(env)  # Check if Environment follows the structure of Gym. -> passed :)
@@ -132,11 +144,12 @@ def _load_model(load_path, model_type, tensorboard_log_path):
         model = A2C.load(load_path, tensorboard_log=tensorboard_log_path)
     elif model_type == 'TRPO':
         model = TRPO.load(load_path, tensorboard_log=tensorboard_log_path)
+    elif model_type == 'GTrXL-PPO':
+        model = 'GTrXL-PPO'
     elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
         model = "Heuristic"
     else:
         print(model_type, 'not found!')
-
     return model
 
 
@@ -153,16 +166,17 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, tensorboard_
         model = _load_model(load_path, model_type, tensorboard_log_path)
     else:
         if model_type == 'PPO':
-            model = PPO("MlpPolicy", env, verbose=1,
-                        n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+            model = PPO("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == 'DQN':
-            model = DQN("MlpPolicy", env, verbose=1, seed=10, tensorboard_log=tensorboard_log_path)
+            model = DQN("MlpPolicy", env, verbose=1, tensorboard_log=tensorboard_log_path)
         elif model_type == 'A2C':
-            model = A2C("MlpPolicy", env, verbose=1, seed=10, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+            model = A2C("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == 'TRPO':
-            model = TRPO("MlpPolicy", env, verbose=1, seed=10, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
-        elif model_type == "FIFO" or model_type=="NJF" or model_type=="EMPTY" or model_type == 'RANDOM':
+            model = TRPO("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+        elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
             model = "Heuristic"
+        elif model_type == 'GTrXL-PPO':
+            model = 'GTrXL-PPO'
         else:
             print(model_type, 'not found!')
 

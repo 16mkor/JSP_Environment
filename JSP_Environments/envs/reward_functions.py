@@ -23,6 +23,7 @@ def get_reward_utilization(transport_resource, invalid_reward):
         util = util / transport_resource.parameters['NUM_MACHINES']
         transport_resource.last_reward_calc = util
         result_reward = np.exp(util / 1.5) - 1.0
+
         if transport_resource.next_action_destination.type == 'machine':
             result_reward = transport_resource.parameters['TRANSP_AGENT_REWARD_SUBSET_WEIGHTS'][0] * result_reward
         else:

@@ -166,9 +166,7 @@ class Transport(Resource):
         self.last_action_id = self.next_action[0]
 
         # If agent type is a heuristic, then use heuristic decision agents
-        if self.agent_type != "TRPO" and self.agent_type != "DQN" \
-                and self.agent_type != "PPO" and self.agent_type != "A2C":
-
+        if self.agent_type == 'FIFO' or self.agent_type == 'NJF' or self.agent_type == 'EMPTY':
             try:
                 result_order, result_destination = self.agent.act(Transport.all_transp_orders)
             except:
