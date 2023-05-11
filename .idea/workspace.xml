@@ -5,77 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="270f341f-3c9f-4c21-ba74-8a9a87f940c5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sshConfigs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JSP_Environments/data/trajectories__GTrXL-PPO.pkl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JSP_Environments/envs/old/VMPO.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JSP_Environments/envs/old/layers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JSP_Environments/envs/old/policies.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/JSP_Environment.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/JSP_Environment.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/configs/cartpole.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/configs/minigrid.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/configs/mortar_mayhem_grid.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/configs/mystery_path_grid.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/configs/poc_memory_env.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/docs/assets/mmg_10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/docs/assets/mpg_off.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/docs/assets/trxl_architecture.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/enjoy.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/environments/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/environments/cartpole_env.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/environments/memory_gym_env.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/environments/minigrid_env.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/environments/poc_memory_env.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/models/minigrid.nn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/models/mortar_mayhem_grid_trxl.nn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/models/mystery_path_grid.nn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/transformer.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/transformer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/worker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/config/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/config/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/data/.ipynb_checkpoints/trajectory_generator-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/data/_test_trajectories.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/data/_trajectories_ppo.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/data/test_trajectories.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/data/trajectory_generator.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/initialize_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/initialize_env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/production_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/production_env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/reward_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/reward_functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/transport.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/transport.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/visualize_ep_log.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/visualize_ep_log.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/CODE_OF_CONDUCT.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/CONTRIBUTING.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/LICENSE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/conda_env.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/data.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/decision_transformer/models/decision_transformer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/decision_transformer/models/model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/decision_transformer/models/trajectory_gpt2.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/evaluation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/lamb.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/logger.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/replay_buffer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/trainer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Online_Decision_Transformer/utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/2023.03.20/163440-default/events.out.tfevents.1679326994.merlin.81190.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/2023.03.20/164431-default/events.out.tfevents.1679327416.merlin.81371.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/2023.03.20/164431-default/events.out.tfevents.1679327591.merlin.81371.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/2023.03.20/170131-default/events.out.tfevents.1679328427.merlin.82269.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/2023.03.20/170819-default/events.out.tfevents.1679328850.merlin.82656.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/data/trajectories__GTrXL-PPO.pkl" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,6 +28,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="SYNC" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/env-3.10/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py" root0="SKIP_INSPECTION" />
@@ -206,7 +139,7 @@
       <workItem from="1683128972374" duration="38183000" />
       <workItem from="1683457052627" duration="21685000" />
       <workItem from="1683725590768" duration="4983000" />
-      <workItem from="1683797555243" duration="9156000" />
+      <workItem from="1683797555243" duration="9858000" />
     </task>
     <servers />
   </component>

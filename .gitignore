@@ -1,2 +1,1 @@
-*.txt
-exp/
+JSP_Environments/log/*.txt
