@@ -14,7 +14,7 @@ from JSP_Environments.envs.production_env import ProductionEnv
 from JSP_Environments.GTrXL_PPO.main import GTrXL_experiment
 
 
-def run(config, parameters, timesteps, seed, episodes):
+def run(config, parameters, args):
     """
     This function is used to run a reinforcement learning model with various flags for loading, logging, saving,
     and rendering. The function first sets up the environment and model based on the specified parameters,
@@ -26,12 +26,16 @@ def run(config, parameters, timesteps, seed, episodes):
     :param parameters: the configuration parameters of the environment of the experiment
     :return: no return value
     """
+    timesteps = args['max_episode_timesteps']
+    seed = args['seed']
+    episodes = args['num_episodes']
+    device = args['device']
 
     """Set up Environment & Model"""
     env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters,
                       seed=seed, time_steps=timesteps, num_episodes=episodes, model_type=config['model_type'])
     model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env,
-                          model_type=config['model_type'], timesteps=timesteps,
+                          model_type=config['model_type'], timesteps=timesteps, device=device, seed=seed,
                           tensorboard_log_path=config['tensorboard_log'])
 
     """Set up Logger"""
@@ -41,7 +45,7 @@ def run(config, parameters, timesteps, seed, episodes):
     """Start Experiments"""
     if model == 'GTrXL-PPO':
         config = json.loads(open('JSP_Environments/config/config_GTrXL.json').read())
-        GTrXL_experiment(env, config)
+        GTrXL_experiment(env, config, device)
 
     elif model != "Heuristic" and model != "GTrXL-PPO":
         """Train Model"""
@@ -129,7 +133,7 @@ def _save_model(save_path, model_type, model):
     model.save(save_path + model_type + '/' + model_type + dt.datetime.now().strftime('%Y_%m_%d_%Hh_%Mmin_%Ssec'))
 
 
-def _load_model(load_path, model_type, tensorboard_log_path):
+def _load_model(load_path, model_type, device, seed, tensorboard_log_path):
     """
     Loads the Reinforcement Learning model depending on the model type.
     :param load_path: the path to load a pre-existing model
@@ -137,23 +141,26 @@ def _load_model(load_path, model_type, tensorboard_log_path):
     :return: the reinforcement learning model
     """
     if model_type == 'PPO':
-        model = PPO.load(load_path, tensorboard_log=tensorboard_log_path)
+        model = PPO.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
     elif model_type == 'DQN':
-        model = DQN.load(load_path, tensorboard_log=tensorboard_log_path)
+        model = DQN.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
     elif model_type == 'A2C':
-        model = A2C.load(load_path, tensorboard_log=tensorboard_log_path)
+        model = A2C.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
     elif model_type == 'TRPO':
-        model = TRPO.load(load_path, tensorboard_log=tensorboard_log_path)
+        model = TRPO.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
     elif model_type == 'GTrXL-PPO':
         model = 'GTrXL-PPO'
     elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
         model = "Heuristic"
     else:
         print(model_type, 'not found!')
+
+    if type(model) != str:
+        model.seed = seed
     return model
 
 
-def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, tensorboard_log_path):
+def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, device, seed, tensorboard_log_path):
     """
     Create or load the Reinforcement Learning model depending on the model_type.
     :param LOAD_FLAG: a flag to indicate whether to load a pre-existing model
@@ -163,14 +170,14 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, tensorboard_
     :return: the reinforcement learning model
     """
     if LOAD_FLAG:
-        model = _load_model(load_path, model_type, tensorboard_log_path)
+        model = _load_model(load_path, model_type, device, seed, tensorboard_log_path)
     else:
         if model_type == 'PPO':
-            model = PPO("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+            model = PPO("MlpPolicy", env, verbose=1, n_steps=timesteps, device=device, tensorboard_log=tensorboard_log_path)
         elif model_type == 'DQN':
-            model = DQN("MlpPolicy", env, verbose=1, tensorboard_log=tensorboard_log_path)
+            model = DQN("MlpPolicy", env, verbose=1, device=device, tensorboard_log=tensorboard_log_path)
         elif model_type == 'A2C':
-            model = A2C("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
+            model = A2C("MlpPolicy", env, verbose=1, device=device, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == 'TRPO':
             model = TRPO("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path)
         elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
@@ -179,7 +186,8 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, tensorboard_
             model = 'GTrXL-PPO'
         else:
             print(model_type, 'not found!')
-
+    if type(model) != str:
+        model.seed = seed
     return model
 
 

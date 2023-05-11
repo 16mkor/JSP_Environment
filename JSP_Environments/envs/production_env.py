@@ -1,6 +1,6 @@
-import gymnasium
+# import gymnasium as gym
 import gym
-# from gym import spaces
+# from gymnasium.spaces import Box, Discrete
 from gymnasium.spaces.utils import flatten_space
 import numpy as np
 from datetime import datetime
@@ -13,7 +13,7 @@ from JSP_Environments.envs.time_calc import Time_calc
 from JSP_Environments.envs.logger import *
 
 
-class ProductionEnv(gym.Env):
+class ProductionEnv( gym.Env):
 
     def __init__(self, parameters, seed, time_steps, num_episodes, model_type, **kwargs):
         super(ProductionEnv, self).__init__(**kwargs)
@@ -57,7 +57,7 @@ class ProductionEnv(gym.Env):
 
         """Observation and action space"""
         self.observation_space = gym.spaces.Box(low=-1, high=150, shape=(self._state_size(),), dtype=np.float64)
-        self.action_space = gym.spaces.Discrete(self._action_size())
+        self.action_space = gym.spaces.Discrete(self._action_size()) #
 
     def step(self, actions):
         truncated = False
@@ -122,7 +122,7 @@ class ProductionEnv(gym.Env):
 
         """Change parameter to new szenario"""
         if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
-            self._change_production_parameters()
+            self._change_production_szenario()
 
         # Setup and start simulation
         if self.env.now == 0.0:
@@ -198,7 +198,7 @@ class ProductionEnv(gym.Env):
         print("Action space size: ", number)
         return number  # dict(type='int', num_values=number)
 
-    def _change_production_parameters(self):
+    def _change_production_szenario(self):
         print("CHANGE_OF_PRODUCTION_PARAMETERS")
         for mach in self.resources['machines']:
             mach.capacity = mach.capacity * 2

@@ -37,5 +37,4 @@ if __name__ == "__main__":
     parameters = config.get_env_config(args['env_config'])
 
     # Run the RL-based experiments with a certain configuration
-    run(config=exp_config, parameters=parameters, timesteps=args['max_episode_timesteps'],
-        seed=args['seed'], episodes=args['num_episodes'])
+    run(config=exp_config, parameters=parameters, args=args)

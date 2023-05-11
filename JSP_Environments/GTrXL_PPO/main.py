@@ -1,10 +1,7 @@
 import numpy as np
-import pickle
 import torch
 
-# from docopt import docopt
 from JSP_Environments.GTrXL_PPO.model import ActorCriticModel
-from JSP_Environments.GTrXL_PPO.utils import create_env
 
 
 def init_transformer_memory(trxl_conf, max_episode_steps, device):
@@ -31,9 +28,9 @@ def init_transformer_memory(trxl_conf, max_episode_steps, device):
     return memory, memory_mask, memory_indices
 
 
-def GTrXL_experiment(env, config):
+def GTrXL_experiment(env, config, device):
     # Set inference device and default tensor type
-    device = torch.device("cpu")
+    device = torch.device(device)
     torch.set_default_tensor_type("torch.FloatTensor")
 
     # Load model and config
