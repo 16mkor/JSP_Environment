@@ -36,6 +36,7 @@ def define_production_parameters(env, model_type, time_steps, num_episodes, seed
     parameters.update(({'PATH_TIME': "_" + dt.datetime.now().strftime("%Y%m%d_%H%M%S")}))
     parameters.update(({'EXPORT_FREQUENCY': time_steps}))  # Number of steps between csv-export of log-files
     parameters.update(({'CHANGE_SCENARIO_AFTER_EPISODES': 5 * 10 ** 10}))
+    parameters.update(({'CHANGE_SCENARIO_EVERY_EPISODES': 100}))
     parameters.update({'max_episode_timesteps': time_steps})
     parameters.update({'num_episodes': num_episodes})
 
