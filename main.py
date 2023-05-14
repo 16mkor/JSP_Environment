@@ -32,6 +32,7 @@ if __name__ == "__main__":
 
     if type(args['rl_algorithm']) == list:
         args['rl_algorithm'] = args['rl_algorithm'][0]
+        args['device'] = args['device'][0]
 
     exp_config = config.get_settings(args['settings'], args['rl_algorithm'])
     parameters = config.get_env_config(args['env_config'])

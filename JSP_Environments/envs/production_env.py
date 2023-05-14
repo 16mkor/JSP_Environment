@@ -202,7 +202,7 @@ class ProductionEnv( gym.Env):
         return number  # dict(type='int', num_values=number)
 
     def _change_production_szenario(self):
-        print("CHANGE_OF_PRODUCTION_PARAMETERS")
+        if self.parameters['PRINT_CONSOLE']: print("CHANGE_OF_PRODUCTION_PARAMETERS")
 
         if self.scenario == 'B':
             self.scenario = 'A'

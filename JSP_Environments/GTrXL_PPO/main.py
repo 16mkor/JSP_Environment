@@ -74,7 +74,7 @@ def GTrXL_experiment(env, config, device):
             t += 1
         epoch_rewards.append(episode_rewards)
 
-    print("Episode length: " + str(info["length"]))
-    print("Episode reward: " + str(info["reward"]))
+    #print("Episode length: " + str(info["length"]))
+    #print("Episode reward: " + str(info["reward"]))
 
     env.close()

@@ -152,7 +152,7 @@ class Transport(Resource):
                 self.next_action_destination = result_destination
                 self.next_action_order = result_order
                 self.next_action_origin = result_origin
-                print(self.counter, " Order waiting time threshold reached for Order_ID: ", result_order.id)
+                if self.parameters['PRINT_CONSOLE']: print(self.counter, " Order waiting time threshold reached for Order_ID: ", result_order.id)
                 self.statistics['stat_transp_threshold_waiting_reached'][self.id] += 1
                 return result_order, result_destination
 
