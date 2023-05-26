@@ -12,9 +12,10 @@ from JSP_Environments.envs.time_calc import Time_calc
 from JSP_Environments.envs.logger import *
 
 
-class ProductionEnv( gym.Env):
+class ProductionEnv(gym.Env):
 
-    def __init__(self, parameters, seed, time_steps, num_episodes, model_type, **kwargs):
+    def __init__(self, parameters='NO_PARAMETERS', seed=np.random.randint(low=0, high=10 ** 5),
+                 time_steps=1_000, num_episodes=4_000, model_type='PPO', **kwargs):
         super(ProductionEnv, self).__init__(**kwargs)
 
         self.scenario = 'A'
@@ -125,7 +126,7 @@ class ProductionEnv( gym.Env):
         """Change parameter to new scenario"""
         # if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
         # if self.count_episode % self.parameters['CHANGE_SCENARIO_EVERY_EPISODES']:
-            # self._change_production_szenario(scenario='M')
+        # self._change_production_szenario(scenario='M')
 
         # Setup and start simulation
         if self.env.now == 0.0:
@@ -220,12 +221,12 @@ class ProductionEnv( gym.Env):
             self.parameters['TRANSP_SPEED'] = self.parameters['TRANSP_SPEED'] / 3.0
 
             # change in layout
-            self.parameters['RESP_AREA_SOURCE'] =  [[i for i in range(
+            self.parameters['RESP_AREA_SOURCE'] = [[i for i in range(
                 int(j * self.parameters['NUM_MACHINES'] / self.parameters['NUM_SOURCES']),
                 int((j + 1) * self.parameters['NUM_MACHINES'] / self.parameters['NUM_SOURCES']))] for j in
-                                                    range(self.parameters['NUM_SOURCES'])]
+                                                   range(self.parameters['NUM_SOURCES'])]
             groups = [1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4]
-            for i,machine in enumerate(self.resources['machines']):
+            for i, machine in enumerate(self.resources['machines']):
                 machine.machine_group = groups[i]
 
         elif self.scenario == 'A':
@@ -237,9 +238,11 @@ class ProductionEnv( gym.Env):
             self.parameters['TRANSP_SPEED'] = self.parameters['TRANSP_SPEED'] * 3.0
 
             # change in layout
-            self.parameters['RESP_AREA_SOURCE'] = [[0,1,2,8,9],[5,6,7,13,14],[10,11,12,18,19],[3,4,15,16,17,]]
+            self.parameters['RESP_AREA_SOURCE'] = [[0, 1, 2, 8, 9], [5, 6, 7, 13, 14], [10, 11, 12, 18, 19],
+                                                   [3, 4, 15, 16, 17, ]]
             for machine in self.resources['machines']:
-                change = np.random.randint(low=0, high=1 + self.parameters['NUM_MACHINES'] / self.parameters['NUM_SINKS'])
+                change = np.random.randint(low=0,
+                                           high=1 + self.parameters['NUM_MACHINES'] / self.parameters['NUM_SINKS'])
                 machine.machine_group = machine.machine_group + change if machine.machine_group + change <= 4 \
                     else machine.machine_group + change - self.parameters['NUM_MACHINES'] / self.parameters['NUM_SINKS']
 
@@ -441,8 +444,8 @@ class ProductionEnv( gym.Env):
         self.statistics['episode_log'].flush()
         os.fsync(self.statistics['episode_log'].fileno())
 
-        #pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(
-        #self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
+        # pd.DataFrame(self.statistics['stat_agent_reward'][:-1]).to_csv(
+        # self.parameters['PATH_TIME'] + "_agent_reward_log.txt", header=None, index=None, sep=',', mode='a')
 
         # Reset statistics for episode
         self.last_export_time = self.env.now

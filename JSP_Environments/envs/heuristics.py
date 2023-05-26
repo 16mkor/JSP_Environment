@@ -1,5 +1,4 @@
 from JSP_Environments.envs.time_calc import *
-
 """
 Heuristic Decision Agents
 """

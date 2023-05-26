@@ -1,4 +1,3 @@
-
 class Resource(object):
     def __init__(self, statistics, parameters, resources, agents, time_calc, location):
         self.statistics = statistics

@@ -9,8 +9,10 @@ import simpy
 class Source(Resource):
     counter_order = 0
 
-    def __init__(self, env, id, capacity, resp_area, statistics, parameters, resources, agents, time_calc, location, label):
-        Resource.__init__(self, statistics=statistics, parameters=parameters, resources=resources, agents=agents, time_calc=time_calc, location=location)
+    def __init__(self, env, id, capacity, resp_area, statistics, parameters, resources, agents, time_calc, location,
+                 label):
+        Resource.__init__(self, statistics=statistics, parameters=parameters, resources=resources, agents=agents,
+                          time_calc=time_calc, location=location)
         print("Source %s created" % id)
         self.env = env
         self.id = id
@@ -24,15 +26,25 @@ class Source(Resource):
         self.source_wt_normalizer = None
 
     def put_buffer_out(self, order):
-        self.statistics['stat_inv_buffer_out_mean'][1][self.id] = (self.statistics['stat_inv_buffer_out_mean'][1][self.id] * self.statistics['stat_inv_buffer_out_mean'][0][self.id] +
-                (self.env.now - self.statistics['stat_inv_buffer_out_mean'][0][self.id]) * len(self.buffer_out)) / self.env.now
+        self.statistics['stat_inv_buffer_out_mean'][1][self.id] = (self.statistics['stat_inv_buffer_out_mean'][1][
+                                                                       self.id] *
+                                                                   self.statistics['stat_inv_buffer_out_mean'][0][
+                                                                       self.id] +
+                                                                   (self.env.now -
+                                                                    self.statistics['stat_inv_buffer_out_mean'][0][
+                                                                        self.id]) * len(self.buffer_out)) / self.env.now
         self.statistics['stat_inv_buffer_out_mean'][0][self.id] = self.env.now
         self.statistics['stat_inv_buffer_out'][self.id] = len(self.buffer_out) + 1.0
         self.buffer_out.append(order)
 
     def get_buffer_out(self, order):
-        self.statistics['stat_inv_buffer_out_mean'][1][self.id] = (self.statistics['stat_inv_buffer_out_mean'][1][self.id] * self.statistics['stat_inv_buffer_out_mean'][0][self.id] +
-                (self.env.now - self.statistics['stat_inv_buffer_out_mean'][0][self.id]) * len(self.buffer_out)) / self.env.now
+        self.statistics['stat_inv_buffer_out_mean'][1][self.id] = (self.statistics['stat_inv_buffer_out_mean'][1][
+                                                                       self.id] *
+                                                                   self.statistics['stat_inv_buffer_out_mean'][0][
+                                                                       self.id] +
+                                                                   (self.env.now -
+                                                                    self.statistics['stat_inv_buffer_out_mean'][0][
+                                                                        self.id]) * len(self.buffer_out)) / self.env.now
         self.statistics['stat_inv_buffer_out_mean'][0][self.id] = self.env.now
         self.statistics['stat_inv_buffer_out'][self.id] = len(self.buffer_out) - 1.0
         self.source_wt_normalizer(order.get_total_waiting_time())
@@ -72,9 +84,12 @@ class Source(Resource):
             elif self.parameters['SOURCE_ORDER_GENERATION_TYPE'] == "MEAN_ARRIVAL_TIME":
                 yield self.env.timeout(self.time_calc.time_to_order_generation(self, self.statistics, self.parameters))
 
-            prod_steps, variant = self.time_calc.create_intermediate_production_steps_and_variant(statistics=self.statistics, parameters=self.parameters, resources=self.resources, at_resource=self)
+            prod_steps, variant = self.time_calc.create_intermediate_production_steps_and_variant(
+                statistics=self.statistics, parameters=self.parameters, resources=self.resources, at_resource=self)
 
-            order = Order(env=self.env, id=Source.counter_order,prod_steps=prod_steps, variant=variant, statistics=self.statistics, parameters=self.parameters, resources=self.resources, agents=self.agents, time_calc=self.time_calc)
+            order = Order(env=self.env, id=Source.counter_order, prod_steps=prod_steps, variant=variant,
+                          statistics=self.statistics, parameters=self.parameters, resources=self.resources,
+                          agents=self.agents, time_calc=self.time_calc)
             Source.counter_order += 1
 
             order.set_sop()

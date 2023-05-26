@@ -5,11 +5,15 @@ from JSP_Environments.envs.reward_functions import *
 import simpy
 import numpy as np
 
+from JSP_Environments.envs.reward_functions import *
+
+
 class Transport(Resource):
     all_transp_orders = []  # Overall list of available transport orders
     agents_waiting_for_action = []
 
-    def __init__(self, env, id, resp_area, agent_type, statistics, parameters, resources, agents, time_calc, location, label):
+    def __init__(self, env, id, resp_area, agent_type, statistics, parameters, resources, agents, time_calc, location,
+                 label):
         Resource.__init__(self, statistics, parameters, resources, agents, time_calc, location)
         print("Transportation %s created" % id)
         self.env = env
@@ -35,10 +39,10 @@ class Transport(Resource):
                                                         resources=resources, agents=agents, agents_resource=self)
         elif self.agent_type == "NJF":
             self.agent = Decision_Heuristic_Transp_NJF(env=self.env, statistics=statistics, parameters=parameters,
-                                                        resources=resources, agents=agents, agents_resource=self)
+                                                       resources=resources, agents=agents, agents_resource=self)
         elif self.agent_type == "EMPTY":
             self.agent = Decision_Heuristic_Transp_EMPTY(env=self.env, statistics=statistics, parameters=parameters,
-                                                        resources=resources, agents=agents, agents_resource=self)
+                                                         resources=resources, agents=agents, agents_resource=self)
         if self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'direct':
             # TODO: Still Hardcoded -> depending on production network
             self.mapping = []
@@ -172,14 +176,21 @@ class Transport(Resource):
     def get_next_action(self):
         self.counter += 1
         # Transport when order waiting time threshold reached
-        for order in [x for x in Transport.all_transp_orders if x.get_total_waiting_time() > self.parameters['WAITING_TIME_THRESHOLD'] and not x.reserved]:
+        for order in [x for x in Transport.all_transp_orders if
+                      x.get_total_waiting_time() > self.parameters['WAITING_TIME_THRESHOLD'] and not x.reserved]:
             if order.get_next_step().type == 'machine':
-                for destination in [x for x in self.resources['machines'] if x.machine_group == order.get_next_step().machine_group]:
-                    result_order, result_origin, result_destination = self.get_order_destination(order=order, origin=order.current_location, destination=destination)
+                for destination in [x for x in self.resources['machines'] if
+                                    x.machine_group == order.get_next_step().machine_group]:
+                    result_order, result_origin, result_destination = self.get_order_destination(order=order,
+                                                                                                 origin=order.current_location,
+                                                                                                 destination=destination)
             else:
-                result_order, result_origin, result_destination = self.get_order_destination(order=order, origin=order.current_location, destination=order.get_next_step())
+                result_order, result_origin, result_destination = self.get_order_destination(order=order,
+                                                                                             origin=order.current_location,
+                                                                                             destination=order.get_next_step())
             if result_order != None and result_destination != None:
-                result_order = self.next_action_order = Transport.all_transp_orders.pop(Transport.all_transp_orders.index(order))
+                result_order = self.next_action_order = Transport.all_transp_orders.pop(
+                    Transport.all_transp_orders.index(order))
                 result_valid = self.next_action_valid = True
                 self.next_action_destination = result_destination
                 self.next_action_order = result_order
@@ -240,7 +251,8 @@ class Transport(Resource):
         elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
             action_origin = self.mapping[self.next_action[0]]
             action_destination = self.mapping[self.next_action[1]]
-        if self.parameters['PRINT_CONSOLE']: print("Action ID: ", self.next_action[0], "\t Origin ID: ", action_origin.id,
+        if self.parameters['PRINT_CONSOLE']: print("Action ID: ", self.next_action[0], "\t Origin ID: ",
+                                                   action_origin.id,
                                                    "\t Destination ID: ", action_destination.id)
         if action_origin == -1 and action_destination == -1:  # Waiting action
             result_order = result_origin = result_destination = -1
@@ -334,7 +346,8 @@ class Transport(Resource):
 
         if 'bin_location' in self.parameters['TRANSP_AGENT_STATE']:
             state_type = 'bool'
-            state = [False] * (self.parameters['NUM_MACHINES'] + self.parameters['NUM_SOURCES'] + self.parameters['NUM_SINKS'])
+            state = [False] * (
+                        self.parameters['NUM_MACHINES'] + self.parameters['NUM_SOURCES'] + self.parameters['NUM_SINKS'])
             state[self.current_location.id] = True
             result_state.extend(state)
 
@@ -403,7 +416,8 @@ class Transport(Resource):
                     state[mach.id] = mach.last_process_time - (self.env.now - mach.last_process_start)
             for loc in range(len(state)):
                 if self.statistics['stat_machines_processed_orders'][loc] > 0.0:
-                    state[loc] = state[loc] / (self.statistics['stat_machines_working'][loc] / self.statistics['stat_machines_processed_orders'][loc])
+                    state[loc] = state[loc] / (self.statistics['stat_machines_working'][loc] /
+                                               self.statistics['stat_machines_processed_orders'][loc])
             result_state.extend(state)
 
         if 'total_process_time' in self.parameters['TRANSP_AGENT_STATE']:
@@ -413,10 +427,15 @@ class Transport(Resource):
                 if mach.buffer_processing != None:
                     state[mach.id] = mach.last_process_time - (self.env.now - mach.last_process_start)
                 for order in mach.buffer_in:
-                    state[mach.id] += min(self.parameters['MAX_PROCESS_TIME'][mach.id], max(self.parameters['MIN_PROCESS_TIME'][mach.id], self.time_calc.randomStreams["process_time"][mach.id].exponential(scale=self.parameters['AVERAGE_PROCESS_TIME'][mach.id])))
+                    state[mach.id] += min(self.parameters['MAX_PROCESS_TIME'][mach.id],
+                                          max(self.parameters['MIN_PROCESS_TIME'][mach.id],
+                                              self.time_calc.randomStreams["process_time"][mach.id].exponential(
+                                                  scale=self.parameters['AVERAGE_PROCESS_TIME'][mach.id])))
             for loc in range(len(state)):
                 if self.statistics['stat_machines_processed_orders'][loc] > 0.0:
-                    state[loc] = state[loc] / (self.resources['machines'][loc].capacity * (self.statistics['stat_machines_working'][loc] / self.statistics['stat_machines_processed_orders'][loc]))
+                    state[loc] = state[loc] / (self.resources['machines'][loc].capacity * (
+                                self.statistics['stat_machines_working'][loc] /
+                                self.statistics['stat_machines_processed_orders'][loc]))
             result_state.extend(state)
 
         if state_type == 'int':
@@ -428,7 +447,8 @@ class Transport(Resource):
     def calculate_reward(self, action):
         result_reward = self.parameters['TRANSP_AGENT_REWARD_INVALID_ACTION']
         result_terminal = False
-        if self.invalid_counter < self.parameters['TRANSP_AGENT_MAX_INVALID_ACTIONS']:  # If true, then invalid action selected
+        if self.invalid_counter < self.parameters[
+            'TRANSP_AGENT_MAX_INVALID_ACTIONS']:  # If true, then invalid action selected
             if self.parameters['TRANSP_AGENT_REWARD'] == "valid_action":
                 result_reward = get_reward_valid_action(self, result_reward)
             elif self.parameters['TRANSP_AGENT_REWARD'] == "utilization":
@@ -448,7 +468,7 @@ class Transport(Resource):
         else:
             self.invalid_counter = 0
             result_reward = 0.0
-            #result_terminal = True
+            # result_terminal = True
 
         if self.next_action_valid:
             self.invalid_counter = 0
@@ -460,10 +480,15 @@ class Transport(Resource):
         # If explicit episode limits are set in configuration
         if self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT'] > 0:
             result_reward = 0.0
-            if (self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT_TYPE'] == 'valid' and self.counter_action_subsets[0] == self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT']) or \
-                (self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT_TYPE'] == 'entry' and self.counter_action_subsets[1] == self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT']) or \
-                (self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT_TYPE'] == 'exit' and self.counter_action_subsets[2] == self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT']) or \
-                (self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT_TYPE'] == 'time' and self.env.now - self.last_reward_calc_time > self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT']):
+            if (self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT_TYPE'] == 'valid' and self.counter_action_subsets[
+                0] == self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT']) or \
+                    (self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT_TYPE'] == 'entry' and
+                     self.counter_action_subsets[1] == self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT']) or \
+                    (self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT_TYPE'] == 'exit' and
+                     self.counter_action_subsets[2] == self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT']) or \
+                    (self.parameters[
+                         'TRANSP_AGENT_REWARD_EPISODE_LIMIT_TYPE'] == 'time' and self.env.now - self.last_reward_calc_time >
+                     self.parameters['TRANSP_AGENT_REWARD_EPISODE_LIMIT']):
                 result_terminal = True
                 self.last_reward_calc_time = self.env.now
                 self.invalid_counter = 0
@@ -538,7 +563,8 @@ class Transport(Resource):
 
             elif order == -1 and destination != -1 and destination != None:  # If empty action
                 if self.parameters['PRINT_CONSOLE']: print("Empty move action selected. Move to ", destination.id)
-                self.transp_log.append(["empty_action", round(self.env.now, 5), self.current_location.id, destination.id, 0.0])
+                self.transp_log.append(
+                    ["empty_action", round(self.env.now, 5), self.current_location.id, destination.id, 0.0])
                 move_time = self.parameters['TRANSP_TIME'][self.current_location.id][destination.id]
                 self.transp_log.append(["move_empty", round(self.env.now, 5), self.current_location.id, destination.id,
                                         round(move_time, 5)])
@@ -562,7 +588,7 @@ class Transport(Resource):
             if order != None and order != -1:
                 if self.parameters['PRINT_CONSOLE']: print(
                     "Transport starting from LocationID %s: OrderID %s from LocationID %s to LocationID %s" % (
-                    self.current_location.id, order.id, order.current_location.id, destination.id))
+                        self.current_location.id, order.id, order.current_location.id, destination.id))
 
                 # Move to current location of the selected order
                 transp_time = self.time_calc.transp_time(start=self.current_location, end=order.current_location,

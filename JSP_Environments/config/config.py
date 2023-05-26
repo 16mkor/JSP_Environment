@@ -1,6 +1,5 @@
-import os
-import sys
 import json
+import os
 
 
 def get_settings(file_name, model_type):
@@ -32,7 +31,8 @@ def get_settings(file_name, model_type):
             config.update({'load_path': ''})
 
         """To use Tensorboard, a log location for the RL agent is needed"""
-        config.update({'tensorboard_log': 'JSP_Environments/log/'})  # /tensorboard_' + config['model_type'] + '_' + time + '/'})
+        config.update(
+            {'tensorboard_log': 'JSP_Environments/log/'})  # /tensorboard_' + config['model_type'] + '_' + time + '/'})
         if not os.path.exists(config['tensorboard_log']):
             os.makedirs(config['tensorboard_log'])
         print('Tensorboard command: tensorboard --logdir ' + config['tensorboard_log'])

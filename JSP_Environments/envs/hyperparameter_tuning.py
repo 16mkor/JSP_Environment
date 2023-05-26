@@ -10,7 +10,6 @@ You can run this example as follows:
 """
 from typing import Any
 from typing import Dict
-
 import gym
 import optuna
 from optuna.pruners import MedianPruner
@@ -56,7 +55,7 @@ def sample_a2c_params(trial: optuna.Trial) -> Dict[str, Any]:
     # sde_net_arch = trial.suggest_categorical("sde_net_arch", [None, "tiny", "small"])
     # full_std = trial.suggest_categorical("full_std", [False, True])
     # activation_fn = trial.suggest_categorical('activation_fn', ['tanh', 'relu', 'elu', 'leaky_relu'])
-    #activation_fn = trial.suggest_categorical("activation_fn", ["tanh", "relu"])
+    # activation_fn = trial.suggest_categorical("activation_fn", ["tanh", "relu"])
 
     if lr_schedule == "linear":
         learning_rate = linear_schedule(learning_rate)
@@ -72,7 +71,7 @@ def sample_a2c_params(trial: optuna.Trial) -> Dict[str, Any]:
     #     "small": [64, 64],
     # }[sde_net_arch]
 
-    #activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[activation_fn]
+    # activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[activation_fn]
 
     return {
         "n_steps": n_steps,
@@ -112,7 +111,7 @@ def sample_dqn_params(trial: optuna.Trial) -> Dict[str, Any]:
     learning_starts = trial.suggest_categorical("learning_starts", [0, 1000, 5000, 10000, 20000])
 
     train_freq = trial.suggest_categorical("train_freq", [1, 4, 8, 16, 128, 256, 1000])
-    #subsample_steps = trial.suggest_categorical("subsample_steps", [1, 2, 4, 8])
+    # subsample_steps = trial.suggest_categorical("subsample_steps", [1, 2, 4, 8])
 
     net_arch = trial.suggest_categorical("net_arch", ["small", "medium"])
 
@@ -271,55 +270,55 @@ def sample_gtrxl_params(trial: optuna.Trial) -> Dict[str, Any]:
     hidden_layer_size = trial.suggest_int("hidden_layer_size", 64, 256, log=True)
     # transformer
     num_blocks = trial.suggest_int("num_blocks", 1, 8, log=True)
-    num_heads = trial.suggest_categorical("num_heads", [2**1, 2**2, 2**3])
-    embed_dim = trial.suggest_categorical("embed_dim", [2**5, 2**6, 2**7])
+    num_heads = trial.suggest_categorical("num_heads", [2 ** 1, 2 ** 2, 2 ** 3])
+    embed_dim = trial.suggest_categorical("embed_dim", [2 ** 5, 2 ** 6, 2 ** 7])
 
     memory_length = trial.suggest_int("memory_length", 16, 64, log=True)
 
     return {
-            "gamma": gamma,
-            "lamda": lambda_,
-            "updates": 300,
-            "epochs": 1000,
-            "n_workers": 2,
-            "worker_steps": 256,
-            "n_mini_batch": n_mini_batch,
-            "value_loss_coefficient": value_loss_coefficient,
-            "hidden_layer_size": hidden_layer_size,
-            "max_grad_norm": max_grad_norm,
-            "transformer":
-                {
-                    "num_blocks": num_blocks,
-                    "embed_dim": embed_dim,
-                    "num_heads": num_heads,
-                    "memory_length": memory_length,
-                    "positional_encoding": "",
-                    "layer_norm": "pre",
-                    "gtrxl": True,
-                    "gtrxl_bias": 0.0
-                },
-            "learning_rate_schedule":
-                {
-                    "initial": learning_rate,
-                    "final": learning_rate * 10e-2,
-                    "power": 1.0,
-                    "max_decay_steps": 300
-                },
-            "beta_schedule":
-                {
-                    "initial": 0.001,
-                    "final": 0.0001,
-                    "power": 1.0,
-                    "max_decay_steps": 300
-                },
-            "clip_range_schedule":
-                {
-                    "initial": 0.2,
-                    "final": 0.2,
-                    "power": 1.0,
-                    "max_decay_steps": 300
-                }
-        }
+        "gamma": gamma,
+        "lamda": lambda_,
+        "updates": 300,
+        "epochs": 1000,
+        "n_workers": 2,
+        "worker_steps": 256,
+        "n_mini_batch": n_mini_batch,
+        "value_loss_coefficient": value_loss_coefficient,
+        "hidden_layer_size": hidden_layer_size,
+        "max_grad_norm": max_grad_norm,
+        "transformer":
+            {
+                "num_blocks": num_blocks,
+                "embed_dim": embed_dim,
+                "num_heads": num_heads,
+                "memory_length": memory_length,
+                "positional_encoding": "",
+                "layer_norm": "pre",
+                "gtrxl": True,
+                "gtrxl_bias": 0.0
+            },
+        "learning_rate_schedule":
+            {
+                "initial": learning_rate,
+                "final": learning_rate * 10e-2,
+                "power": 1.0,
+                "max_decay_steps": 300
+            },
+        "beta_schedule":
+            {
+                "initial": 0.001,
+                "final": 0.0001,
+                "power": 1.0,
+                "max_decay_steps": 300
+            },
+        "clip_range_schedule":
+            {
+                "initial": 0.2,
+                "final": 0.2,
+                "power": 1.0,
+                "max_decay_steps": 300
+            }
+    }
 
 
 def sample_trpo_params(trial: optuna.Trial) -> Dict[str, Any]:
@@ -394,13 +393,13 @@ class TrialEvalCallback(EvalCallback):
     """Callback used for evaluating and reporting a trial."""
 
     def __init__(
-        self,
-        eval_env: gym.Env,
-        trial: optuna.Trial,
-        n_eval_episodes: int = 10,
-        eval_freq: int = 10000,
-        deterministic: bool = True,
-        verbose: int = 0,
+            self,
+            eval_env: gym.Env,
+            trial: optuna.Trial,
+            n_eval_episodes: int = 10,
+            eval_freq: int = 10000,
+            deterministic: bool = True,
+            verbose: int = 0,
     ):
         super().__init__(
             eval_env=eval_env,
@@ -423,7 +422,3 @@ class TrialEvalCallback(EvalCallback):
                 self.is_pruned = True
                 return False
         return True
-
-
-
-

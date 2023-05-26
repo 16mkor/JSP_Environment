@@ -1,6 +1,5 @@
-import numpy as np
 import simpy
-
+import numpy as np
 from JSP_Environments.envs.heuristics import *
 from JSP_Environments.envs.resources import *
 

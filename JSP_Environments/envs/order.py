@@ -4,6 +4,7 @@ from JSP_Environments.envs.resources import *
 from JSP_Environments.envs.transport import *
 import simpy
 
+
 class Order(Resource):
     """An order specifices a production request.
     An order has a *id* and a sequence of *prod_steps* to fulfill.
@@ -27,7 +28,8 @@ class Order(Resource):
         self.processed = self.env.event()
         self.reserved = False
         if self.parameters['PRINT_CONSOLE']: print("Order %s created %s" % (self.id, [x.id for x in self.prod_steps]))
-        self.order_log.append(["prod_steps", self.id, [x.id for x in prod_steps]])  # records the actual processing history incl time stamps of an order
+        self.order_log.append(["prod_steps", self.id, [x.id for x in
+                                                       prod_steps]])  # records the actual processing history incl time stamps of an order
 
     def set_sop(self):  # SOP = start of production
         self.sop = self.env.now
@@ -86,6 +88,7 @@ class Order(Resource):
             self.order_log.append(["after_processing", self.id, round(self.env.now, 5), self.current_location.id])
 
         self.set_eop()
-        self.statistics['stat_order_waiting'][self.id] = self.get_total_waiting_time()  # Calling this procedure updates the order waiting time statistics
+        self.statistics['stat_order_waiting'][
+            self.id] = self.get_total_waiting_time()  # Calling this procedure updates the order waiting time statistics
         self.statistics['orders_done'].append(self)
         self.current_location = None

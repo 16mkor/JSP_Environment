@@ -1,5 +1,6 @@
-import numpy as np
 from collections import deque
+import numpy as np
+
 
 class Time_calc:
     def __init__(self, parameters, episode):
@@ -8,23 +9,33 @@ class Time_calc:
         """Random Seed for random numbers"""
         np.random.seed(parameters['SEED'] + episode)
         self.randomStreams = {}
-        self.randomStreams["process_time"] = [np.random.RandomState(np.random.randint(100)) for i in range(parameters['NUM_MACHINES'])]
-        self.randomStreams["machine_failure"] = [np.random.RandomState(np.random.randint(100)) for i in range(parameters['NUM_MACHINES'])]
-        self.randomStreams["repair_time"] = [np.random.RandomState(np.random.randint(100)) for i in range(parameters['NUM_MACHINES'])]
-        self.randomStreams["order_generation"] = [np.random.RandomState(np.random.randint(100)) for i in range(parameters['NUM_SOURCES'])]
+        self.randomStreams["process_time"] = [np.random.RandomState(np.random.randint(100)) for i in
+                                              range(parameters['NUM_MACHINES'])]
+        self.randomStreams["machine_failure"] = [np.random.RandomState(np.random.randint(100)) for i in
+                                                 range(parameters['NUM_MACHINES'])]
+        self.randomStreams["repair_time"] = [np.random.RandomState(np.random.randint(100)) for i in
+                                             range(parameters['NUM_MACHINES'])]
+        self.randomStreams["order_generation"] = [np.random.RandomState(np.random.randint(100)) for i in
+                                                  range(parameters['NUM_SOURCES'])]
         self.randomStreams["order_sequence"] = np.random.RandomState(np.random.randint(100))
-        self.randomStreams["transp_agent"] = [np.random.RandomState(np.random.randint(100)) for i in range(parameters['NUM_TRANSP_AGENTS'])]
+        self.randomStreams["transp_agent"] = [np.random.RandomState(np.random.randint(100)) for i in
+                                              range(parameters['NUM_TRANSP_AGENTS'])]
         self.randomStreams["filled_initial_system"] = np.random.RandomState(np.random.randint(100))
 
     """
     Utility procedures
     """
+
     def get_inventory_level(self, statistics):
         return statistics['stat_inv_episode'][-1][1]
 
     def processing_time(self, machine, statistics, parameters, order):
         """Return actual processing time for a concrete part."""
-        result_time = min(parameters['MAX_PROCESS_TIME'][machine.id], max(parameters['MIN_PROCESS_TIME'][machine.id], self.randomStreams["process_time"][machine.id].exponential(scale=parameters['AVERAGE_PROCESS_TIME'][machine.id])))
+        result_time = min(parameters['MAX_PROCESS_TIME'][machine.id], max(parameters['MIN_PROCESS_TIME'][machine.id],
+                                                                          self.randomStreams["process_time"][
+                                                                              machine.id].exponential(
+                                                                              scale=parameters['AVERAGE_PROCESS_TIME'][
+                                                                                  machine.id])))
         statistics['stat_machines_working'][machine.id] += result_time
         return result_time
 
@@ -47,7 +58,7 @@ class Time_calc:
             if LoadOrUnload == "load":
                 result_time += parameters['TIME_TO_LOAD_SOURCE']
             elif LoadOrUnload == "unload":
-                result_time += parameters['TIME_TO_UNLOAD_SOURCE'] 
+                result_time += parameters['TIME_TO_UNLOAD_SOURCE']
         statistics['stat_transp_handling'][transp.id] += result_time
         statistics['stat_transp_working'][transp.id] += result_time
         return result_time
@@ -60,7 +71,8 @@ class Time_calc:
 
     def time_to_failure(self, machine, statistics, parameters):
         """Return time until next failure for a machine."""
-        result_time = self.randomStreams["machine_failure"][machine.id].exponential(scale=parameters['MTBF'][machine.id])
+        result_time = self.randomStreams["machine_failure"][machine.id].exponential(
+            scale=parameters['MTBF'][machine.id])
         return result_time
 
     def repair_time(self, machine, statistics, parameters):
@@ -71,7 +83,8 @@ class Time_calc:
 
     def time_to_order_generation(self, source, statistics, parameters):
         """Return time until next failure for a machine."""
-        result_time = self.randomStreams["order_generation"][source.id - self.parmeters['NUM_MACHINES']].exponential(scale=parameters['MTOG'][source.id])
+        result_time = self.randomStreams["order_generation"][source.id - self.parmeters['NUM_MACHINES']].exponential(
+            scale=parameters['MTOG'][source.id])
         return result_time
 
     def create_intermediate_production_steps_and_variant(self, statistics, parameters, resources, at_resource):
@@ -79,17 +92,21 @@ class Time_calc:
         if at_resource.type == "source":
             result_prod_steps = [at_resource]
             while True:
-                first_machine = self.randomStreams["order_sequence"].choice(resources['machines'], 1, p=parameters['ORDER_DISTRIBUTION'])[0]
+                first_machine = self.randomStreams["order_sequence"].choice(resources['machines'], 1,
+                                                                            p=parameters['ORDER_DISTRIBUTION'])[0]
                 if first_machine.id in at_resource.resp_area:
                     break
             result_prod_steps.append(first_machine)
-            result_prod_steps.extend(self.randomStreams["order_sequence"].choice(resources['machines'], parameters['NUM_PROD_STEPS'] - 1, p=parameters['ORDER_DISTRIBUTION']))
+            result_prod_steps.extend(
+                self.randomStreams["order_sequence"].choice(resources['machines'], parameters['NUM_PROD_STEPS'] - 1,
+                                                            p=parameters['ORDER_DISTRIBUTION']))
         else:
             first_machine = at_resource
             result_prod_steps = [x for x in resources['sources'] if first_machine.id in x.resp_area]
             result_prod_steps.append(first_machine)
             actual_step = self.randomStreams["filled_initial_system"].randint(1, high=parameters['NUM_PROD_STEPS'])
-            result_prod_steps.extend(self.randomStreams["order_sequence"].choice(resources['machines'], parameters['NUM_PROD_STEPS'] - 1 - actual_step, p=parameters['ORDER_DISTRIBUTION']))
+            result_prod_steps.extend(self.randomStreams["order_sequence"].choice(resources['machines'], parameters[
+                'NUM_PROD_STEPS'] - 1 - actual_step, p=parameters['ORDER_DISTRIBUTION']))
 
         num_sink = parameters['RESP_SINK_MACHINE'][result_prod_steps[-1].id]
         result_prod_steps.append(resources['sinks'][num_sink])
@@ -99,15 +116,18 @@ class Time_calc:
             result_prod_steps.append(resources['sinks'][1])
         elif result_prod_steps[-1].id < 8:
             result_prod_steps.append(resources['sinks'][2])"""
-        result_variant = self.randomStreams["order_sequence"].choice(parameters['NUM_PROD_VARIANTS'], 1, p=parameters['VARIANT_DISTRIBUTION'])
+        result_variant = self.randomStreams["order_sequence"].choice(parameters['NUM_PROD_VARIANTS'], 1,
+                                                                     p=parameters['VARIANT_DISTRIBUTION'])
 
         return result_prod_steps, result_variant
+
 
 def update_mov_avg(**kwargs):
     """ Function to iteratively calculate moving average with a given window"""
     kwargs['cont'].appendleft(kwargs['value'])
     new_mean = sum(kwargs['cont']) / len(kwargs['cont'])
     return new_mean
+
 
 def update_mov_std(**kwargs):
     """ Function to iteratively calculate moving std with a given window"""
@@ -119,10 +139,12 @@ def update_mov_std(**kwargs):
         new_var = 0
     return np.sqrt(new_var)
 
+
 def update_exp_weighted_mean(**kwargs):
     """ Function to iteratively calculate exponentially weighted mean"""
     new_mean = (1 - kwargs['alpha']) * kwargs['oldMean'] + kwargs['alpha'] * kwargs['value']
     return new_mean
+
 
 def update_exp_weightes_std(**kwargs):
     """ Function to iteratively calculate exponentially weighted std"""
@@ -130,6 +152,7 @@ def update_exp_weightes_std(**kwargs):
     incr = kwargs['alpha'] * diff
     new_var = (1 - kwargs['alpha']) * (kwargs['oldStd'] ** 2 + diff * incr)
     return np.sqrt(new_var)
+
 
 class ZScoreNormalization(object):
     running_mean = dict(
@@ -167,10 +190,10 @@ class ZScoreNormalization(object):
 
     def setup(self):
         """ Setup function to set all parameters for calculations"""
-        if self.type is 'mov':
+        if self.type == 'mov':
             size_wd = self.config['window']
             self.attr_alg = dict(cont_sq=deque([], maxlen=size_wd), cont=deque([], maxlen=size_wd), **self.config)
-        elif self.type is 'exp':
+        elif self.type == 'exp':
             self.attr_alg = dict(**self.config)
 
     def get_z_score_normalization(self, value):
