@@ -1,8 +1,7 @@
 import numpy as np
 import torch
-
-from torch.distributions import Categorical
 from torch import nn
+from torch.distributions import Categorical
 from torch.nn import functional as F
 
 from JSP_Environments.GTrXL_PPO.transformer import Transformer

@@ -220,7 +220,7 @@ pip install -r requirements.txt
 The training is launched via `train.py`. `--config` specifies the path to the yaml config file featuring hyperparameters. The `--run-id` is used to distinguish training runs. After training, the trained model will be saved to `./models/$run-id$.nn`.
 
 ```bash
-python train.py --config configs/minigrid.yaml --run-id=my-trxl-training
+python train.py --config config/minigrid.yaml --run-id=my-trxl-training
 ```
 
 # Enjoy a model

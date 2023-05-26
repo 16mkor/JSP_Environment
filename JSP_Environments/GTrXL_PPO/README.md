@@ -1,24 +1,25 @@
 # TransformerXL as Episodic Memory in Proximal Policy Optimization
 
-This repository features a PyTorch based implementation of PPO using TransformerXL (TrXL). Its intention is to provide a clean baseline/reference implementation on how to successfully employ memory-based agents using Transformers and PPO.
+This repository features a PyTorch based implementation of PPO using TransformerXL (TrXL). Its intention is to provide a
+clean baseline/reference implementation on how to successfully employ memory-based agents using Transformers and PPO.
 
 # Features
 
 - Episodic Transformer Memory
-  - TransformerXL (TrXL)
-  - Gated TransformerXL (GTrXL)
+    - TransformerXL (TrXL)
+    - Gated TransformerXL (GTrXL)
 - Environments
-  - Proof-of-concept Memory Task (PocMemoryEnv)
-  - CartPole
-    - Masked velocity
-  - Minigrid Memory
-    - Visual Observation Space 3x84x84
-    - Egocentric Agent View Size 3x3 (default 7x7)
-    - Action Space: forward, rotate left, rotate right
-  - [MemoryGym](https://github.com/MarcoMeter/drl-memory-gym)
-    - Mortar Mayhem
-    - Mystery Path
-    - Searing Spotlights (WIP)
+    - Proof-of-concept Memory Task (PocMemoryEnv)
+    - CartPole
+        - Masked velocity
+    - Minigrid Memory
+        - Visual Observation Space 3x84x84
+        - Egocentric Agent View Size 3x3 (default 7x7)
+        - Action Space: forward, rotate left, rotate right
+    - [MemoryGym](https://github.com/MarcoMeter/drl-memory-gym)
+        - Mortar Mayhem
+        - Mystery Path
+        - Searing Spotlights (WIP)
 - Tensorboard
 - Enjoy (watch a trained agent play)
 
@@ -41,29 +42,33 @@ This repository features a PyTorch based implementation of PPO using Transformer
 - [Enjoy a model](#enjoy-a-model)
 - [Episodic Transformer Memory Concept](#episodic-transformer-memory-concept)
 - [Hyperparameters](#hyperparameters)
-      - [Episodic Transformer Memory](#episodic-transformer-memory)
-      - [General](#general)
-      - [Schedules](#schedules)
+  - [Episodic Transformer Memory](#episodic-transformer-memory)
+  - [General](#general)
+  - [Schedules](#schedules)
 - [Add Environment](#add-environment)
 - [Tensorboard](#tensorboard)
 - [Results](#results)
 
 # Installation
 
-Install [PyTorch](https://pytorch.org/get-started/locally/) 1.12.1 depending on your platform. We recommend the usage of [Anaconda](https://www.anaconda.com/).
+Install [PyTorch](https://pytorch.org/get-started/locally/) 1.12.1 depending on your platform. We recommend the usage
+of [Anaconda](https://www.anaconda.com/).
 
 Create Anaconda environment:
+
 ```bash
 conda create -n transformer-ppo python=3.7 --yes
 conda activate transformer-ppo
 ```
 
 CPU:
+
 ```bash
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cpuonly -c pytorch
 ```
 
 CUDA:
+
 ```bash
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.6 -c pytorch -c conda-forge
 ```
@@ -76,15 +81,18 @@ pip install -r requirements.txt
 
 # Train a model
 
-The training is launched via `train.py`. `--config` specifies the path to the yaml config file featuring hyperparameters. The `--run-id` is used to distinguish training runs. After training, the trained model will be saved to `./models/$run-id$.nn`.
+The training is launched via `train.py`. `--config` specifies the path to the yaml config file featuring
+hyperparameters. The `--run-id` is used to distinguish training runs. After training, the trained model will be saved
+to `./models/$run-id$.nn`.
 
 ```bash
-python train.py --config configs/minigrid.yaml --run-id=my-trxl-training
+python train.py --config config/minigrid.yaml --run-id=my-trxl-training
 ```
 
 # Enjoy a model
 
-To watch an agent exploit its trained model, execute `enjoy.py`. Some pre-trained models can be found in: `./models/`. The to-be-enjoyed model is specified using the `--model` flag.
+To watch an agent exploit its trained model, execute `enjoy.py`. Some pre-trained models can be found in: `./models/`.
+The to-be-enjoyed model is specified using the `--model` flag.
 
 ```bash
 python main.py --model=models/mortar_mayhem_grid_trxl.nn
@@ -213,27 +221,35 @@ These schedules can be used to polynomially decay the learning rate, the entropy
 
 Follow these steps to train another environment:
 
-1. Implement a wrapper of your desired environment. It needs the properties `observation_space`, `action_space` and `max_episode_steps`. The needed functions are `render()`, `reset()` and `step`.
+1. Implement a wrapper of your desired environment. It needs the properties `observation_space`, `action_space`
+   and `max_episode_steps`. The needed functions are `render()`, `reset()` and `step`.
 2. Extend the `create_env()` function in `utils.py` by adding another if-statement that queries the environment's "type"
 3. Adjust the "type" and "name" key inside the environment's yaml config
 
-Note that only environments with visual or vector observations are supported. Concerning the environment's action space, it can be either discrte or multi-discrete.
+Note that only environments with visual or vector observations are supported. Concerning the environment's action space,
+it can be either discrte or multi-discrete.
 
 # Tensorboard
 
 During training, tensorboard summaries are saved to `summaries/run-id/timestamp`.
 
-Run `tensorboad --logdir=summaries` to watch the training statistics in your browser using the URL [http://localhost:6006/](http://localhost:6006/).
+Run `tensorboad --logdir=summaries` to watch the training statistics in your browser using the
+URL [http://localhost:6006/](http://localhost:6006/).
 
 # Results
 
-Every experiment is repeated on 5 random seeds. Each model checkpoint is evaluated on 50 unknown environment seeds, which are repeated 5 times. Hence, one data point aggregates 1250 (5x5x50) episodes. Rliable is used to retrieve the interquartile mean and the bootstrapped confidence interval. The training is conducted using the more sophisticated DRL framework [neroRL](https://github.com/MarcoMeter/neroRL). The clean GRU-PPO baseline can be found [here](https://github.com/MarcoMeter/recurrent-ppo-truncated-bptt).
+Every experiment is repeated on 5 random seeds. Each model checkpoint is evaluated on 50 unknown environment seeds,
+which are repeated 5 times. Hence, one data point aggregates 1250 (5x5x50) episodes. Rliable is used to retrieve the
+interquartile mean and the bootstrapped confidence interval. The training is conducted using the more sophisticated DRL
+framework [neroRL](https://github.com/MarcoMeter/neroRL). The clean GRU-PPO baseline can be
+found [here](https://github.com/MarcoMeter/recurrent-ppo-truncated-bptt).
 
 ## Mystery Path Grid (Goal & Origin Hidden)
 
 ![mpg_off_results](./docs/assets/mpg_off.png)
 
-TrXL and GTrXL have identical performance. See [Issue #7](https://github.com/MarcoMeter/episodic-transformer-memory-ppo/issues/7).
+TrXL and GTrXL have identical performance.
+See [Issue #7](https://github.com/MarcoMeter/episodic-transformer-memory-ppo/issues/7).
 
 ## Mortar Mayhem Grid (10 commands)
 

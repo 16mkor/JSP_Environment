@@ -2,18 +2,45 @@ import numpy as np
 import torch
 from torch import nn
 
+from JSP_Environments.envs.production_env import ProductionEnv
 
-def create_env(env, config: dict = {}, render: bool = False):
-    '''Initializes an environment based on the provided environment name.
+
+def create_env(config: dict, render: bool = False):
+    """Initializes an environment based on the provided environment name.
 
     Arguments:
         env_name {str}: Name of the to be instantiated environment
         render {bool}: Whether to instantiate the environment in render mode. (default: {False})
 
     Returns:
-        {env}: Returns the selected environment instance.'''
+        {env}: Returns the selected environment instance.
+    """
+    if config['type'] == 'JSP':
+        return ProductionEnv(model_type='GTrXL-PPO')
 
-    return env
+
+def init_transformer_memory(trxl_conf, max_episode_steps, device):
+    """Returns initial tensors for the episodic memory of the transformer.
+
+    Arguments:
+        trxl_conf {dict} -- Transformer configuration dictionary
+        max_episode_steps {int} -- Maximum number of steps per episode
+        device {torch.device} -- Target device for the tensors
+
+    Returns:
+        memory {torch.Tensor}, memory_mask {torch.Tensor}, memory_indices {torch.Tensor} -- Initial episodic memory, episodic memory mask, and sliding memory window indices
+    """
+    # Episodic memory mask used in attention
+    memory_mask = torch.tril(torch.ones((trxl_conf["memory_length"], trxl_conf["memory_length"])), diagonal=-1)
+    # Episdic memory tensor
+    memory = torch.zeros((1, max_episode_steps, trxl_conf["num_blocks"], trxl_conf["embed_dim"])).to(device)
+    # Setup sliding memory window indices
+    repetitions = torch.repeat_interleave(torch.arange(0, trxl_conf["memory_length"]).unsqueeze(0),
+                                          trxl_conf["memory_length"] - 1, dim=0).long()
+    memory_indices = torch.stack([torch.arange(i, i + trxl_conf["memory_length"]) for i in
+                                  range(max_episode_steps - trxl_conf["memory_length"] + 1)]).long()
+    memory_indices = torch.cat((repetitions, memory_indices))
+    return memory, memory_mask, memory_indices
 
 
 def polynomial_decay(initial: float, final: float, max_decay_steps: int, power: float, current_step: int) -> float:

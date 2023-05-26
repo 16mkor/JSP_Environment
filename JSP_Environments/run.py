@@ -1,30 +1,25 @@
-import os
 import datetime as dt
 import json
-from typing import Any
-from typing import Dict
+import os
+import gym
+import optuna
 import torch
 import torch.nn as nn
-import numpy as np
-import gym
 
-from sb3_contrib import TRPO, RecurrentPPO
-from stable_baselines3 import PPO, DQN, A2C
-from stable_baselines3.common.logger import configure
-from stable_baselines3.common.vec_env import SubprocVecEnv
-from stable_baselines3.common.env_checker import check_env
-from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.monitor import Monitor
-
-import optuna
 from optuna.pruners import MedianPruner
 from optuna.samplers import TPESampler
+from sb3_contrib import TRPO, RecurrentPPO
+from stable_baselines3 import PPO, DQN, A2C
+from stable_baselines3.common.env_checker import check_env
+from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.logger import configure
+from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.vec_env import SubprocVecEnv
 
+from JSP_Environments.envs.hyperparameter_tuning import sample_a2c_params, sample_ppo_params, sample_dqn_params, \
+    sample_recppo_params, TrialEvalCallback
 from JSP_Environments.envs.production_env import ProductionEnv
-from JSP_Environments.GTrXL_PPO.main import GTrXL_experiment
-from JSP_Environments.GTrXL_PPO.model import ActorCriticModel
-from JSP_Environments.envs.hyperparameter_tuning import sample_a2c_params, sample_ppo_params, sample_gtrxl_params, \
-    sample_dqn_params, sample_recppo_params, TrialEvalCallback
+from JSP_Environments.GTrXL_PPO.train import train, GTrXL_experiment
 
 
 def run(config, parameters, args):
@@ -41,79 +36,77 @@ def run(config, parameters, args):
     """
     timesteps = args['max_episode_timesteps']
     seed = args['seed']
-
     episodes = args['num_episodes']
     device = args['device']
 
-    """Set up Environment & Model"""
-    env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters,
-                      seed=seed, time_steps=timesteps, num_episodes=episodes, model_type=config['model_type'])
-
     if config['model_type'] == 'GTrXL-PPO':
-        config_gtrxl = json.loads(open('JSP_Environments/config/config_GTrXL.json').read())
+        """Start GTrXL_PPO Experiments"""
+        train()
+
     else:
-        config_gtrxl = None
+        """
+        Start Experiments of PPO, RecPPO, DQN, A2C & Heuristics 
+        """
 
-    if config['HYPERPARAM_FLAG']:
-        hyperparameter = _hyperparameter_tuning(env, config['model_type'], device=device)
-        model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env,
-                              model_type=config['model_type'], timesteps=timesteps, device=device, seed=seed,
-                              tensorboard_log_path=config['tensorboard_log'], hyperparam=hyperparameter)
-    else:
-        model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env,
-                          model_type=config['model_type'], timesteps=timesteps, device=device, seed=seed,
-                          tensorboard_log_path=config['tensorboard_log'], config=config_gtrxl)
+        """Set up Environment"""
+        env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters,
+                          seed=seed, time_steps=timesteps, num_episodes=episodes, model_type=config['model_type'])
 
-    """Set up Logger"""
-    if config['LOGGER_FLAG']:
-        logger = _set_up_logger(logging_path=config['logging_path'], model=model)
+        if config['HYPERPARAM_FLAG']:
+            """Do Hyperparamter Tuning and create model with tuned hyperparameter"""
+            hyperparameter = _hyperparameter_tuning(env, config['model_type'], device=device)
+            model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env,
+                                  model_type=config['model_type'], timesteps=timesteps, device=device, seed=seed,
+                                  tensorboard_log_path=config['tensorboard_log'], hyperparam=hyperparameter)
 
-    """Start Experiments"""
-    if config['model_type'] == 'GTrXL-PPO':
-        GTrXL_experiment(env, config_gtrxl, device)
+        elif not config['HYPERPARAM_FLAG']:
+            """Do Hyperparamter Tuning and create model with default hyperparameter"""
+            model = _create_model(LOAD_FLAG=config['LOAD_FLAG'], load_path=config['load_path'], env=env,
+                                  model_type=config['model_type'], timesteps=timesteps, device=device, seed=seed,
+                                  tensorboard_log_path=config['tensorboard_log'])
 
-        """Save Model"""
-        if config['SAVE_FLAG']:
-            print('Model saved!')
-            _save_model(save_path=config['save_path'], model_type=config['model_type'], model=model)
+        """Set up Logger"""
+        if config['LOGGER_FLAG']:
+            logger = _set_up_logger(logging_path=config['logging_path'], model=model)
 
-    elif model != "Heuristic" and model != "GTrXL-PPO":
-        """Train Model"""
-        print('################################')
-        print('### START TRAINING PROCEDURE ###')
-        print('################################')
-        model.learn(total_timesteps=(timesteps * episodes),
-                    tb_log_name=config['model_type'])
+        elif model != "Heuristic":
+            """Train Model"""
+            print('################################')
+            print('### START TRAINING PROCEDURE ###')
+            print('################################')
+            model.learn(total_timesteps=(timesteps * episodes),
+                        tb_log_name=config['model_type'])
 
-        """Evaluate Model"""
-        if config['EVAL_FLAG']:
-            print('##################################')
-            print('### START Evaluation PROCEDURE ###')
-            print('##################################')
-            evaluate_policy(model=model, env=env, return_episode_rewards=False)
+            """Evaluate Model"""
+            if config['EVAL_FLAG']:
+                print('##################################')
+                print('### START Evaluation PROCEDURE ###')
+                print('##################################')
+                evaluate_policy(model=model, env=env, return_episode_rewards=False)
 
-        """Save Model"""
-        if config['SAVE_FLAG']:
-            print('Model saved!')
-            _save_model(save_path=config['save_path'], model_type=config['model_type'], model=model)
+            """Save Model"""
+            if config['SAVE_FLAG']:
+                print('Model saved!')
+                _save_model(save_path=config['save_path'], model_type=config['model_type'], model=model)
 
-        """Render Model in Environemnt"""
-        if config['RENDER_FLAG']:
-            _render(env=env, model=model)
-    else:
-        start = True
-        for _ in range(episodes):
-            time_steps = 0
-            done = False  # terminated, truncated = False, False
-            _ = env.reset()
-            while not done:  # (terminated or truncated):
-                if config['model_type'] == 'RANDOM' or start == True:
-                    action = env.action_space.sample()
-                    start = False
-                else:
-                    action = env.env.resources['transps'][0].next_action[0]
-                state, reward, done, info = env.step(action)
-                time_steps += 1
+            """Render Model in Environemnt"""
+            if config['RENDER_FLAG']:
+                _render(env=env, model=model)
+
+        else:
+            start = True
+            for _ in range(episodes):
+                time_steps = 0
+                done = False  # terminated, truncated = False, False
+                _ = env.reset()
+                while not done:  # (terminated or truncated):
+                    if config['model_type'] == 'RANDOM' or start == True:
+                        action = env.action_space.sample()
+                        start = False
+                    else:
+                        action = env.env.resources['transps'][0].next_action[0]
+                    state, reward, done, info = env.step(action)
+                    time_steps += 1
 
 
 def _set_up_env(MULT_ENV_FLAG, parameter, seed, time_steps, num_episodes, model_type):
@@ -173,14 +166,14 @@ def _load_model(load_path, model_type, device, seed, tensorboard_log_path):
     """
     if model_type == 'PPO':
         model = PPO.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
+    if model_type == 'RecPPO':
+        model = RecurrentPPO.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
     elif model_type == 'DQN':
         model = DQN.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
     elif model_type == 'A2C':
         model = A2C.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
     elif model_type == 'TRPO':
         model = TRPO.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
-    elif model_type == 'GTrXL-PPO':
-        model = 'GTrXL-PPO'
     elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
         model = "Heuristic"
     else:
@@ -223,51 +216,50 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, device, seed
             if model_type == 'RecPPO':
                 model = RecurrentPPO("MlpLstmPolicy", env, verbose=1, device=device,
                                      tensorboard_log=tensorboard_log_path, policy_kwargs=policy_kwargs,
-                                     n_steps=hyperparam["n_steps"], batch_size = hyperparam["batch_size"],
-                                     gamma = hyperparam["gamma"], learning_rate = hyperparam["learning_rate"],
-                                     ent_coef = hyperparam["ent_coef"], clip_range = hyperparam["clip_range"],
-                                     gae_lambda = hyperparam["gae_lambda"], max_grad_norm = hyperparam["max_grad_norm"],
-                                     vf_coef = hyperparam["vf_coef"])
+                                     n_steps=hyperparam["n_steps"], batch_size=hyperparam["batch_size"],
+                                     gamma=hyperparam["gamma"], learning_rate=hyperparam["learning_rate"],
+                                     ent_coef=hyperparam["ent_coef"], clip_range=hyperparam["clip_range"],
+                                     gae_lambda=hyperparam["gae_lambda"], max_grad_norm=hyperparam["max_grad_norm"],
+                                     vf_coef=hyperparam["vf_coef"])
             elif model_type == 'DQN':
                 policy_kwargs = dict(activation_fn=nn.Tanh, net_arch=arch['pi'])
                 model = DQN("MlpPolicy", env, verbose=1, device=device,
                             tensorboard_log=tensorboard_log_path, policy_kwargs=policy_kwargs,
-                            gamma=hyperparam["gamma"], learning_rate = hyperparam["learning_rate"],
-                            batch_size = hyperparam["batch_size"], buffer_size = hyperparam["buffer_size"],
-                            train_freq = hyperparam["train_freq"], exploration_fraction = hyperparam["exploration_fraction"],
-                            exploration_final_eps = hyperparam["exploration_final_eps"],
-                            target_update_interval = hyperparam["target_update_interval"],
-                            learning_starts = hyperparam["learning_starts"])
+                            gamma=hyperparam["gamma"], learning_rate=hyperparam["learning_rate"],
+                            batch_size=hyperparam["batch_size"], buffer_size=hyperparam["buffer_size"],
+                            train_freq=hyperparam["train_freq"],
+                            exploration_fraction=hyperparam["exploration_fraction"],
+                            exploration_final_eps=hyperparam["exploration_final_eps"],
+                            target_update_interval=hyperparam["target_update_interval"],
+                            learning_starts=hyperparam["learning_starts"])
             elif model_type == 'A2C':
                 model = A2C("MlpPolicy", env, verbose=1, device=device,
                             tensorboard_log=tensorboard_log_path, policy_kwargs=policy_kwargs,
-                            n_steps=hyperparam["n_steps"], gamma = hyperparam["gamma"],
-                            gae_lambda = hyperparam["gae_lambda"], learning_rate = hyperparam["learning_rate"],
-                            ent_coef = hyperparam["ent_coef"], normalize_advantage = hyperparam["normalize_advantage"],
-                            max_grad_norm = hyperparam["max_grad_norm"], use_rms_prop = hyperparam["use_rms_prop"],
-                            vf_coef = hyperparam["vf_coef"])
+                            n_steps=hyperparam["n_steps"], gamma=hyperparam["gamma"],
+                            gae_lambda=hyperparam["gae_lambda"], learning_rate=hyperparam["learning_rate"],
+                            ent_coef=hyperparam["ent_coef"], normalize_advantage=hyperparam["normalize_advantage"],
+                            max_grad_norm=hyperparam["max_grad_norm"], use_rms_prop=hyperparam["use_rms_prop"],
+                            vf_coef=hyperparam["vf_coef"])
             elif model_type == 'TRPO':
                 model = TRPO("MlpPolicy", env, verbose=1, tensorboard_log=tensorboard_log_path,
                              policy_kwargs=policy_kwargs, n_steps=hyperparam["n_steps"],
-                             batch_size = hyperparam["batch_size"], gamma = hyperparam["gamma"],
-                             cg_max_steps = hyperparam["cg_max_steps"], n_critic_updates = hyperparam["n_critic_updates"],
-                             target_kl = hyperparam["target_kl"], learning_rate = hyperparam["learning_rate"],
-                             gae_lambda = hyperparam["gae_lambda"])
+                             batch_size=hyperparam["batch_size"], gamma=hyperparam["gamma"],
+                             cg_max_steps=hyperparam["cg_max_steps"], n_critic_updates=hyperparam["n_critic_updates"],
+                             target_kl=hyperparam["target_kl"], learning_rate=hyperparam["learning_rate"],
+                             gae_lambda=hyperparam["gae_lambda"])
             elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
                 model = "Heuristic"
-            elif model_type == 'GTrXL-PPO':
-                model = ActorCriticModel(hyperparam, env.observation_space, (env.action_space.n,), env.max_episode_steps)
             else:
                 print(model_type, 'not found!')
 
         else:
-            policy_kwargs = {}#dict(activation_fn=nn.Tanh, net_arch = {"pi": [64, 64], "vf": [64, 64]})
+            policy_kwargs = {}  # dict(activation_fn=nn.Tanh, net_arch = {"pi": [64, 64], "vf": [64, 64]})
             if model_type == 'PPO':
                 model = PPO("MlpPolicy", env, verbose=1, n_steps=timesteps, device=device,
                             tensorboard_log=tensorboard_log_path, policy_kwargs=policy_kwargs)
             if model_type == 'RecPPO':
                 model = RecurrentPPO("MlpLstmPolicy", env, verbose=1, n_steps=timesteps, device=device,
-                            tensorboard_log=tensorboard_log_path, policy_kwargs=policy_kwargs)
+                                     tensorboard_log=tensorboard_log_path, policy_kwargs=policy_kwargs)
             elif model_type == 'DQN':
                 model = DQN("MlpPolicy", env, verbose=1, device=device,
                             tensorboard_log=tensorboard_log_path)
@@ -277,9 +269,6 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, device, seed
             elif model_type == 'TRPO':
                 model = TRPO("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path,
                              policy_kwargs=policy_kwargs)
-            elif model_type == 'GTrXL-PPO':
-                model = ActorCriticModel(config, env.observation_space,
-                                         (env.action_space.n,), env.max_episode_steps)
             elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
                 model = "Heuristic"
             else:
@@ -305,7 +294,6 @@ def _render(env, model):
 
 
 def _hyperparameter_tuning(env, model_type, device):
-
     # Set pytorch num threads to 1 for faster training.
     torch.set_num_threads(1)
     N_TRIALS = 50
@@ -342,10 +330,6 @@ def _hyperparameter_tuning(env, model_type, device):
         elif model_type == 'RecPPO':
             sample_params = sample_recppo_params(trial)
             model = RecurrentPPO(env=env, policy='MlpLstmPolicy', **sample_params)
-        elif model_type == 'GTrXL-PPO':
-            sample_params = sample_gtrxl_params(trial)
-            model = ActorCriticModel(sample_params, env.observation_space, (env.action_space.n,), env.max_episode_steps)
-
 
         # Create env used for evaluation.
         eval_env = env  # Monitor(ProductionEnv(parameter, seed, time_steps, num_episodes, model_type))
@@ -356,11 +340,7 @@ def _hyperparameter_tuning(env, model_type, device):
 
         nan_encountered = False
         try:
-            if model_type != 'GTrXL-PPO':
-                model.learn(N_TIMESTEPS, callback=eval_callback)
-            else:
-                from JSP_Environments.GTrXL_PPO.train import training
-                training(env, sample_params)
+            model.learn(N_TIMESTEPS, callback=eval_callback)
         except AssertionError as e:
             # Sometimes, random hyperparams can generate NaN.
             print(e)

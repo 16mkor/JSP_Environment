@@ -1,8 +1,8 @@
 import numpy as np
 import torch
-
 from einops import rearrange
 from torch import nn
+
 from JSP_Environments.GTrXL_PPO.utils import Module
 
 

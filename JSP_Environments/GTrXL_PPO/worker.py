@@ -1,7 +1,8 @@
 import multiprocessing
 import multiprocessing.connection
-import numpy as np
-from JSP_Environments.envs.production_env import ProductionEnv
+
+from JSP_Environments.GTrXL_PPO.utils import create_env
+
 
 def worker_process(remote: multiprocessing.connection.Connection, config: dict) -> None:
     """Executes the threaded interface to the environment.
@@ -12,7 +13,7 @@ def worker_process(remote: multiprocessing.connection.Connection, config: dict) 
     """
     # Spawn training environment
     try:
-        env = ProductionEnv('NO_PARAMETERS', np.random.randint(low=0, high=10**5), 1_000, 500, 'GTrXL-PPO')
+        env = create_env(config)
     except KeyboardInterrupt:
         pass
 
@@ -31,7 +32,6 @@ def worker_process(remote: multiprocessing.connection.Connection, config: dict) 
             else:
                 raise NotImplementedError
         except Exception as e:
-            print(data)
             raise WorkerException(e)
 
 
@@ -62,7 +62,6 @@ class WorkerException(Exception):
     def __init__(self, ee):
         self.ee = ee
         __, __, self.tb = sys.exc_info()
-        print(sys.exc_info())
         super(WorkerException, self).__init__(str(ee))
 
     def re_raise(self):

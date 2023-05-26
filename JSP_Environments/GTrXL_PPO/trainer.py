@@ -1,13 +1,14 @@
-import numpy as np
 import os
 import pickle
 import time
-import torch
-
 from collections import deque
+import gym
+import numpy as np
+import time
+import torch
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
-
+from stable_baselines3.common.monitor import Monitor
 from JSP_Environments.GTrXL_PPO.buffer import Buffer
 from JSP_Environments.GTrXL_PPO.model import ActorCriticModel
 from JSP_Environments.GTrXL_PPO.utils import batched_index_select, create_env, polynomial_decay, process_episode_info
@@ -15,7 +16,7 @@ from JSP_Environments.GTrXL_PPO.worker import Worker
 
 
 class PPOTrainer:
-    def __init__(self, env, config: dict, run_id: str = "run", device: torch.device = torch.device("cpu")) -> None:
+    def __init__(self, config: dict, run_id: str = "run", device: torch.device = torch.device("cpu")) -> None:
         """Initializes all needed training components.
 
         Arguments:
@@ -24,7 +25,6 @@ class PPOTrainer:
             device {torch.device, optional} -- Determines the training device. Defaults to cpu.
         """
         # Set members
-        self.env = env
         self.config = config
         self.device = device
         self.run_id = run_id
@@ -37,14 +37,15 @@ class PPOTrainer:
         self.embed_dim = config["transformer"]["embed_dim"]
 
         # Setup Tensorboard Summary Writer
-        if not os.path.exists("./summaries"):
-            os.makedirs("./summaries")
+        if not os.path.exists("JSP_Environments/log/summaries"):
+            os.makedirs("JSP_Environments/log/summaries")
         timestamp = time.strftime("/%Y%m%d-%H%M%S" + "/")
-        self.writer = SummaryWriter("./summaries/" + run_id + timestamp)
+        self.writer = SummaryWriter("JSP_Environments/log/summaries/" + run_id + timestamp)
 
         # Init dummy environment to retrieve action space, observation space and max episode length
         print("Step 1: Init dummy environment")
-        dummy_env = self.env
+        dummy_env = Monitor(create_env(self.config["environment"]))
+        dummy_env = gym.wrappers.RecordEpisodeStatistics(dummy_env)
         observation_space = dummy_env.observation_space
         self.action_space_shape = (dummy_env.action_space.n,)
         self.max_episode_length = dummy_env.max_episode_steps
@@ -64,7 +65,7 @@ class PPOTrainer:
 
         # Init workers
         print("Step 4: Init environment workers")
-        self.workers = [Worker(env_config=self.config) for w in range(self.num_workers)]
+        self.workers = [Worker(self.config["environment"]) for w in range(self.num_workers)]
         self.worker_ids = range(self.num_workers)
         self.worker_current_episode_step = torch.zeros((self.num_workers,), dtype=torch.long)
         # Reset workers (i.e. environments)
@@ -105,7 +106,7 @@ class PPOTrainer:
         3, 4, 5, 6
         """
 
-    def run_training(self) -> None:
+    def run_training(self):
         """Runs the entire training logic from sampling data to optimizing the model. Only the final model is saved."""
         print("Step 6: Starting training using " + str(self.device))
         # Store episode results for monitoring statistics
@@ -135,7 +136,7 @@ class PPOTrainer:
             episode_result = process_episode_info(episode_infos)
 
             # Print training statistics
-            if "success" in episode_result:
+            """if "success" in episode_result:
                 result = "{:4} reward={:.2f} std={:.2f} length={:.1f} std={:.2f} success={:.2f} pi_loss={:3f} v_loss={:3f} entropy={:.3f} loss={:3f} value={:.3f} advantage={:.3f}".format(
                     update, episode_result["reward_mean"], episode_result["reward_std"], episode_result["length_mean"],
                     episode_result["length_std"], episode_result["success"],
@@ -146,15 +147,16 @@ class PPOTrainer:
                     update, episode_result["reward_mean"], episode_result["reward_std"], episode_result["length_mean"],
                     episode_result["length_std"],
                     training_stats[0], training_stats[1], training_stats[3], training_stats[2],
-                    torch.mean(self.buffer.values), torch.mean(self.buffer.advantages))
-            print(result)
+                    torch.mean(self.buffer.values), torch.mean(self.buffer.advantages))"""
+            #print(result)
 
             # Write training statistics to tensorboard
             self._write_gradient_summary(update, grad_info)
             self._write_training_summary(update, training_stats, episode_result)
 
         # Save the trained model at the end of the training
-        self._save_model()
+        path = self._save_model()
+        return path
 
     def _sample_training_data(self) -> list:
         """Runs all n workers for n steps to sample training data.
@@ -301,7 +303,7 @@ class PPOTrainer:
 
         # Compute policy surrogates to establish the policy loss
         normalized_advantage = (samples["advantages"] - samples["advantages"].mean()) / (
-                    samples["advantages"].std() + 1e-8)
+                samples["advantages"].std() + 1e-8)
         normalized_advantage = normalized_advantage.unsqueeze(1).repeat(1,
                                                                         len(self.action_space_shape))  # Repeat is necessary for multi-discrete action spaces
         log_ratio = log_probs - samples["log_probs"]
@@ -373,13 +375,15 @@ class PPOTrainer:
         for key, value in grad_info.items():
             self.writer.add_scalar("gradients/" + key, np.mean(value), update)
 
-    def _save_model(self) -> None:
+    def _save_model(self):
         """Saves the model and the used training config to the models directory. The filename is based on the run id."""
-        if not os.path.exists("./models"):
-            os.makedirs("./models")
+        if not os.path.exists("JSP_Environments/log/models"):
+            os.makedirs("JSP_Environments/log/models")
         self.model.cpu()
-        pickle.dump((self.model.state_dict(), self.config), open("./models/" + self.run_id + ".nn", "wb"))
-        print("Model saved to " + "./models/" + self.run_id + ".nn")
+        path = "JSP_Environments/log/models/" + self.run_id + '_' + str(time.time()) + ".nn"
+        pickle.dump((self.model.state_dict(), self.config), open(path, "wb"))
+        # print("Model saved to " + path)
+        return path
 
     def close(self) -> None:
         """Terminates the trainer and all related processes."""
