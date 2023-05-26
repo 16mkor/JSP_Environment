@@ -1,7 +1,7 @@
 import multiprocessing
 import multiprocessing.connection
 
-from JSP_Environments.GTrXL_PPO.utils import create_env
+from JSP_Environments.gtrxl_ppo.utils import create_env
 
 
 def worker_process(remote: multiprocessing.connection.Connection, config: dict) -> None:

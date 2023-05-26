@@ -19,7 +19,7 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 from JSP_Environments.envs.hyperparameter_tuning import sample_a2c_params, sample_ppo_params, sample_dqn_params, \
     sample_recppo_params, TrialEvalCallback
 from JSP_Environments.envs.production_env import ProductionEnv
-from JSP_Environments.GTrXL_PPO.train import train, GTrXL_experiment
+from JSP_Environments.gtrxl_ppo.train import train, GTrXL_experiment
 
 
 def run(config, parameters, args):
@@ -40,7 +40,7 @@ def run(config, parameters, args):
     device = args['device']
 
     if config['model_type'] == 'GTrXL-PPO':
-        """Start GTrXL_PPO Experiments"""
+        """Start gtrxl_ppo Experiments"""
         train()
 
     else:

@@ -2,10 +2,10 @@ import torch
 import numpy as np
 import pickle
 import gym
-from JSP_Environments.GTrXL_PPO.model import ActorCriticModel
-from JSP_Environments.GTrXL_PPO.utils import init_transformer_memory, create_env
-from JSP_Environments.GTrXL_PPO.trainer import PPOTrainer
-from JSP_Environments.GTrXL_PPO.yaml_parser import YamlParser
+from JSP_Environments.gtrxl_ppo.model import ActorCriticModel
+from JSP_Environments.gtrxl_ppo.utils import init_transformer_memory, create_env
+from JSP_Environments.gtrxl_ppo.trainer import PPOTrainer
+from JSP_Environments.gtrxl_ppo.yaml_parser import YamlParser
 from stable_baselines3.common.monitor import Monitor
 
 

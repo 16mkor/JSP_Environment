@@ -4,7 +4,7 @@ from torch import nn
 from torch.distributions import Categorical
 from torch.nn import functional as F
 
-from JSP_Environments.GTrXL_PPO.transformer import Transformer
+from JSP_Environments.gtrxl_ppo.transformer import Transformer
 
 
 class ActorCriticModel(nn.Module):

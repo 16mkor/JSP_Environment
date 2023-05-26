@@ -3,7 +3,7 @@ import torch
 from einops import rearrange
 from torch import nn
 
-from JSP_Environments.GTrXL_PPO.utils import Module
+from JSP_Environments.gtrxl_ppo.utils import Module
 
 
 class MultiHeadAttention(nn.Module):

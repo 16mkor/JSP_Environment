@@ -9,10 +9,10 @@ import torch
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
 from stable_baselines3.common.monitor import Monitor
-from JSP_Environments.GTrXL_PPO.buffer import Buffer
-from JSP_Environments.GTrXL_PPO.model import ActorCriticModel
-from JSP_Environments.GTrXL_PPO.utils import batched_index_select, create_env, polynomial_decay, process_episode_info
-from JSP_Environments.GTrXL_PPO.worker import Worker
+from JSP_Environments.gtrxl_ppo.buffer import Buffer
+from JSP_Environments.gtrxl_ppo.model import ActorCriticModel
+from JSP_Environments.gtrxl_ppo.utils import batched_index_select, create_env, polynomial_decay, process_episode_info
+from JSP_Environments.gtrxl_ppo.worker import Worker
 
 
 class PPOTrainer:
