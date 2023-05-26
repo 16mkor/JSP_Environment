@@ -1,0 +1,1 @@
+episode_counter,sim_step,sim_time,dt,dt_real_time,valid_actions,total_reward,machines_working,machines_changeover,machines_broken,machines_idle,processed_orders,transp_working,transp_walking,transp_handling,transp_idle,machines_total,selected_idle,forced_idle,threshold_waiting,finished_orders,order_waiting_time,alpha,inventory

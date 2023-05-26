@@ -43,6 +43,31 @@ class Transport(Resource):
             # TODO: Still Hardcoded -> depending on production network
             self.mapping = []
 
+            """def generate_mappings(self, machine_ids_source, machine_ids_sink, source_indices, sink_indices):
+                for source_idx, source_id in enumerate(source_indices):
+                    for mach in [x for x in self.resources['machines'] if x.id in machine_ids_source[source_idx]]:
+                        self.mapping.append([self.resources['sources'][source_id], mach])
+
+                for sink_idx, sink_id in enumerate(sink_indices):
+                    for mach in [x for x in self.resources['machines'] if x.id in machine_ids_sink[source_idx]]:
+                        self.mapping.append([mach, self.resources['sinks'][sink_id]])
+
+            generate_mappings(self=self, machine_ids_source=self.parameters['RESP_SOURCE_MACHINE'],
+                              machine_ids_sink=self.parameters['RESP_SINK'],
+                            source_indices=[i for i in range(self.parameters['NUM_SOURCES'])],
+                              sink_indices=[i for i in range(self.parameters['NUM_SINKS'])])"""
+            """for mach in [x for x in self.resources['machines'] if x.id in [0,1,2,3,4]]:
+                self.mapping.append([self.resources['sources'][0], mach])
+            for mach in [x for x in self.resources['machines'] if x.id in [1,2,3,4]]:
+                self.mapping.append([self.resources['sources'][1], mach])
+            for mach in [x for x in self.resources['machines'] if x.id in [5,6,7]]:
+                self.mapping.append([self.resources['sources'][2], mach])
+            for mach in [x for x in self.resources['machines'] if x.id in [0,1]]:
+                self.mapping.append([mach, self.resources['sinks'][0]])
+            for mach in [x for x in self.resources['machines'] if x.id in [2,3,4]]:
+                self.mapping.append([mach, self.resources['sinks'][1]])
+            for mach in [x for x in self.resources['machines'] if x.id in [5,6,7]]:
+                self.mapping.append([mach, self.resources['sinks'][2]])"""
             m_per_so = len(self.resources['machines']) // len(self.resources['sources'])
             ma_so_mapping = [[m.id for m in self.resources['machines'][_ * m_per_so:_ * m_per_so + m_per_so]]
                              for _ in range(len(self.resources['sources']))]
@@ -52,7 +77,7 @@ class Transport(Resource):
 
             m_per_si = len(self.resources['machines']) // len(self.resources['sinks'])
             ma_si_mapping = [[m.id for m in self.resources['machines'][_ * m_per_si:_ * m_per_si + m_per_si]] for _ in
-                             range(len(self.resources['sources']))]
+                             range(len(self.resources['sinks']))]
             for j in range(len(self.resources['sinks'])):
                 for mach in [x for x in self.resources['machines'] if x.id in ma_si_mapping[j]]:
                     self.mapping.append([mach, self.resources['sinks'][j]])
@@ -126,8 +151,15 @@ class Transport(Resource):
                 # Adjust new destination machine and sink resource in process steps list of the order
                 if order.get_next_step() != result_destination:
                     order.prod_steps[order.actual_step] = result_destination
-                    num_sink = order.prod_steps[-2].id // len(self.resources['sinks']) - 1
+                    num_sink = self.parameters['RESP_SINK_MACHINE'][order.prod_steps[-2].id]
                     order.prod_steps[-1] = self.resources['sinks'][num_sink]
+                    """if order.prod_steps[-2].id < 2:
+                        order.prod_steps[-1] = self.resources['sinks'][0]
+                    elif order.prod_steps[-2].id < 5:
+                        order.prod_steps[-1] = self.resources['sinks'][1]
+                    elif order.prod_steps[-2].id < 8:
+                        order.prod_steps[-1] = self.resources['sinks'][2]"""
+
         else:  # Destination is sink -> always free
             if order.current_location == origin and \
                     order.get_next_step() == destination:
@@ -152,7 +184,8 @@ class Transport(Resource):
                 self.next_action_destination = result_destination
                 self.next_action_order = result_order
                 self.next_action_origin = result_origin
-                if self.parameters['PRINT_CONSOLE']: print(self.counter, " Order waiting time threshold reached for Order_ID: ", result_order.id)
+                if self.parameters['PRINT_CONSOLE']:
+                    print(self.counter, " Order waiting time threshold reached for Order_ID: ", result_order.id)
                 self.statistics['stat_transp_threshold_waiting_reached'][self.id] += 1
                 return result_order, result_destination
 
@@ -166,7 +199,19 @@ class Transport(Resource):
         self.last_action_id = self.next_action[0]
 
         # If agent type is a heuristic, then use heuristic decision agents
-        if self.agent_type == 'FIFO' or self.agent_type == 'NJF' or self.agent_type == 'EMPTY':
+        if self.agent_type == 'FIFO' or self.agent_type == 'NJF':
+            result_order, result_destination = self.agent.act(Transport.all_transp_orders)
+            result_origin = self.next_action_origin = result_order.current_location
+            result_destination = self.next_action_destination = result_destination
+            result_valid = self.next_action_valid = True
+            if result_destination.id >= self.parameters['NUM_MACHINES']:
+                self.next_action[0] = result_destination.id - self.parameters['NUM_SOURCES']
+            else:
+                self.next_action[0] = result_destination.id
+            return result_order, result_destination
+
+        elif self.agent_type == 'EMPTY':
+            # Todo: Delete
             try:
                 result_order, result_destination = self.agent.act(Transport.all_transp_orders)
             except:

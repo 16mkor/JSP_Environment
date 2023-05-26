@@ -1,0 +1,10 @@
+Algorith: PPO
+NUM_MACHINES: 36
+NUM_SOURCES: 2
+NUM_SINKS: 3
+Activation Function: ReLu
+
+PPO_2 net_arch: 64, 128, 64
+PPO_3 net_arch: 64, 128, 128, 64
+PPO_4 net_arch: 64, 128, 256, 128, 64
+PPO_5 net_arch: 64, 64

@@ -5,9 +5,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="270f341f-3c9f-4c21-ba74-8a9a87f940c5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/envs/hyperparameter_tuning.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Experiment_Mixed_100Steps/DQN_4204__20230515_165049_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Experiment_Mixed_100Steps/DQN_4204__20230515_165049_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/Exp Description" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/Exp Description" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/Exp Description" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-151916/events.out.tfevents.1685107156.users-MacBook-Pro.local.3893.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-152245/events.out.tfevents.1685107365.users-MacBook-Pro.local.4077.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-152314/events.out.tfevents.1685107394.users-MacBook-Pro.local.4077.1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-152322/events.out.tfevents.1685107402.users-MacBook-Pro.local.4077.2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-152720/events.out.tfevents.1685107640.users-MacBook-Pro.local.4154.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-153552/events.out.tfevents.1685108152.users-MacBook-Pro.local.4207.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-153649/events.out.tfevents.1685108209.users-MacBook-Pro.local.4236.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-153945/events.out.tfevents.1685108385.users-MacBook-Pro.local.4258.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-154026/events.out.tfevents.1685108426.users-MacBook-Pro.local.4271.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-154821/events.out.tfevents.1685108901.users-MacBook-Pro.local.4354.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-154902/events.out.tfevents.1685108942.users-MacBook-Pro.local.4378.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-155015/events.out.tfevents.1685109015.users-MacBook-Pro.local.4397.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-155118/events.out.tfevents.1685109078.users-MacBook-Pro.local.4418.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-155327/events.out.tfevents.1685109207.users-MacBook-Pro.local.4431.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-155732/events.out.tfevents.1685109452.users-MacBook-Pro.local.4482.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-155848/events.out.tfevents.1685109528.users-MacBook-Pro.local.4510.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-160344/events.out.tfevents.1685109824.users-MacBook-Pro.local.4579.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-170632/events.out.tfevents.1685113592.users-MacBook-Pro.local.5257.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/summaries/run/20230526-170801/events.out.tfevents.1685113681.users-MacBook-Pro.local.5292.0" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/JSP_Environment.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/JSP_Environment.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/config/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/config/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/heuristics.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/heuristics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/initialize_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/initialize_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/order.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/order.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/production_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/production_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/reward_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/reward_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/time_calc.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/time_calc.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/transport.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/transport.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/visualize_log.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/visualize_log.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -31,10 +66,26 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/env-3.10/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/JSP_Environments/envs/production_env.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/env-3.10/lib/python3.10/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/env-3.10/lib/python3.10/site-packages/torch/nn/modules/module.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/JSP_Environments/config/config.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/JSP_Environments/run.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/JSP_Environments/envs/time_calc.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/env-3.10/lib/python3.10/site-packages/optuna/study/study.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/main.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/JSP_Environments/envs/initialize_env.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/JSP_Environments/envs/transport.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -49,24 +100,53 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/JSP_Environments/envs" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)" />
     <property name="settings.editor.selected.configurable" value="web.server" />
+  </component>
+  <component name="ReaderModeSettings">
+    <option name="enabled" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)" />
       <recent name="$PROJECT_DIR$/JSP_Environments/envs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/JSP_Environments" />
-      <recent name="$PROJECT_DIR$/Online_Decision_Transformer" />
-      <recent name="$PROJECT_DIR$/JSP_Environments/config" />
-      <recent name="$PROJECT_DIR$/JSP_Environments/envs/old" />
-      <recent name="$PROJECT_DIR$/JSP_env/log/heuristics" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Archiv" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Experiment_Mixed_100Steps" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main_jsp">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="JSP_Environment" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main_jsp" type="PythonConfigurationType" factoryName="Python">
       <module name="JSP_Environment" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -81,7 +161,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-rl PPO" />
+      <option name="PARAMETERS" value="-rl GTrXL-PPO" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -143,6 +223,13 @@
       <workItem from="1683797555243" duration="21960000" />
       <workItem from="1683824032916" duration="743000" />
       <workItem from="1683966425726" duration="1131000" />
+      <workItem from="1684096498285" duration="158000" />
+      <workItem from="1684133736075" duration="25357000" />
+      <workItem from="1684596699791" duration="9349000" />
+      <workItem from="1684663168346" duration="29824000" />
+      <workItem from="1684915357252" duration="13538000" />
+      <workItem from="1685023912340" duration="19959000" />
+      <workItem from="1685094219323" duration="17405000" />
     </task>
     <servers />
   </component>
@@ -166,11 +253,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/JSP_Environments/envs/time_calc.py</url>
-          <line>96</line>
-          <option name="timeStamp" value="119" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/env/lib/python3.9/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py</url>
           <line>58</line>
@@ -227,24 +309,29 @@
           <option name="timeStamp" value="294" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/JSP_Environments/run.py</url>
-          <line>157</line>
-          <option name="timeStamp" value="297" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/JSP_Environments/run.py</url>
-          <line>188</line>
-          <option name="timeStamp" value="298" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/JSP_Environments/envs/production_env.py</url>
           <line>127</line>
           <option name="timeStamp" value="303" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/JSP_Environments/envs/production_env.py</url>
-          <line>99</line>
-          <option name="timeStamp" value="307" />
+          <url>file://$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/trainer.py</url>
+          <line>149</line>
+          <option name="timeStamp" value="352" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/worker.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="358" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/buffer.py</url>
+          <line>84</line>
+          <option name="timeStamp" value="359" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/JSP_Environments/GTrXL_PPO/trainer.py</url>
+          <line>208</line>
+          <option name="timeStamp" value="360" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -258,6 +345,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/JSP_Environment$main_odt.coverage" NAME="main_odt Coverage Results" MODIFIED="1678974245781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Online_Decision_Transformer" />
-    <SUITE FILE_PATH="coverage/JSP_Environment$main_jsp.coverage" NAME="main_jsp Coverage Results" MODIFIED="1683818957685" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/JSP_Environment$main_jsp.coverage" NAME="main_jsp Coverage Results" MODIFIED="1685114517246" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

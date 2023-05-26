@@ -3,8 +3,7 @@ import gym
 # from gymnasium.spaces import Box, Discrete
 from gymnasium.spaces.utils import flatten_space
 import numpy as np
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 import torch
 import sys
 from JSP_Environments.envs.initialize_env import *
@@ -116,16 +115,17 @@ class ProductionEnv( gym.Env):
     def reset(self):
         print("####### Reset Environment #######")
         print("Sim start time: ", self.statistics['sim_start_time'])
+        print("Model:", self.parameters['TRANSP_AGENT_TYPE'], "Seed:", self.parameters['SEED'])
         # super().reset()
 
         """Reset counter"""
         self.count_episode += 1  # increase episode by one
         self.count_steps = 0  # reset the counter of timesteps
 
-        """Change parameter to new szenario"""
-        #if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
-        if self.count_episode % self.parameters['CHANGE_SCENARIO_EVERY_EPISODES']:
-            self._change_production_szenario()
+        """Change parameter to new scenario"""
+        # if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
+        # if self.count_episode % self.parameters['CHANGE_SCENARIO_EVERY_EPISODES']:
+            # self._change_production_szenario(scenario='M')
 
         # Setup and start simulation
         if self.env.now == 0.0:
@@ -201,8 +201,15 @@ class ProductionEnv( gym.Env):
         print("Action space size: ", number)
         return number  # dict(type='int', num_values=number)
 
-    def _change_production_szenario(self):
+    def _change_production_szenario(self, scenario):
         if self.parameters['PRINT_CONSOLE']: print("CHANGE_OF_PRODUCTION_PARAMETERS")
+
+        if scenario != 'MA':
+            self.scenario = 'A'
+        elif scenario != 'MB':
+            self.scenario = 'B'
+        else:
+            pass
 
         if self.scenario == 'B':
             self.scenario = 'A'

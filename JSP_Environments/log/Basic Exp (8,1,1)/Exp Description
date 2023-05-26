@@ -1,0 +1,6 @@
+Algorith: A2C, DQN, PPO, RecPPo, GTrXL, FIFO, NJF, EMPTY, RANDOM
+NUM_MACHINES: 8
+NUM_SOURCES: 1
+NUM_SINKS: 1
+Activation Function: Tanh
+net_arch: 64, 64

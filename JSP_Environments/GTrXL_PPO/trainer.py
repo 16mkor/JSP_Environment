@@ -8,14 +8,14 @@ from collections import deque
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
 
-from buffer import Buffer
+from JSP_Environments.GTrXL_PPO.buffer import Buffer
 from JSP_Environments.GTrXL_PPO.model import ActorCriticModel
 from JSP_Environments.GTrXL_PPO.utils import batched_index_select, create_env, polynomial_decay, process_episode_info
 from JSP_Environments.GTrXL_PPO.worker import Worker
 
 
 class PPOTrainer:
-    def __init__(self, config: dict, run_id: str = "run", device: torch.device = torch.device("cpu")) -> None:
+    def __init__(self, env, config: dict, run_id: str = "run", device: torch.device = torch.device("cpu")) -> None:
         """Initializes all needed training components.
 
         Arguments:
@@ -24,6 +24,7 @@ class PPOTrainer:
             device {torch.device, optional} -- Determines the training device. Defaults to cpu.
         """
         # Set members
+        self.env = env
         self.config = config
         self.device = device
         self.run_id = run_id
@@ -43,7 +44,7 @@ class PPOTrainer:
 
         # Init dummy environment to retrieve action space, observation space and max episode length
         print("Step 1: Init dummy environment")
-        dummy_env = create_env(self.config["environment"])
+        dummy_env = self.env
         observation_space = dummy_env.observation_space
         self.action_space_shape = (dummy_env.action_space.n,)
         self.max_episode_length = dummy_env.max_episode_steps
@@ -63,7 +64,7 @@ class PPOTrainer:
 
         # Init workers
         print("Step 4: Init environment workers")
-        self.workers = [Worker(self.config["environment"]) for w in range(self.num_workers)]
+        self.workers = [Worker(env_config=self.config) for w in range(self.num_workers)]
         self.worker_ids = range(self.num_workers)
         self.worker_current_episode_step = torch.zeros((self.num_workers,), dtype=torch.long)
         # Reset workers (i.e. environments)

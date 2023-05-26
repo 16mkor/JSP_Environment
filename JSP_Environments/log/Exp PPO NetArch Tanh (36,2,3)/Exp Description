@@ -1,0 +1,10 @@
+Algorith: PPO
+NUM_MACHINES: 36
+NUM_SOURCES: 2
+NUM_SINKS: 3
+Activation Function: Tanh
+
+PPO_7 net_arch: 64, 128, 64
+PPO_8 net_arch: 64, 128, 128, 64
+PPO_9 net_arch: 64, 128, 256, 128, 64
+PPO_6 net_arch: 64, 64

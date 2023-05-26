@@ -15,6 +15,7 @@ def get_settings(file_name, model_type):
         config.update({'RENDER_FLAG': False})  # Render Environment # TODO: Not implemented yet
         config.update({'MULT_ENV_FLAG': False})  # Use multiple stacked environments -> Use DummyVecEnv
         config.update({'EVAL_FLAG': True})  # Evaluate Model
+        config.update({'HYPERPARAM_FLAG': True})  # Do Hyperparameter tuning
 
         """Path from/to where files loaded/saved"""
         config.update({'logging_path': "JSP_Environments/log/"})  # Save log files here

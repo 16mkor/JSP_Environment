@@ -41,8 +41,8 @@ def define_production_parameters(env, model_type, time_steps, num_episodes, seed
     parameters.update({'num_episodes': num_episodes})
 
     """Setting of Transport Agent"""
-    parameters.update({'TRANSP_AGENT_TYPE': model_type})  # Alternativen: TRPO, FIFO, NJF, EMPTY, DQN, PPO
-    parameters.update({'TRANSP_AGENT_STATE':  ['total_process_time']})  # ['bin_buffer_fill', 'bin_machine_failure', 'bin_location', 'int_buffer_fill', 'rel_buffer_fill', 'rel_buffer_fill_in_out', 'remaining_process_time', 'total_process_time']})  # Alternatives: bin_buffer_fill, bin_machine_failure, bin_location, int_buffer_fill, rel_buffer_fill, rel_buffer_fill_in_out, order_waiting_time, order_waiting_time_normalized, distance_to_action, remaining_process_time, total_process_time
+    parameters.update({'TRANSP_AGENT_TYPE': model_type})  # Alternativen: GTrXL-PPO, A2C, DQN, PPO, FIFO, NJF, EMPTY,
+    parameters.update({'TRANSP_AGENT_STATE': ['total_process_time']})  # Alternatives: bin_buffer_fill, bin_machine_failure, bin_location, int_buffer_fill, rel_buffer_fill, rel_buffer_fill_in_out, order_waiting_time, order_waiting_time_normalized, distance_to_action, remaining_process_time, total_process_time
     parameters.update({'TRANSP_AGENT_REWARD': "utilization"})  # Alternatives: valid_action, utilization, waiting_time_normalized, throughput, conwip, const_weighted, weighted_objectives
     parameters.update({'TRANSP_AGENT_REWARD_SPARSE': ""})  # Alternatives: valid_action, utilization, waiting_time
     parameters.update({'TRANSP_AGENT_REWARD_EPISODE_LIMIT': 0})  # Episode limit counter, default = 0
@@ -54,17 +54,17 @@ def define_production_parameters(env, model_type, time_steps, num_episodes, seed
     parameters.update({'TRANSP_AGENT_MAX_INVALID_ACTIONS': 5})  # Number of invalid actions until forced action is choosen
     parameters.update({'TRANSP_AGENT_WAITING_TIME_ACTION': 2})  # Waiting time of waiting time action
     parameters.update({'TRANSP_AGENT_ACTION_MAPPING': 'direct'})  # Alternatives: direct, resource
-    parameters.update({'TRANSP_AGENT_WAITING_ACTION': True})  # Alternatives: True, False
-    parameters.update({'TRANSP_AGENT_EMPTY_ACTION': True})  # Alternatives: True, False
+    parameters.update({'TRANSP_AGENT_WAITING_ACTION': False})  # Alternatives: True, False
+    parameters.update({'TRANSP_AGENT_EMPTY_ACTION': False})  # Alternatives: True, False
     parameters.update({'TRANSP_AGENT_CONWIP_INV': 15})  # ConWIP inventory target if conwip reward is selected
     parameters.update({'WAITING_TIME_THRESHOLD': 1000})  # Forced order transport if threshold reached
 
     """Configuration of production system"""
     # TODO: Still Hardcoded -> Importing from JSON file
     parameters.update({'NUM_TRANSP_AGENTS': 1})  # Number of transportation resources
-    parameters.update({'NUM_MACHINES': 20})  # Number of machines in the machine shop
-    parameters.update({'NUM_SOURCES': 4})
-    parameters.update({'NUM_SINKS': 4})
+    parameters.update({'NUM_MACHINES': 36})  # Number of machines in the machine shop
+    parameters.update({'NUM_SOURCES': 2})
+    parameters.update({'NUM_SINKS': 3})
     parameters.update({'NUM_RESOURCES': parameters['NUM_MACHINES'] + parameters['NUM_SOURCES'] + parameters['NUM_SINKS']})
     parameters.update({'NUM_PROD_VARIANTS': 1})
     parameters.update({'NUM_PROD_STEPS': 1})
@@ -75,21 +75,38 @@ def define_production_parameters(env, model_type, time_steps, num_episodes, seed
 
     """Source parameters"""
     parameters.update({'SOURCE_CAPACITIES': [5] * parameters['NUM_SOURCES']})  # Number of load ports
-    # parameters.update({'RESP_AREA_SOURCE': [[0, 1, 3], [2, 3, 4], [5, 6, 7]]})  # Orders for which machines are created in the specific source
-    parameters.update({'RESP_AREA_SOURCE': [[i for i in range(int(j * parameters['NUM_MACHINES'] / parameters['NUM_SOURCES']), int((j+1) * parameters['NUM_MACHINES'] / parameters['NUM_SOURCES']))] for j in range(parameters['NUM_SOURCES'])]})
+    parameters.update({'RESP_AREA_SOURCE': [[i for i in range(j*parameters['NUM_MACHINES']//parameters['NUM_SOURCES'],
+                                                              (j+1)*parameters['NUM_MACHINES']//parameters['NUM_SOURCES'])]
+                                            for j in range(0, parameters['NUM_SOURCES'])]}) # Orders for which machines are created in the specific source
     parameters.update({'MTOG': [10.0] * parameters['NUM_SOURCES']})  # Mean Time Order Generation
     parameters.update({'SOURCE_ORDER_GENERATION_TYPE': "ALWAYS_FILL_UP"})  # Alternatives: ALWAYS_FILL_UP, MEAN_ARRIVAL_TIME
+
+    """def hash_function_sink(num_machiens=parameters['NUM_MACHINES'], min_value=0, max_value=parameters['NUM_MACHINES']-1):
+        list = []
+        for value in range(num_machiens):
+            range_25 = (max_value - min_value) * 0.25
+            if value < min_value + range_25:
+                list.append(0)  # Bucket 0 for the smallest 25% of values
+            elif value > max_value - range_25:
+                list.append(2)  # Bucket 2 for the largest 25% of values
+            else:
+                list.append(1)  # Bucket 1 for all other values
+        return list"""
+    #parameters.update({'RESP_SINK': [[0 ,1], [2, 3, 4], [5, 6, 7]]})
+    parameters.update({'RESP_SINK_MACHINE': [_ % parameters['NUM_SINKS'] for _ in range(0, parameters['NUM_MACHINES'])]})#hash_function_sink()})
+    #parameters.update({'RESP_SOURCE_MACHINE': [[0, 1, 2, 3, 4], [1, 2, 3, 4], [5, 6, 7]]})
 
     """Machine parameters"""
     parameters.update({'MACHINE_AGENT_TYPE': "FIFO"})  # Alternatives: FIFO -> Decision rule for selecting the next available order from the load
     # parameters.update({'MACHINE_GROUPS': [2, 1, 1, 1, 1, 3, 3, 3]})
     parameters.update({'MACHINE_GROUPS': [1, 1, 1, 2, 2,
-                                          2, 2, 2, 2, 2,
-                                          3, 3, 3, 3, 3,
-                                          4, 4, 4, 4, 4,
-                                          #5, 5, 5, 5, 5,
-                                          #6, 6, 6, 6, 6
-                                          ]})
+                                            2, 2, 2, 2, 2,
+                                            3, 3, 3, 3, 3,
+                                            4, 4, 4, 4, 4,
+                                            5, 5, 5, 5, 5,
+                                            6, 6, 6, 6, 6,
+                                            6, 6, 6, 6, 7, 7
+                                            ]})
     # parameters.update({'MACHINE_GROUPS': [i % parameters['NUM_SOURCES'] + 1 for i in range(parameters['NUM_MACHINES'])]})
     parameters.update({'MIN_PROCESS_TIME': [0.5] * parameters['NUM_MACHINES']})
     parameters.update({'AVERAGE_PROCESS_TIME': [60.0] * parameters['NUM_MACHINES']})

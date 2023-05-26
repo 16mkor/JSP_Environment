@@ -90,11 +90,15 @@ class Time_calc:
             result_prod_steps.append(first_machine)
             actual_step = self.randomStreams["filled_initial_system"].randint(1, high=parameters['NUM_PROD_STEPS'])
             result_prod_steps.extend(self.randomStreams["order_sequence"].choice(resources['machines'], parameters['NUM_PROD_STEPS'] - 1 - actual_step, p=parameters['ORDER_DISTRIBUTION']))
-        num_sink = result_prod_steps[-1].id // (parameters['NUM_SINKS']) - 1
-        try:
-            result_prod_steps.append(resources['sinks'][num_sink])
-        except:
-            print("test")
+
+        num_sink = parameters['RESP_SINK_MACHINE'][result_prod_steps[-1].id]
+        result_prod_steps.append(resources['sinks'][num_sink])
+        """if result_prod_steps[-1].id < 2:
+            result_prod_steps.append(resources['sinks'][0])
+        elif result_prod_steps[-1].id < 5:
+            result_prod_steps.append(resources['sinks'][1])
+        elif result_prod_steps[-1].id < 8:
+            result_prod_steps.append(resources['sinks'][2])"""
         result_variant = self.randomStreams["order_sequence"].choice(parameters['NUM_PROD_VARIANTS'], 1, p=parameters['VARIANT_DISTRIBUTION'])
 
         return result_prod_steps, result_variant
