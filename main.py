@@ -16,7 +16,7 @@ def parse_args():
                              'NJF (default: PPO)')
     parser.add_argument('-max_e', '--max_episode_timesteps', metavar='T', type=int, nargs=1, default=1_000,
                         help='provide the number of maximum timesteps per episode (default: 1_000)')
-    parser.add_argument('-num_e', '--num_episodes', metavar='E', type=int, nargs=1, default=4_00,
+    parser.add_argument('-num_e', '--num_episodes', metavar='E', type=int, nargs=1, default=4_000,
                         help='provide the number of episode (default: 10000)')
     parser.add_argument('-se', '--seed', metavar='s', type=int, nargs=1, default=-1,
                         help='Seed for the pseudo random generators (default: random seed)')

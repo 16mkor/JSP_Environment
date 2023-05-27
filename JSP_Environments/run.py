@@ -19,7 +19,7 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 from JSP_Environments.envs.hyperparameter_tuning import sample_a2c_params, sample_ppo_params, sample_dqn_params, \
     sample_recppo_params, TrialEvalCallback
 from JSP_Environments.envs.production_env import ProductionEnv
-from JSP_Environments.gtrxl_ppo.train import train, GTrXL_experiment
+from JSP_Environments.gtrxl_ppo.train import train
 
 
 def run(config, parameters, args):
@@ -40,12 +40,15 @@ def run(config, parameters, args):
     device = args['device']
 
     if config['model_type'] == 'GTrXL-PPO':
-        """Start gtrxl_ppo Experiments"""
+        """
+        Start gtrxl_ppo Experiments
+        """
         train()
 
-    else:
+    elif config['model_type'] != 'FIFO' and config['model_type'] != 'NJF' and \
+            config['model_type'] != 'RANDOM' and config['model_type'] != 'EMPTY':
         """
-        Start Experiments of PPO, RecPPO, DQN, A2C & Heuristics 
+        Start Experiments of PPO, RecPPO, DQN, A2C
         """
 
         """Set up Environment"""
@@ -69,44 +72,51 @@ def run(config, parameters, args):
         if config['LOGGER_FLAG']:
             logger = _set_up_logger(logging_path=config['logging_path'], model=model)
 
-        elif model != "Heuristic":
-            """Train Model"""
-            print('################################')
-            print('### START TRAINING PROCEDURE ###')
-            print('################################')
-            model.learn(total_timesteps=(timesteps * episodes),
-                        tb_log_name=config['model_type'])
+        """Train Model"""
+        print('################################')
+        print('### START TRAINING PROCEDURE ###')
+        print('################################')
+        model.learn(total_timesteps=(timesteps * episodes),
+                    tb_log_name=config['model_type'])
 
-            """Evaluate Model"""
-            if config['EVAL_FLAG']:
-                print('##################################')
-                print('### START Evaluation PROCEDURE ###')
-                print('##################################')
-                evaluate_policy(model=model, env=env, return_episode_rewards=False)
+        """Evaluate Model"""
+        if config['EVAL_FLAG']:
+            print('##################################')
+            print('### START Evaluation PROCEDURE ###')
+            print('##################################')
+            evaluate_policy(model=model, env=env, return_episode_rewards=False)
 
-            """Save Model"""
-            if config['SAVE_FLAG']:
-                print('Model saved!')
-                _save_model(save_path=config['save_path'], model_type=config['model_type'], model=model)
+        """Save Model"""
+        if config['SAVE_FLAG']:
+            print('Model saved!')
+            _save_model(save_path=config['save_path'], model_type=config['model_type'], model=model)
 
-            """Render Model in Environemnt"""
-            if config['RENDER_FLAG']:
-                _render(env=env, model=model)
+        """Render Model in Environemnt"""
+        if config['RENDER_FLAG']:
+            _render(env=env, model=model)
 
-        else:
-            start = True
-            for _ in range(episodes):
-                time_steps = 0
-                done = False  # terminated, truncated = False, False
-                _ = env.reset()
-                while not done:  # (terminated or truncated):
-                    if config['model_type'] == 'RANDOM' or start == True:
-                        action = env.action_space.sample()
-                        start = False
-                    else:
-                        action = env.env.resources['transps'][0].next_action[0]
-                    state, reward, done, info = env.step(action)
-                    time_steps += 1
+    else:
+        """
+        Start Experiments of Heuristics
+        """
+
+        """Set up Environment"""
+        env = _set_up_env(MULT_ENV_FLAG=config['MULT_ENV_FLAG'], parameter=parameters,
+                          seed=seed, time_steps=timesteps, num_episodes=episodes, model_type=config['model_type'])
+
+        start = True
+        for _ in range(episodes):
+            time_steps = 0
+            done = False  # terminated, truncated = False, False
+            _ = env.reset()
+            while not done:  # (terminated or truncated):
+                if config['model_type'] == 'RANDOM' or start == True:
+                    action = env.action_space.sample()
+                    start = False
+                else:
+                    action = env.env.resources['transps'][0].next_action[0]
+                state, reward, done, info = env.step(action)
+                time_steps += 1
 
 
 def _set_up_env(MULT_ENV_FLAG, parameter, seed, time_steps, num_episodes, model_type):
@@ -174,8 +184,6 @@ def _load_model(load_path, model_type, device, seed, tensorboard_log_path):
         model = A2C.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
     elif model_type == 'TRPO':
         model = TRPO.load(load_path, device=device, tensorboard_log=tensorboard_log_path)
-    elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
-        model = "Heuristic"
     else:
         print(model_type, 'not found!')
 
@@ -247,8 +255,6 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, device, seed
                              cg_max_steps=hyperparam["cg_max_steps"], n_critic_updates=hyperparam["n_critic_updates"],
                              target_kl=hyperparam["target_kl"], learning_rate=hyperparam["learning_rate"],
                              gae_lambda=hyperparam["gae_lambda"])
-            elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
-                model = "Heuristic"
             else:
                 print(model_type, 'not found!')
 
@@ -269,8 +275,6 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, device, seed
             elif model_type == 'TRPO':
                 model = TRPO("MlpPolicy", env, verbose=1, n_steps=timesteps, tensorboard_log=tensorboard_log_path,
                              policy_kwargs=policy_kwargs)
-            elif model_type == "FIFO" or model_type == "NJF" or model_type == "EMPTY" or model_type == 'RANDOM':
-                model = "Heuristic"
             else:
                 print(model_type, 'not found!')
     if type(model) != str:

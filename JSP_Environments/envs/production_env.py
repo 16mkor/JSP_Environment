@@ -5,6 +5,7 @@ from gymnasium.spaces.utils import flatten_space
 import numpy as np
 from datetime import datetime, timedelta
 import torch
+import simpy
 import sys
 from JSP_Environments.envs.initialize_env import *
 from JSP_Environments.envs.initialize_env import _get_criteria_events

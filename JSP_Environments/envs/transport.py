@@ -252,8 +252,7 @@ class Transport(Resource):
             action_origin = self.mapping[self.next_action[0]]
             action_destination = self.mapping[self.next_action[1]]
         if self.parameters['PRINT_CONSOLE']: print("Action ID: ", self.next_action[0], "\t Origin ID: ",
-                                                   action_origin.id,
-                                                   "\t Destination ID: ", action_destination.id)
+                                                   action_origin.id, "\t Destination ID: ", action_destination.id)
         if action_origin == -1 and action_destination == -1:  # Waiting action
             result_order = result_origin = result_destination = -1
             result_valid = True

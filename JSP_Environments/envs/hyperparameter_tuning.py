@@ -22,14 +22,6 @@ import torch
 import torch.nn as nn
 
 
-N_TRIALS = 200
-N_STARTUP_TRIALS = 20
-N_EVALUATIONS = 10
-N_TIMESTEPS = int(2e9)
-EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
-N_EVAL_EPISODES = 5
-
-
 def sample_a2c_params(trial: optuna.Trial) -> Dict[str, Any]:
     """
     Sampler for A2C hyperparams.

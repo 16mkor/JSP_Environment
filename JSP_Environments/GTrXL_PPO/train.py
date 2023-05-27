@@ -9,7 +9,7 @@ from JSP_Environments.gtrxl_ppo.yaml_parser import YamlParser
 from stable_baselines3.common.monitor import Monitor
 
 
-def train() ->None:
+def train(config=None) ->None:
     # Command line arguments via docopt
     _USAGE = """
     Usage:
@@ -25,7 +25,10 @@ def train() ->None:
     run_id = "GTrXL-PPO-v2"
     cpu = True
     # Parse the yaml config file. The result is a dictionary, which is passed to the trainer.
-    config = YamlParser('JSP_Environments/config/production_env.yaml').get_config()
+    if config == None:
+        config = YamlParser('JSP_Environments/config/production_env.yaml').get_config()
+    else:
+        config = config
 
     # Determine the device to be used for training and set the default tensor type
     if not cpu:
@@ -37,19 +40,22 @@ def train() ->None:
         torch.set_default_tensor_type("torch.FloatTensor")
 
     # Initialize the PPO trainer and commence training
+
     trainer = PPOTrainer(config, run_id=run_id, device=device)
     path = trainer.run_training()
     GTrXL_experiment(model_path=path, device=device)
+    # GTrXL_experiment(model_path='Debug', device=device, config=config)
     trainer.close()
 
 
-def GTrXL_experiment(model_path, device):
+def GTrXL_experiment(model_path, device, config):
     # Set inference device and default tensor type
     device = torch.device(device)
     torch.set_default_tensor_type("torch.FloatTensor")
 
-    # Load model and config
-    state_dict, config = pickle.load(open(model_path, "rb"))
+    if model_path != 'Debug':
+        # Load model and config
+        state_dict, config = pickle.load(open(model_path, "rb"))
 
     # Initialize env
     dummy_env = Monitor(create_env(config["environment"]))
@@ -57,10 +63,16 @@ def GTrXL_experiment(model_path, device):
 
     # Initialize model and load its parameters
     model = ActorCriticModel(config, env.observation_space, (env.action_space.n,), env.max_episode_steps)
-    model.load_state_dict(state_dict)
+
+    if model_path != 'Debug':
+        model.load_state_dict(state_dict)
+
     model.to(device)
-    # model.train()
-    model.eval()
+
+    if model_path == 'Debug':
+        model.train()
+    else:
+        model.eval()
 
     # Run and render episode
 
