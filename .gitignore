@@ -1,2 +1,3 @@
-JSP_Environments/log/*.txt
 JSP_Environments/log/models/*.nn
+JSP_Environments/config/*.json
+

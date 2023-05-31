@@ -97,18 +97,31 @@ class TransformerBlock(Module):
             config {dict} -- General config
         """
         super(TransformerBlock, self).__init__()
-
+        self.config = config
         # Attention
         self.attention = MultiHeadAttention(embed_dim, num_heads)
+
+        if self.config["positional_encoding"] == "URPE":
+            from scipy.linalg import toeplitz
+            tensor_shape = (1, num_heads, embed_dim)
+            toeplitz_size = tensor_shape[-1]
+            # Generate the first row of the Toeplitz matrix
+            first_row = np.concatenate((np.ones((1,)), np.zeros((toeplitz_size - 1,))), axis=0)
+            # Generate the full Toeplitz matrix
+            toeplitz_matrix = toeplitz(first_row)
+            # Convert the Toeplitz matrix to a torch tensor
+            toeplitz_matrix = torch.from_numpy(toeplitz_matrix).float()
+            # Reshape the Toeplitz matrix to match the tensor shape
+            self.toeplitz_ = toeplitz_matrix.view(1, 1, toeplitz_size, toeplitz_size)
 
         # Setup GTrXL if used
         self.use_gtrxl = config["gtrxl"] if "gtrxl" in config else False
         if self.use_gtrxl:
-            self.gate1 = GRUGate(embed_dim, config["gtrxl_bias"])
-            self.gate2 = GRUGate(embed_dim, config["gtrxl_bias"])
+            self.gate1 = GRUGate(embed_dim, self.config["gtrxl_bias"])
+            self.gate2 = GRUGate(embed_dim, self.config["gtrxl_bias"])
 
         # LayerNorms
-        self.layer_norm = config["layer_norm"]
+        self.layer_norm = self.config["layer_norm"]
         self.norm1 = nn.LayerNorm(embed_dim)
         self.norm2 = nn.LayerNorm(embed_dim)
         if self.layer_norm == "pre":
@@ -138,6 +151,14 @@ class TransformerBlock(Module):
 
         # Forward MultiHeadAttention
         attention, attention_weights = self.attention(value, key, query_, mask)
+
+        if self.config["positional_encoding"] == "URPE":
+            # Reshape the attention tensor to match the Toeplitz matrix shape
+            attention_expanded = attention.view(1, 1, 1, attention.shape[2])
+            # Perform matrix-vector multiplication
+            attention = torch.matmul(attention_expanded, self.toeplitz_).squeeze(dim=2)
+            print(attention.hape)
+
 
         # GRU Gate or skip connection
         if self.use_gtrxl:
@@ -214,7 +235,7 @@ class Transformer(nn.Module):
         nn.init.orthogonal_(self.linear_embedding.weight, np.sqrt(2))
 
         # Determine positional encoding
-        if config["positional_encoding"] == "relative":
+        if config["positional_encoding"] == "relative" or config["positional_encoding"] == "URPE":
             self.pos_embedding = SinusoidalPosition(dim=self.embed_dim)
         elif config["positional_encoding"] == "learned":
             self.pos_embedding = nn.Parameter(torch.randn(self.max_episode_steps,
@@ -242,7 +263,7 @@ class Transformer(nn.Module):
         h = self.activation(self.linear_embedding(h))
 
         # Add positional encoding to every transformer block input
-        if self.config["positional_encoding"] == "relative":
+        if self.config["positional_encoding"] == "relative" or self.config["positional_encoding"] == "URPE":
             pos_embedding = self.pos_embedding(self.max_episode_steps)[memory_indices]
             memories = memories + pos_embedding.unsqueeze(2)
             # memories[:,:,0] = memories[:,:,0] + pos_embedding # add positional encoding only to first layer?

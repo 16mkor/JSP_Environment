@@ -8,7 +8,7 @@ import torch
 import simpy
 import sys
 from JSP_Environments.envs.initialize_env import *
-from JSP_Environments.envs.initialize_env import _get_criteria_events
+from JSP_Environments.envs.initialize_env import _get_criteria_events, _get_scenario_adjusted, _get_scenario_basic
 from JSP_Environments.envs.time_calc import Time_calc
 from JSP_Environments.envs.logger import *
 
@@ -16,10 +16,16 @@ from JSP_Environments.envs.logger import *
 class ProductionEnv(gym.Env):
 
     def __init__(self, parameters='NO_PARAMETERS', seed=np.random.randint(low=0, high=10 ** 5),
-                 time_steps=1_000, num_episodes=4_000, model_type='PPO', **kwargs):
+                 time_steps=1_000, num_episodes=4_000, model_type='PPO', scenario='Basic', **kwargs):
         super(ProductionEnv, self).__init__(**kwargs)
 
-        self.scenario = 'A'
+        self.scenario = scenario
+        if self.scenario == 'Basic' or self.scenario == 'Mixed':
+            self.basic = True
+        elif self.scenario == 'Adjusted':
+            self.basic = False
+        else:
+            raise ValueError('Scenario not available')
 
         """Counter"""
         self.count_episode = 0
@@ -37,7 +43,8 @@ class ProductionEnv(gym.Env):
         if parameters == 'NO_PARAMETERS':
             print('No Configuration provided!')
             self.parameters = define_production_parameters(env=self.env, seed=seed, time_steps=time_steps,
-                                                           num_episodes=num_episodes, model_type=model_type)
+                                                           num_episodes=num_episodes, model_type=model_type,
+                                                           scenario=self.scenario)
         else:
             print('Configuration provided!')
             self.parameters = parameters
@@ -82,6 +89,8 @@ class ProductionEnv(gym.Env):
                 agent.next_action = [int(actions)]
             elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
                 agent.next_action = [int(actions[0]), int(actions[1])]
+            else:
+                raise ValueError('TRANSP_AGENT_ACTION_MAPPING not available!')
 
             self.parameters['continue_criteria'].succeed()
             self.parameters['continue_criteria'] = self.env.event()
@@ -104,6 +113,9 @@ class ProductionEnv(gym.Env):
                 self.statistics['stat_agent_reward'][-1][3] = [int(actions)]
             elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
                 self.statistics['stat_agent_reward'][-1][3] = [int(actions[0]), int(actions[1])]
+            else:
+                raise ValueError('TRANSP_AGENT_ACTION_MAPPING not available!')
+
             self.statistics['stat_agent_reward'][-1][4] = round(reward, 5)
             self.statistics['stat_agent_reward'][-1][5] = agent.next_action_valid
             self.statistics['stat_agent_reward'].append(
@@ -126,8 +138,8 @@ class ProductionEnv(gym.Env):
 
         """Change parameter to new scenario"""
         # if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
-        # if self.count_episode % self.parameters['CHANGE_SCENARIO_EVERY_EPISODES']:
-        # self._change_production_szenario(scenario='M')
+        if self.parameters['SCENARIO'] == 'Mixed' and self.count_episode % self.parameters['CHANGE_SCENARIO_EVERY_EPISODES']:
+                self.basic = self._change_production_scenario(basic=self.basic)
 
         # Setup and start simulation
         if self.env.now == 0.0:
@@ -159,6 +171,9 @@ class ProductionEnv(gym.Env):
             number = len(self.resources['transps'][0].mapping)
         elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
             number = (len(self.resources['transps'][0].mapping) - 1) ** 2 + 1
+        else:
+            raise ValueError('TRANSP_AGENT_ACTION_MAPPING not available!')
+
         # State value alternatives sorted according to the type
         if 'bin_buffer_fill' in self.parameters['TRANSP_AGENT_STATE']:
             number += self.parameters['NUM_MACHINES'] + self.parameters['NUM_SOURCES']
@@ -190,8 +205,7 @@ class ProductionEnv(gym.Env):
         if 'total_process_time' in self.parameters['TRANSP_AGENT_STATE']:
             state_type = 'float'
             number += self.parameters['NUM_MACHINES']
-
-        print("State space size: ", number)
+        if self.parameters['PRINT_CONSOLE']: print("State space size: ", number)
         return number  # dict(type=state_type, shape=(number))
 
     def _action_size(self):
@@ -200,52 +214,27 @@ class ProductionEnv(gym.Env):
         elif self.parameters['TRANSP_AGENT_ACTION_MAPPING'] == 'resource':
             number = len(self.resources['transps'][0].mapping)
             # return dict(type='int', num_values=number, shape=(2,))
-        print("Action space size: ", number)
+        else: raise ValueError('TRANSP_AGENT_ACTION_MAPPING not available!')
+        if self.parameters['PRINT_CONSOLE']: print("Action space size: ", number)
         return number  # dict(type='int', num_values=number)
 
-    def _change_production_szenario(self, scenario):
+    def _change_production_scenario(self, basic):
         if self.parameters['PRINT_CONSOLE']: print("CHANGE_OF_PRODUCTION_PARAMETERS")
-
-        if scenario != 'MA':
-            self.scenario = 'A'
-        elif scenario != 'MB':
-            self.scenario = 'B'
-        else:
-            pass
-
-        if self.scenario == 'B':
-            self.scenario = 'A'
-            # change machine capacity, transport time and speed
-            for mach in self.resources['machines']:
-                mach.capacity = mach.capacity / 2
-            self.parameters['TRANSP_TIME'] = [[x * 3.0 for x in y] for y in self.parameters['TRANSP_TIME']]
-            self.parameters['TRANSP_SPEED'] = self.parameters['TRANSP_SPEED'] / 3.0
-
-            # change in layout
-            self.parameters['RESP_AREA_SOURCE'] = [[i for i in range(
-                int(j * self.parameters['NUM_MACHINES'] / self.parameters['NUM_SOURCES']),
-                int((j + 1) * self.parameters['NUM_MACHINES'] / self.parameters['NUM_SOURCES']))] for j in
-                                                   range(self.parameters['NUM_SOURCES'])]
-            groups = [1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4]
+        if basic:
+            self.parameters = _get_scenario_adjusted(self.parameters)
             for i, machine in enumerate(self.resources['machines']):
-                machine.machine_group = groups[i]
-
-        elif self.scenario == 'A':
-            self.scenario = 'B'
-            # change machine capacity, transport time and speed
-            for mach in self.resources['machines']:
-                mach.capacity = mach.capacity * 2
-            self.parameters['TRANSP_TIME'] = [[x / 3.0 for x in y] for y in self.parameters['TRANSP_TIME']]
-            self.parameters['TRANSP_SPEED'] = self.parameters['TRANSP_SPEED'] * 3.0
-
-            # change in layout
-            self.parameters['RESP_AREA_SOURCE'] = [[0, 1, 2, 8, 9], [5, 6, 7, 13, 14], [10, 11, 12, 18, 19],
-                                                   [3, 4, 15, 16, 17, ]]
-            for machine in self.resources['machines']:
-                change = np.random.randint(low=0,
-                                           high=1 + self.parameters['NUM_MACHINES'] / self.parameters['NUM_SINKS'])
-                machine.machine_group = machine.machine_group + change if machine.machine_group + change <= 4 \
-                    else machine.machine_group + change - self.parameters['NUM_MACHINES'] / self.parameters['NUM_SINKS']
+                machine.capacity = machine.capacity / 2
+                machine.machine_group = self.parameters['MACHINE_GROUPS'][i]
+                # if i % 12 == 0: machine.forced_broken = False
+            basic = False
+        else:
+            self.parameters = _get_scenario_basic(self.parameters)
+            for i, machine in enumerate(self.resources['machines']):
+                machine.capacity = machine.capacity * 2
+                machine.machine_group = self.parameters['MACHINE_GROUPS'][i]
+                # if i % 12 == 0: machine.forced_broken = True
+            basic = True
+        return basic
 
     def _export_statistics(self, counter, episode_counter):
         # Episodic KPI logger & printout

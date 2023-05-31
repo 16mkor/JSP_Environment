@@ -2,6 +2,8 @@ import torch
 import numpy as np
 import pickle
 import gym
+
+from JSP_Environments.hyperparameter_tuning import _hyperparameter_tuning
 from JSP_Environments.gtrxl_ppo.model import ActorCriticModel
 from JSP_Environments.gtrxl_ppo.utils import init_transformer_memory, create_env
 from JSP_Environments.gtrxl_ppo.trainer import PPOTrainer
@@ -9,7 +11,7 @@ from JSP_Environments.gtrxl_ppo.yaml_parser import YamlParser
 from stable_baselines3.common.monitor import Monitor
 
 
-def train(config=None) ->None:
+def train(config=None, hyperparam=False) ->None:
     # Command line arguments via docopt
     _USAGE = """
     Usage:
@@ -25,6 +27,7 @@ def train(config=None) ->None:
     run_id = "GTrXL-PPO-v2"
     cpu = True
     # Parse the yaml config file. The result is a dictionary, which is passed to the trainer.
+
     if config == None:
         config = YamlParser('JSP_Environments/config/production_env.yaml').get_config()
     else:
@@ -40,12 +43,16 @@ def train(config=None) ->None:
         torch.set_default_tensor_type("torch.FloatTensor")
 
     # Initialize the PPO trainer and commence training
+    if hyperparam:
+        dummy_env = gym.wrappers.RecordEpisodeStatistics(Monitor(create_env(config["environment"])))
+        config = _hyperparameter_tuning(env=dummy_env, model_type='GTrXL_PPO')
+        dummy_env.close()
 
-    trainer = PPOTrainer(config, run_id=run_id, device=device)
-    path = trainer.run_training()
-    GTrXL_experiment(model_path=path, device=device)
-    # GTrXL_experiment(model_path='Debug', device=device, config=config)
-    trainer.close()
+    # trainer = PPOTrainer(config, run_id=run_id, device=device, hyperparam=hyperparam)
+    # path = trainer.run_training()
+    # GTrXL_experiment(model_path=path, device=device)
+    GTrXL_experiment(model_path='Debug', device=device, config=config)
+    # trainer.close()
 
 
 def GTrXL_experiment(model_path, device, config):

@@ -10,16 +10,21 @@ You can run this example as follows:
 """
 from typing import Any
 from typing import Dict
+import os
+import json
 import gym
 import optuna
-from optuna.pruners import MedianPruner
-from optuna.samplers import TPESampler
-from stable_baselines3 import A2C
-from stable_baselines3.common.callbacks import EvalCallback
-from rl_zoo3 import linear_schedule
-from stable_baselines3.common.monitor import Monitor
+import datetime as dt
 import torch
 import torch.nn as nn
+from optuna.pruners import MedianPruner
+from optuna.samplers import TPESampler
+from sb3_contrib import TRPO, RecurrentPPO
+from stable_baselines3 import PPO, DQN, A2C
+from stable_baselines3.common.callbacks import EvalCallback
+from rl_zoo3 import linear_schedule
+
+from JSP_Environments.gtrxl_ppo.trainer import PPOTrainer
 
 
 def sample_a2c_params(trial: optuna.Trial) -> Dict[str, Any]:
@@ -268,6 +273,10 @@ def sample_gtrxl_params(trial: optuna.Trial) -> Dict[str, Any]:
     memory_length = trial.suggest_int("memory_length", 16, 64, log=True)
 
     return {
+        "environment":
+            {
+                "type": "JSP"
+            },
         "gamma": gamma,
         "lamda": lambda_,
         "updates": 300,
@@ -283,7 +292,7 @@ def sample_gtrxl_params(trial: optuna.Trial) -> Dict[str, Any]:
                 "num_blocks": num_blocks,
                 "embed_dim": embed_dim,
                 "num_heads": num_heads,
-                "memory_length": memory_length,
+                "memory_length": 32,
                 "positional_encoding": "",
                 "layer_norm": "pre",
                 "gtrxl": True,
@@ -380,6 +389,115 @@ def sample_trpo_params(trial: optuna.Trial) -> Dict[str, Any]:
         ),
     }
 
+
+def _hyperparameter_tuning(env, model_type):
+    # Set pytorch num threads to 1 for faster training.
+    torch.set_num_threads(1)
+    N_TRIALS = 50
+    N_STARTUP_TRIALS = 35
+    N_EVALUATIONS = 24
+    N_TIMESTEPS = int(5e5)
+    EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
+    N_EVAL_EPISODES = 50
+
+    """N_TRIALS = 1
+    N_STARTUP_TRIALS = 1
+    N_EVALUATIONS = 1
+    N_TIMESTEPS = int(1)
+    EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
+    N_EVAL_EPISODES = 1"""
+
+    DEFAULT_HYPERPARAMS = {}
+
+    def objective(trial: optuna.Trial) -> float:
+        kwargs = DEFAULT_HYPERPARAMS.copy()
+        # Sample hyperparameters.
+        if model_type == 'A2C':
+            sample_params = sample_a2c_params(trial)
+            model = A2C(env=env, policy='MlpPolicy', **sample_params)
+        elif model_type == 'DQN':
+            sample_params = sample_dqn_params(trial)
+            model = DQN(env=env, policy='MlpPolicy', **sample_params)
+        elif model_type == 'TRPO':
+            sample_params = sample_dqn_params(trial)
+            model = TRPO(env=env, policy='MlpPolicy', **sample_params)
+        elif model_type == 'PPO':
+            sample_params = sample_ppo_params(trial)
+            model = PPO(env=env, policy='MlpPolicy', **sample_params)
+        elif model_type == 'RecPPO':
+            sample_params = sample_recppo_params(trial)
+            model = RecurrentPPO(env=env, policy='MlpLstmPolicy', **sample_params)
+        elif model_type == 'GTrXL_PPO':
+            sample_params = sample_gtrxl_params(trial)
+            trainer = PPOTrainer(sample_params, run_id='GTrXL-PPO-v2')
+
+        # Create env used for evaluation.
+        eval_env = env  # Monitor(ProductionEnv(parameter, seed, time_steps, num_episodes, model_type))
+        # Create the callback that will periodically evaluate and report the performance.
+        eval_callback = TrialEvalCallback(
+            eval_env, trial, n_eval_episodes=N_EVAL_EPISODES, eval_freq=EVAL_FREQ, deterministic=True
+        )
+
+        nan_encountered = False
+        try:
+            if model_type != 'GTrXL_PPO':
+                model.learn(N_TIMESTEPS, callback=eval_callback)
+            else:
+                _ = trainer.run_training()
+        except AssertionError as e:
+            # Sometimes, random hyperparams can generate NaN.
+            print(e)
+            nan_encountered = True
+        finally:
+            # Free memory.
+            if model_type != 'GTrXL-PPO':
+                model.env.close()
+            else:
+                trainer.close()
+            eval_env.close()
+
+        # Tell the optimizer that the trial failed.
+        if nan_encountered:
+            return float("nan")
+
+        if eval_callback.is_pruned:
+            raise optuna.exceptions.TrialPruned()
+
+        return eval_callback.best_mean_reward
+
+    sampler = TPESampler(n_startup_trials=N_STARTUP_TRIALS)
+    # Do not prune before 1/3 of the max budget is used.
+    pruner = MedianPruner(n_startup_trials=N_STARTUP_TRIALS, n_warmup_steps=N_EVALUATIONS // 3)
+
+    study = optuna.create_study(sampler=sampler, pruner=pruner, direction="maximize")
+    try:
+        study.optimize(objective, n_trials=N_TRIALS, timeout=600)
+    except KeyboardInterrupt:
+        pass
+
+    print("Number of finished trials: ", len(study.trials))
+
+    print("Best trial:")
+    trial = study.best_trial
+
+    print("  Value: ", trial.value)
+
+    print("  Params: ")
+    for key, value in trial.params.items():
+        print("    {}: {}".format(key, value))
+
+    print("  User attrs:")
+    for key, value in trial.user_attrs.items():
+        print("    {}: {}".format(key, value))
+
+    path = "JSP_Environments/log/Hyperparameter/"
+    file = path + model_type + '_config_parameters' + "_" + dt.datetime.now().strftime("%Y%m%d_%H%M%S") + '.json'
+    if not os.path.exists(path):
+        os.makedirs(path)
+    with open(file, 'a') as fp:
+        json.dump(dict(trial.params.items()), fp)
+
+    return dict(trial.params.items())
 
 class TrialEvalCallback(EvalCallback):
     """Callback used for evaluating and reporting a trial."""

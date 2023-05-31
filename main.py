@@ -14,6 +14,8 @@ def parse_args():
     parser.add_argument('-rl', '--rl_algorithm', metavar='RL', type=str, nargs=1, default='PPO',
                         help='provide one of the RL algorithms: PPO, RecPPO, A2C, DQN, GTrXL-PPO, EMPTY, FIFO, RANDOM, '
                              'NJF (default: PPO)')
+    parser.add_argument('-sc', '--scenario', metavar='SC', type=str, nargs=1, default='Basic',
+                        help='Basic Scenario "Basic", Adjusted Scenario "Adjusted", Mixed Scenario "Mixed')
     parser.add_argument('-max_e', '--max_episode_timesteps', metavar='T', type=int, nargs=1, default=1_000,
                         help='provide the number of maximum timesteps per episode (default: 1_000)')
     parser.add_argument('-num_e', '--num_episodes', metavar='E', type=int, nargs=1, default=4_000,
@@ -37,6 +39,9 @@ def parse_args():
             args[arg] = args[arg][0]
     if args['seed'] == -1:
         args['seed'] = np.random.randint(low=0, high=10 ** 5)
+    if args['rl_algorithm'] == 'FIFO' or args['rl_algorithm'] == 'NJF' or \
+            args['rl_algorithm'] == 'RANDOM' or args['rl_algorithm'] == 'EMTPY':
+        args['num_episodes'] = 100
 
     return args
 
