@@ -1,0 +1,1 @@
+{"gamma": 0.999, "normalize_advantage": true, "max_grad_norm": 0.6, "use_rms_prop": true, "gae_lambda": 0.9, "n_steps": 2048, "lr_schedule": "constant", "learning_rate": 0.0012134368164065327, "ent_coef": 0.0011081071176569954, "vf_coef": 0.4698063570446771, "ortho_init": false, "net_arch": "small"}

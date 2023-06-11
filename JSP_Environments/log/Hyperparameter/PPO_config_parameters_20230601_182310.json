@@ -1,0 +1,1 @@
+{"batch_size": 512, "n_steps": 1024, "gamma": 0.995, "learning_rate": 1.9653025738641636e-05, "ent_coef": 0.00013265840409896898, "clip_range": 0.3, "gae_lambda": 0.8, "max_grad_norm": 0.5, "vf_coef": 0.3297492100683278, "net_arch": "small"}

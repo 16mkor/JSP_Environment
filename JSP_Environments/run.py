@@ -265,7 +265,9 @@ def _create_model(LOAD_FLAG, load_path, env, model_type, timesteps, device, seed
                 model = RecurrentPPO("MlpLstmPolicy", env, verbose=1, n_steps=timesteps, device=device,
                                      tensorboard_log=tensorboard_log_path, policy_kwargs=policy_kwargs)
             elif model_type == 'DQN':
-                model = DQN("MlpPolicy", env, verbose=1, device=device,
+                arch = {"pi": [256, 256], "vf": [256, 256]}
+                policy_kwargs = dict(activation_fn=nn.Tanh, net_arch=arch['pi'])
+                model = DQN("MlpPolicy", env, verbose=1, device=device, policy_kwargs=policy_kwargs,
                             tensorboard_log=tensorboard_log_path)
             elif model_type == 'A2C':
                 model = A2C("MlpPolicy", env, verbose=1, n_steps=timesteps, device=device,

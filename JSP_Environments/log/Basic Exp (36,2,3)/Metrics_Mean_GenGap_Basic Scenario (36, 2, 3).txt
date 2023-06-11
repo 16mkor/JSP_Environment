@@ -1,0 +1,119 @@
+#####FIFO#####
+### Performance ###
+alpha: 5.76761664
+inventory: 30.932086320000003
+order_waiting_time: 145.37888976
+machines_working: 0.22230316
+max_reward: 369.44558
+transp_util: 0.9900000000000001
+throughput: 459.496
+### Generalization Gap ###
+alpha: -0.016849759999999492
+inventory: -0.14398229999999757
+order_waiting_time: -0.7589308999999957
+machines_working: -6.1400000000017e-05
+max_reward: 2.7984500000000025
+transp_util: 0.0
+throughput: -0.06200000000001182
+#####NJF#####
+### Performance ###
+alpha: 6.60406726
+inventory: 38.78812905999999
+order_waiting_time: 178.90976304000003
+machines_working: 0.24081676
+max_reward: 378.5413
+transp_util: 0.9900000000000001
+throughput: 459.572
+### Generalization Gap ###
+alpha: 0.049424659999999676
+inventory: -0.19194722000000297
+order_waiting_time: -0.21226757999997403
+machines_working: -0.00023886000000003516
+max_reward: -3.0634300000000394
+transp_util: 0.0
+throughput: -0.012000000000000455
+#####EMPTY#####
+### Performance ###
+alpha: nan
+inventory: nan
+order_waiting_time: nan
+machines_working: nan
+max_reward: nan
+transp_util: nan
+throughput: nan
+### Generalization Gap ###
+alpha: nan
+inventory: nan
+order_waiting_time: nan
+machines_working: nan
+max_reward: nan
+transp_util: nan
+throughput: nan
+#####RANDOM#####
+### Performance ###
+alpha: 38.16314224
+inventory: 127.80441228
+order_waiting_time: 804.7455699199999
+machines_working: 0.20829778
+max_reward: 136.0977
+transp_util: 0.9303650800000001
+throughput: 213.958
+### Generalization Gap ###
+alpha: -0.19519541999999745
+inventory: -0.03971085999999957
+order_waiting_time: 2.97459997999988
+machines_working: 0.000517119999999982
+max_reward: -1.1988900000000058
+transp_util: 0.0007754800000000506
+throughput: 1.8700000000000045
+#####DQN#####
+### Performance ###
+alpha: 52.58443888
+inventory: 110.20388664000001
+order_waiting_time: 816.78996282
+machines_working: 0.18832676
+max_reward: 115.42911
+transp_util: 0.7729349999999999
+throughput: 160.352
+### Generalization Gap ###
+alpha: -65.80960439999998
+inventory: 3.5758285400000176
+order_waiting_time: 22.09865130000003
+machines_working: -0.0004438400000000009
+max_reward: -24.390560000000008
+transp_util: -0.006902760000000119
+throughput: -11.461999999999989
+#####PPO#####
+### Performance ###
+alpha: 43.93936906
+inventory: 165.28353286
+order_waiting_time: 978.7519216200001
+machines_working: 0.24121357999999998
+max_reward: 342.76859
+transp_util: 0.9964062200000001
+throughput: 847.944
+### Generalization Gap ###
+alpha: -2.045537379999999
+inventory: 3.1815958800000033
+order_waiting_time: -1.7218270999999277
+machines_working: 0.003502139999999959
+max_reward: -11.40531999999996
+transp_util: 0.00341720000000012
+throughput: 29.813999999999965
+#####RecPPO#####
+### Performance ###
+alpha: 41.736710339999995
+inventory: 155.28811911999998
+order_waiting_time: 927.15089908
+machines_working: 0.24106376000000002
+max_reward: 293.44313
+transp_util: 0.99623822
+throughput: 646.896
+### Generalization Gap ###
+alpha: -2.025687100000006
+inventory: 1.8162962399999856
+order_waiting_time: 4.459246340000163
+machines_working: 0.0036412600000000073
+max_reward: -5.70123000000001
+transp_util: 0.003583519999999951
+throughput: 7.038000000000011

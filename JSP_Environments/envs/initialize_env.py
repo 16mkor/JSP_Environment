@@ -62,7 +62,7 @@ def define_production_parameters(env, model_type, time_steps, num_episodes, seed
     """Configuration of production system"""
     # TODO: Still Hardcoded -> Importing from JSON file
     parameters.update({'NUM_TRANSP_AGENTS': 1})  # Number of transportation resources
-    parameters.update({'NUM_MACHINES': 36})  # Number of machines in the machine shop
+    parameters.update({'NUM_MACHINES': 16})  # Number of machines in the machine shop
     parameters.update({'NUM_SOURCES': 2})
     parameters.update({'NUM_SINKS': 3})
     parameters.update({'NUM_RESOURCES': parameters['NUM_MACHINES'] + parameters['NUM_SOURCES'] + parameters['NUM_SINKS']})
@@ -113,8 +113,8 @@ def define_production_parameters(env, model_type, time_steps, num_episodes, seed
 
     """Define Scenario"""
     if parameters['SCENARIO'] == 'Mixed':
-        parameters.update(({'CHANGE_SCENARIO_AFTER_EPISODES': 5 * 10 ** 10}))
-        parameters.update(({'CHANGE_SCENARIO_EVERY_EPISODES': 100}))
+        parameters.update(({'CHANGE_SCENARIO_AFTER_EPISODES': 3_500}))
+        parameters.update(({'CHANGE_SCENARIO_EVERY_EPISODES': 1}))
     else:
         # Do not change Scenario
         parameters.update(({'CHANGE_SCENARIO_AFTER_EPISODES': parameters['num_episodes']}))
@@ -152,11 +152,11 @@ def _get_scenario_basic(parameters):
     parameters.update({'MACHINE_GROUPS': [1, 1, 1, 2, 2,
                                           2, 2, 2, 2, 2,
                                           3, 3, 3, 3, 3,
-                                          4, 4, 4, 4, 4,
-                                          5, 5, 5, 5, 5,
-                                          6, 6, 6, 6, 6,
-                                          6, 6, 6, 6, 7, 7
-                                          ]})
+                                          4]})#, 4, 4, 4, 4,
+                                          #5, 5, 5, 5, 5,
+                                          #6, 6, 6, 6, 6,
+                                          #6, 6, 6, 6, 7, 7
+                                          #]})
 
     parameters.update({'TRANSP_SPEED': 1.0 * 60.0})
     parameters.update({'TRANSP_TIME': [[0.0 for x in range(parameters['NUM_RESOURCES'])] for y in
@@ -182,11 +182,11 @@ def _get_scenario_adjusted(parameters):
     parameters.update({'MACHINE_GROUPS': [1, 2, 3, 4, 5,
                                           1, 2, 3, 4, 5,
                                           1, 2, 3, 4, 5,
-                                          1, 2, 3, 4, 5,
-                                          1, 2, 3, 4, 5,
-                                          6, 7, 6, 7, 6,
-                                          7, 7, 7, 6, 6, 6
-                                          ]})
+                                          1]})#, 2, 3, 4, 5,
+                                          #1, 2, 3, 4, 5,
+                                          #6, 7, 6, 7, 6,
+                                          #7, 7, 7, 6, 6, 6
+                                          #]})
 
     parameters.update({'TRANSP_SPEED': 1.0 * 60.0 / 3})
     # TRANSP_TIME will be 3x larger as TRANSP_SPEED is 3x smaller

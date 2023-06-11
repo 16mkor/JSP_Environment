@@ -1,0 +1,1 @@
+{"gamma": 0.995, "learning_rate": 0.011153735375999726, "batch_size": 256, "buffer_size": 10000, "exploration_final_eps": 0.149844244243891, "exploration_fraction": 0.1016030184287725, "target_update_interval": 1, "learning_starts": 1000, "train_freq": 1000, "net_arch": "small"}

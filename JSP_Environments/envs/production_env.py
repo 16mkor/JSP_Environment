@@ -138,7 +138,9 @@ class ProductionEnv(gym.Env):
 
         """Change parameter to new scenario"""
         # if self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
-        if self.parameters['SCENARIO'] == 'Mixed' and self.count_episode % self.parameters['CHANGE_SCENARIO_EVERY_EPISODES']:
+        if (self.parameters['SCENARIO'] == 'Mixed' and self.count_episode % self.parameters['CHANGE_SCENARIO_EVERY_EPISODES']
+            and self.count_episode < self.parameters['CHANGE_SCENARIO_AFTER_EPISODES'])\
+                or self.count_episode == self.parameters['CHANGE_SCENARIO_AFTER_EPISODES']:
                 self.basic = self._change_production_scenario(basic=self.basic)
 
         # Setup and start simulation

@@ -5,17 +5,220 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="270f341f-3c9f-4c21-ba74-8a9a87f940c5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/EMPTY_2363__20230531_144813_agent_reward_log.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/EMPTY_2363__20230531_144813_episode_log.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JSP_Environments/models/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JSP_Environments/models/Untitled.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (16,2,3)/FIFO_2163__20230611_131244_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (16,2,3)/Heuristics_Metrics_Mean_Adjusted Scenario (16, 2, 3).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (16,2,3)/NJF_2163__20230611_131109_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (16,2,3)/RANDOM_2163__20230611_131443_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/DQN_2363__20230601_175504_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/GTrXL-PPO_2363__20230606_233121_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/Metrics_Mean_GenGap_Adjusted Scenario (36, 2, 3).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/PPO_2363__20230601_175524_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/RecPPO_2363__20230601_175542_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/fig/Fig_alpha_Adjusted Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/fig/Fig_inventory_Adjusted Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/fig/Fig_machines_working_Adjusted Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/fig/Fig_order_waiting_time_Adjusted Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/fig/Fig_processed_orders_Adjusted Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/fig/Fig_total_reward_Adjusted Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/fig/Fig_transp_working_Adjusted Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/A2C_1/events.out.tfevents.1685528946.2ed4b68c3ab9.3729202.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/A2C_2/events.out.tfevents.1685637095.2ed4b68c3ab9.3783364.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/DQN_1/events.out.tfevents.1685532304.2ed4b68c3ab9.3728266.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/DQN_2/events.out.tfevents.1685636702.2ed4b68c3ab9.3783257.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/fig/Fig_alpha_Hyperparameter Experiment PPO NetArch RELU (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/fig/Fig_inventory_Hyperparameter Experiment PPO NetArch RELU (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/fig/Fig_machines_working_Hyperparameter Experiment PPO NetArch RELU (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/fig/Fig_order_waiting_time_Hyperparameter Experiment PPO NetArch RELU (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/fig/Fig_processed_orders_Hyperparameter Experiment PPO NetArch RELU (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/fig/Fig_total_reward_Hyperparameter Experiment PPO NetArch RELU (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/fig/Fig_transp_working_Hyperparameter Experiment PPO NetArch RELU (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120728_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120836_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/fig/Fig_alpha_Hyperparameter Experiment PPO NetArch Tanh (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/fig/Fig_inventory_Hyperparameter Experiment PPO NetArch Tanh (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/fig/Fig_machines_working_Hyperparameter Experiment PPO NetArch Tanh (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/fig/Fig_order_waiting_time_Hyperparameter Experiment PPO NetArch Tanh (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/fig/Fig_processed_orders_Hyperparameter Experiment PPO NetArch Tanh (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/fig/Fig_total_reward_Hyperparameter Experiment PPO NetArch Tanh (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/fig/Fig_transp_working_Hyperparameter Experiment PPO NetArch Tanh (36,2,3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/PPO_1/events.out.tfevents.1685528114.2ed4b68c3ab9.3729950.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/PPO_3/events.out.tfevents.1685636590.2ed4b68c3ab9.3783469.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/RecPPO_1/events.out.tfevents.1685552791.2ed4b68c3ab9.3730841.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (16,2,3)/FIFO_2163__20230611_130704_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (16,2,3)/FIFO_2163__20230611_130704_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (16,2,3)/Heuristics_Metrics_Mean_Basic Scenario (16, 2, 3).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (16,2,3)/Metrics_Mean_GenGap_Basic Scenario (16, 2, 3).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (16,2,3)/NJF_2163__20230611_130906_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (16,2,3)/NJF_2163__20230611_130906_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (16,2,3)/RANDOM_2163__20230611_131716_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (16,2,3)/RANDOM_2163__20230611_131716_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/DQN_2363__20230604_074709_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/DQN_2363__20230604_074709_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/GTrXL-PPO_2363__20230606_225459_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/GTrXL-PPO_2363__20230606_225459_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/Metrics_Mean_GenGap_Basic Scenario (36, 2, 3).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/PPO_2363__20230604_074713_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/PPO_2363__20230604_074713_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/RecPPO_2363__20230604_074737_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/RecPPO_2363__20230604_074737_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_alpha_Basic Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_alpha_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_inventory_Basic Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_inventory_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_machines_working_Basic Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_machines_working_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_order_waiting_time_Basic Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_order_waiting_time_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_processed_orders_Basic Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_processed_orders_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_total_reward_Basic Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_total_reward_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_transp_working_Basic Scenario (36, 2, 3).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)/fig/Fig_transp_working_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/A2C_383__20230602_212206_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/A2C_383__20230602_212206_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/Metrics_Mean_GenGap_Basic Scenario (8, 1, 1).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/fig/Fig_alpha_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/fig/Fig_inventory_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/fig/Fig_machines_working_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/fig/Fig_order_waiting_time_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/fig/Fig_processed_orders_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/fig/Fig_total_reward_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/fig/Fig_transp_working_Basic Scenario (8, 1, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/DQN_2163__20230611_172902_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/DQN_2163__20230611_172902_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Hyperparameter/A2C_config_parameters_20230531_122906.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Hyperparameter/A2C_config_parameters_20230601_183135.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Hyperparameter/DQN_config_parameters_20230531_132504.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Hyperparameter/DQN_config_parameters_20230601_182502.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Hyperparameter/PPO_config_parameters_20230531_121514.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Hyperparameter/PPO_config_parameters_20230601_182310.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Hyperparameter/RecPPO_config_parameters_20230531_190631.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Hyperparameter/RecPPO_config_parameters_20230601_222536.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Hyperparameter/TRPO_config_parameters_20230603_011610.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (16,2,3)/FIFO_2163__20230611_132606_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (16,2,3)/FIFO_2163__20230611_132606_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (16,2,3)/Heuristics_Metrics_Mean_Mixed Scenario (16, 2, 3, 1).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (16,2,3)/NJF_2163__20230611_132247_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (16,2,3)/NJF_2163__20230611_132247_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (16,2,3)/RANDOM_2163__20230611_132015_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (16,2,3)/RANDOM_2163__20230611_132015_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/DQN_2363__20230605_225507_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/DQN_2363__20230605_225507_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/EMPTY_2363__20230531_144813_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/FIFO_2363__20230531_112604_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/Metrics_Mean_GenGap_Mixed Scenario (36, 2, 3, 1).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/NJF_2363__20230531_112827_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/PPO_2363__20230605_182035_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/PPO_2363__20230605_182035_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/RANDOM_2363__20230531_113727_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/RecPPO_2363__20230605_225547_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/RecPPO_2363__20230605_225547_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/fig/Fig_alpha_Mixed Scenario (36, 2, 3, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/fig/Fig_inventory_Mixed Scenario (36, 2, 3, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/fig/Fig_machines_working_Mixed Scenario (36, 2, 3, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/fig/Fig_order_waiting_time_Mixed Scenario (36, 2, 3, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/fig/Fig_processed_orders_Mixed Scenario (36, 2, 3, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/fig/Fig_total_reward_Mixed Scenario (36, 2, 3, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/fig/Fig_transp_working_Mixed Scenario (36, 2, 3, 1).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (16,2,3)/Heuristics_Metrics_Mean_Mixed Scenario (16, 2, 3, 10).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/DQN_2363__20230605_105209_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/DQN_2363__20230605_105209_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/EMPTY_2363__20230531_144813_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/EMPTY_2363__20230531_144813_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/FIFO_2363__20230531_112604_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/FIFO_2363__20230531_112604_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/Metrics_Mean_GenGap_Mixed Scenario (36, 2, 3, 10).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/NJF_2363__20230531_112827_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/NJF_2363__20230531_112827_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/PPO_2363__20230605_105213_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/PPO_2363__20230605_105213_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/RANDOM_2363__20230531_113727_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/RANDOM_2363__20230531_113727_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/RecPPO_2363__20230605_225745_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/RecPPO_2363__20230605_225745_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/fig/Fig_alpha_Mixed Scenario (36, 2, 3, 10).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/fig/Fig_inventory_Mixed Scenario (36, 2, 3, 10).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/fig/Fig_machines_working_Mixed Scenario (36, 2, 3, 10).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/fig/Fig_order_waiting_time_Mixed Scenario (36, 2, 3, 10).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/fig/Fig_processed_orders_Mixed Scenario (36, 2, 3, 10).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/fig/Fig_total_reward_Mixed Scenario (36, 2, 3, 10).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)/fig/Fig_transp_working_Mixed Scenario (36, 2, 3, 10).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (16,2,3)/FIFO_2163__20230611_132746_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (16,2,3)/FIFO_2163__20230611_132746_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (16,2,3)/Heuristics_Metrics_Mean_Mixed Scenario (16, 2, 3, 5).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (16,2,3)/NJF_2163__20230611_132937_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (16,2,3)/NJF_2163__20230611_132937_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (16,2,3)/RANDOM_2163__20230611_133147_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (16,2,3)/RANDOM_2163__20230611_133147_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/DQN_2363__20230605_004612_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/DQN_2363__20230605_004612_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/EMPTY_2363__20230531_144813_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/EMPTY_2363__20230531_144813_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/FIFO_2363__20230531_112604_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/FIFO_2363__20230531_112604_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/Metrics_Mean_GenGap_Mixed Scenario (36, 2, 3, 5).txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/NJF_2363__20230531_112827_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/NJF_2363__20230531_112827_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/PPO_2363__20230605_004625_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/PPO_2363__20230605_004625_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/RANDOM_2363__20230531_113727_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/RANDOM_2363__20230531_113727_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/RecPPO_2363__20230605_004636_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/RecPPO_2363__20230605_004636_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/fig/Fig_alpha_Mixed Scenario (36, 2, 3, 5).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/fig/Fig_inventory_Mixed Scenario (36, 2, 3, 5).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/fig/Fig_machines_working_Mixed Scenario (36, 2, 3, 5).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/fig/Fig_order_waiting_time_Mixed Scenario (36, 2, 3, 5).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/fig/Fig_processed_orders_Mixed Scenario (36, 2, 3, 5).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/fig/Fig_total_reward_Mixed Scenario (36, 2, 3, 5).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)/fig/Fig_transp_working_Mixed Scenario (36, 2, 3, 5).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/PPO_2163__20230611_172915_agent_reward_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/PPO_2163__20230611_172915_episode_log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/latex_code.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/log/summaries/GTrXL-PPO-v2/20230603-151855/events.out.tfevents.1685798335.users-MacBook-Pro.local.36993.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/models/DQN/DQN2023_06_11_16h_57min_12sec.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JSP_Environments/models/PPO/PPO2023_06_11_17h_23min_06sec.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JSP_Environments/config/production_env.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/config/production_env.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/hyperparameter_tuning.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/hyperparameter_tuning.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/initialize_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/initialize_env.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JSP_Environments/envs/production_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/envs/production_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/hyperparameter_tuning.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/hyperparameter_tuning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/.ipynb_checkpoints/visualize_ep_log-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/.ipynb_checkpoints/visualize_log-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/.ipynb_checkpoints/visualize_log-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/A2C_181__20230524_220859_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (16,2,3)/FIFO_2163__20230611_131244_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)/A2C_181__20230524_220859_episode_log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/Exp Description" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/Exp Description" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091202_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (16,2,3)/NJF_2163__20230611_131109_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091202_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091202_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091248_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (16,2,3)/RANDOM_2163__20230611_131443_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091248_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091248_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091340_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/DQN_2363__20230601_175504_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091340_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091340_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_120421_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/GTrXL-PPO_2363__20230606_233121_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_120421_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_120421_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_120523_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/PPO_2363__20230601_175524_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_120523_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_120523_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/Exp Description" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/Exp Description" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120632_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)/RecPPO_2363__20230601_175542_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120632_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120632_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120702_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091202_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120702_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120702_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120728_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091248_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120728_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120728_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120836_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_091340_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120836_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120836_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/EMPTY_2363__20230531_144813_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_120421_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/EMPTY_2363__20230531_144813_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/EMPTY_2363__20230531_144813_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/FIFO_2363__20230531_112604_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch RELU (36,2,3)/PPO_2363__20230525_120523_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/FIFO_2363__20230531_112604_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/FIFO_2363__20230531_112604_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/NJF_2363__20230531_112827_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120632_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/NJF_2363__20230531_112827_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/NJF_2363__20230531_112827_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/RANDOM_2363__20230531_113727_agent_reward_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Archiv/Exp PPO NetArch Tanh (36,2,3)/PPO_2363__20230525_120702_agent_reward_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)/RANDOM_2363__20230531_113727_episode_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (36,2,3)/RANDOM_2363__20230531_113727_episode_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/visualize_ep_log.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/JSP_Environments/log/visualize_log.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/log/visualize_log.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JSP_Environments/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/JSP_Environments/run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +229,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="Jupyter Notebook" />
       </list>
     </option>
   </component>
@@ -76,7 +280,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/JSP_Environments/log" />
     <property name="settings.editor.selected.configurable" value="web.server" />
   </component>
   <component name="ReaderModeSettings">
@@ -84,17 +288,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/JSP_Environments/log" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (36,2,3)" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (36,2,3)" />
       <recent name="$PROJECT_DIR$/JSP_Environments/GTrXL_PPO" />
       <recent name="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (8,1,1)" />
-      <recent name="$PROJECT_DIR$/JSP_Environments/log/Exp PPO NetArch Tanh (36,2,3)" />
-      <recent name="$PROJECT_DIR$/JSP_Environments/envs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp (36,2,3)" />
-      <recent name="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (36,2,3)" />
-      <recent name="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (36,2,3)" />
-      <recent name="$PROJECT_DIR$/JSP_Environments" />
-      <recent name="$PROJECT_DIR$/JSP_Environments/config" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Basic Exp (16,2,3)" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_10 (16,2,3)" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_5 (16,2,3)" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Mixed Exp_1 (16,2,3)" />
+      <recent name="$PROJECT_DIR$/JSP_Environments/log/Adjusted Exp (16,2,3)" />
     </key>
   </component>
   <component name="RunManager">
@@ -134,7 +339,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-rl DQN -sc Mixed" />
+      <option name="PARAMETERS" value="-rl PPO -sc Basic" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -181,6 +386,11 @@
       <workItem from="1685258842157" duration="2778000" />
       <workItem from="1685377711216" duration="1992000" />
       <workItem from="1685395740652" duration="28382000" />
+      <workItem from="1685540462465" duration="392000" />
+      <workItem from="1685628881086" duration="27065000" />
+      <workItem from="1686165273314" duration="9667000" />
+      <workItem from="1686297392358" duration="8895000" />
+      <workItem from="1686484207991" duration="8764000" />
     </task>
     <servers />
   </component>
@@ -284,6 +494,31 @@
           <line>125</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/JSP_Environments/envs/production_env.py</url>
+          <line>237</line>
+          <option name="timeStamp" value="447" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/JSP_Environments/envs/production_env.py</url>
+          <line>220</line>
+          <option name="timeStamp" value="455" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/JSP_Environments/envs/production_env.py</url>
+          <line>210</line>
+          <option name="timeStamp" value="456" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
+          <url>notebook:///Users/user/Documents/01_GitHub/JSP_Environment/JSP_Environments/log/visualize_logfiles.ipynb</url>
+          <line>11</line>
+          <option name="timeStamp" value="449" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
+          <url>notebook:///Users/user/Documents/01_GitHub/JSP_Environment/JSP_Environments/log/visualize_log-checkpoint.ipynb</url>
+          <line>241</line>
+          <option name="timeStamp" value="453" />
+        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -297,6 +532,6 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/JSP_Environment$train_gtrxl.coverage" NAME="train_gtrxl Coverage Results" MODIFIED="1685119167575" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/episodic-transformer-memory-ppo" />
     <SUITE FILE_PATH="coverage/JSP_Environment$main_odt.coverage" NAME="main_odt Coverage Results" MODIFIED="1678974245781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Online_Decision_Transformer" />
-    <SUITE FILE_PATH="coverage/JSP_Environment$main_jsp.coverage" NAME="main_jsp Coverage Results" MODIFIED="1685461114501" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/JSP_Environment$main_jsp.coverage" NAME="main_jsp Coverage Results" MODIFIED="1686484429550" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -1,0 +1,17 @@
+#####DQN#####
+### Performance ###
+alpha: 13.7800292
+inventory: 83.35581513999999
+order_waiting_time: 661.72109002
+machines_working: 0.39532344
+max_reward: 191.35261
+transp_util: 0.71641452
+throughput: 125.69
+### Generalization Gap ###
+alpha: -9.364609940000003
+inventory: 2.3038849800000065
+order_waiting_time: -1.13638291999996
+machines_working: 0.004397140000000077
+max_reward: -10.485420000000005
+transp_util: 0.00904456000000009
+throughput: 2.236000000000004

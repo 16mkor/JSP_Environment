@@ -393,12 +393,12 @@ def sample_trpo_params(trial: optuna.Trial) -> Dict[str, Any]:
 def _hyperparameter_tuning(env, model_type):
     # Set pytorch num threads to 1 for faster training.
     torch.set_num_threads(1)
-    N_TRIALS = 50
-    N_STARTUP_TRIALS = 35
-    N_EVALUATIONS = 24
+    N_TRIALS = 25
+    N_STARTUP_TRIALS = 25
+    N_EVALUATIONS = 10
     N_TIMESTEPS = int(5e5)
     EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
-    N_EVAL_EPISODES = 50
+    N_EVAL_EPISODES = 10
 
     """N_TRIALS = 1
     N_STARTUP_TRIALS = 1
@@ -419,7 +419,7 @@ def _hyperparameter_tuning(env, model_type):
             sample_params = sample_dqn_params(trial)
             model = DQN(env=env, policy='MlpPolicy', **sample_params)
         elif model_type == 'TRPO':
-            sample_params = sample_dqn_params(trial)
+            sample_params = sample_trpo_params(trial)
             model = TRPO(env=env, policy='MlpPolicy', **sample_params)
         elif model_type == 'PPO':
             sample_params = sample_ppo_params(trial)

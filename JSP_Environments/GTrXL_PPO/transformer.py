@@ -157,7 +157,7 @@ class TransformerBlock(Module):
             attention_expanded = attention.view(1, 1, 1, attention.shape[2])
             # Perform matrix-vector multiplication
             attention = torch.matmul(attention_expanded, self.toeplitz_).squeeze(dim=2)
-            print(attention.hape)
+            #print(attention.shape)
 
 
         # GRU Gate or skip connection
@@ -240,8 +240,8 @@ class Transformer(nn.Module):
         elif config["positional_encoding"] == "learned":
             self.pos_embedding = nn.Parameter(torch.randn(self.max_episode_steps,
                                                           self.embed_dim))  # (batch size, max episoded steps, num layers, layer size)
-        else:
-            pass  # No positional encoding is used
+        elif self.config["positional_encoding"] == "absolut":
+            pass  # Absolut positional encoding is used
 
         # Instantiate transformer blocks
         self.transformer_blocks = nn.ModuleList([
@@ -270,7 +270,8 @@ class Transformer(nn.Module):
         elif self.config["positional_encoding"] == "learned":
             memories = memories + self.pos_embedding[memory_indices].unsqueeze(2)
             # memories[:,:,0] = memories[:,:,0] + self.pos_embedding[memory_indices] # add positional encoding only to first layer?
-
+        elif self.config["positional_encoding"] == "absolut":
+            pass
         # Forward transformer blocks
         out_memories = []
         for i, block in enumerate(self.transformer_blocks):

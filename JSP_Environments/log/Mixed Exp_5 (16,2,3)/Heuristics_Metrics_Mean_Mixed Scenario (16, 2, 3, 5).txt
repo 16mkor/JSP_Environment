@@ -1,0 +1,24 @@
+#####FIFO#####
+alpha: 4.110134200000001
+inventory: 29.666871999999998
+order_waiting_time: 186.70769470000008
+machines_working: 0.4111827999999999
+max_reward: 649.78929
+transp_util: 0.9894182999999999
+throughput: 459.76
+#####NJF#####
+alpha: 4.1560728000000005
+inventory: 39.0709758
+order_waiting_time: 229.2883693
+machines_working: 0.4590604999999999
+max_reward: 708.08245
+transp_util: 0.9892194999999999
+throughput: 460.18
+#####RANDOM#####
+alpha: 31.906806099999997
+inventory: 67.56188569999999
+order_waiting_time: 647.5595927999999
+machines_working: 0.28280350000000004
+max_reward: 106.4656
+transp_util: 0.6645468
+throughput: 35.48

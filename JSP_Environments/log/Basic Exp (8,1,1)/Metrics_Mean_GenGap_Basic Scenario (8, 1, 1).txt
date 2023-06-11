@@ -1,0 +1,136 @@
+#####FIFO#####
+### Performance ###
+alpha: 0.92801404
+inventory: 39.836467879999994
+order_waiting_time: 310.6853917200001
+machines_working: 0.72114964
+max_reward: 912.13679
+transp_util: 0.6661279
+throughput: 463.15
+### Generalization Gap ###
+alpha: 0.0063825799999999155
+inventory: -0.45272444000001144
+order_waiting_time: 1.3783556600001248
+machines_working: -0.0010233999999998966
+max_reward: -4.882029999999986
+transp_util: -0.002909399999999951
+throughput: -0.10200000000003229
+#####NJF#####
+### Performance ###
+alpha: 0.9738893399999999
+inventory: 41.69986158
+order_waiting_time: 319.36093432
+machines_working: 0.71544566
+max_reward: 925.10346
+transp_util: 0.6443525
+throughput: 464.008
+### Generalization Gap ###
+alpha: 0.02820931999999987
+inventory: 0.266697619999988
+order_waiting_time: 0.36768779999994194
+machines_working: -0.0060249
+max_reward: 5.759390000000053
+transp_util: -0.006813559999999996
+throughput: 0.4079999999999586
+#####EMPTY#####
+### Performance ###
+alpha: 23.150309019999998
+inventory: 62.182598639999995
+order_waiting_time: 1032.78515038
+machines_working: 0.35631028
+max_reward: 626.06413
+transp_util: 0.33344759999999996
+throughput: 102.286
+### Generalization Gap ###
+alpha: -1.4630541800000003
+inventory: 0.5767738399999942
+order_waiting_time: -0.06547460000001593
+machines_working: 0.009908059999999996
+max_reward: 21.55686000000003
+transp_util: 0.008145100000000016
+throughput: 4.430000000000007
+#####RANDOM#####
+### Performance ###
+alpha: 1.2127048
+inventory: 41.527803500000005
+order_waiting_time: 331.85628327999996
+machines_working: 0.7084013600000001
+max_reward: 335.74224
+transp_util: 0.6525246
+throughput: 55.6
+### Generalization Gap ###
+alpha: -0.04436943999999987
+inventory: 0.09056781999999686
+order_waiting_time: -1.9500300000000266
+machines_working: 0.0033746000000001164
+max_reward: 15.165480000000002
+transp_util: 0.0033326199999998973
+throughput: 0.060000000000002274
+#####DQN#####
+### Performance ###
+alpha: 0.9459876200000001
+inventory: 41.44072468
+order_waiting_time: 324.36683244000005
+machines_working: 0.72809168
+max_reward: 898.28708
+transp_util: 0.66491726
+throughput: 437.374
+### Generalization Gap ###
+alpha: 0.0696065800000002
+inventory: -0.5518223199999994
+order_waiting_time: -1.3331305599999155
+machines_working: -0.006884719999999955
+max_reward: 2.3122099999999364
+transp_util: -0.005793420000000049
+throughput: -46.567999999999984
+#####PPO#####
+### Performance ###
+alpha: 0.94919322
+inventory: 40.498904280000005
+order_waiting_time: 314.55817072
+machines_working: 0.7263786200000001
+max_reward: 899.07314
+transp_util: 0.66259972
+throughput: 438.002
+### Generalization Gap ###
+alpha: 0.07606913999999998
+inventory: -0.5135438599999986
+order_waiting_time: -6.45205986000002
+machines_working: -0.0031682999999999018
+max_reward: -18.60181
+transp_util: -0.0024887599999998677
+throughput: -53.13799999999998
+#####RecPPO#####
+### Performance ###
+alpha: 0.8563012200000001
+inventory: 40.339023860000005
+order_waiting_time: 312.80352282
+machines_working: 0.7355375200000001
+max_reward: 905.23786
+transp_util: 0.6715389600000001
+throughput: 396.388
+### Generalization Gap ###
+alpha: -0.0078287199999999
+inventory: 0.6101200800000086
+order_waiting_time: 0.7910543200000006
+machines_working: 0.005074140000000171
+max_reward: -7.252389999999991
+transp_util: 0.0054939800000002315
+throughput: -96.87200000000001
+#####GTrXL#####
+### Performance ###
+alpha: 0.96278928
+inventory: 38.737839560000005
+order_waiting_time: 309.57121444
+machines_working: 0.7273013599999999
+max_reward: 354.10218
+transp_util: 0.6599789
+throughput: 95.16
+### Generalization Gap ###
+alpha: 0.03181143999999991
+inventory: -0.05407655999999861
+order_waiting_time: -0.39675271999999495
+machines_working: 0.0011325799999999386
+max_reward: 71.88443999999998
+transp_util: -0.0008686599999999656
+throughput: -0.3400000000000034

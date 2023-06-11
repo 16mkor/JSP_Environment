@@ -1,0 +1,252 @@
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_order_waiting_time_Basic Scenario (8, 1, 1).png}
+	 \caption{Order Waiting of Basic Exp (8,1,1)}
+	 \label{fig:Fig_order_waiting_time_Basic Scenario (8, 1, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_inventory_Basic Scenario (8, 1, 1).png}
+	 \caption{Inventory of Basic Exp (8,1,1)}
+	 \label{fig:Fig_inventory_Basic Scenario (8, 1, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_transp_working_Basic Scenario (8, 1, 1).png}
+	 \caption{Transp Working of Basic Exp (8,1,1)}
+	 \label{fig:Fig_transp_working_Basic Scenario (8, 1, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_machines_working_Basic Scenario (8, 1, 1).png}
+	 \caption{Machines Working of Basic Exp (8,1,1)}
+	 \label{fig:Fig_machines_working_Basic Scenario (8, 1, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_processed_orders_Basic Scenario (8, 1, 1).png}
+	 \caption{Processed Orders of Basic Exp (8,1,1)}
+	 \label{fig:Fig_processed_orders_Basic Scenario (8, 1, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_alpha_Basic Scenario (8, 1, 1).png}
+	 \caption{Alpha of Basic Exp (8,1,1)}
+	 \label{fig:Fig_alpha_Basic Scenario (8, 1, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_total_reward_Basic Scenario (8, 1, 1).png}
+	 \caption{Total Reward of Basic Exp (8,1,1)}
+	 \label{fig:Fig_total_reward_Basic Scenario (8, 1, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_machines_working_Basic Scenario (36, 2, 3).png}
+	 \caption{Machines Working of Basic Exp (36,2,3)}
+	 \label{fig:Fig_machines_working_Basic Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_total_reward_Basic Scenario (36, 2, 3).png}
+	 \caption{Total Reward of Basic Exp (36,2,3)}
+	 \label{fig:Fig_total_reward_Basic Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_alpha_Basic Scenario (36, 2, 3).png}
+	 \caption{Alpha of Basic Exp (36,2,3)}
+	 \label{fig:Fig_alpha_Basic Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_processed_orders_Basic Scenario (36, 2, 3).png}
+	 \caption{Processed Orders of Basic Exp (36,2,3)}
+	 \label{fig:Fig_processed_orders_Basic Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_transp_working_Basic Scenario (36, 2, 3).png}
+	 \caption{Transp Working of Basic Exp (36,2,3)}
+	 \label{fig:Fig_transp_working_Basic Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_inventory_Basic Scenario (36, 2, 3).png}
+	 \caption{Inventory of Basic Exp (36,2,3)}
+	 \label{fig:Fig_inventory_Basic Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_order_waiting_time_Basic Scenario (36, 2, 3).png}
+	 \caption{Order Waiting of Basic Exp (36,2,3)}
+	 \label{fig:Fig_order_waiting_time_Basic Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_machines_working_Adjusted Scenario (36, 2, 3).png}
+	 \caption{Machines Working of Adjusted Exp (36,2,3)}
+	 \label{fig:Fig_machines_working_Adjusted Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_processed_orders_Adjusted Scenario (36, 2, 3).png}
+	 \caption{Processed Orders of Adjusted Exp (36,2,3)}
+	 \label{fig:Fig_processed_orders_Adjusted Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_inventory_Adjusted Scenario (36, 2, 3).png}
+	 \caption{Inventory of Adjusted Exp (36,2,3)}
+	 \label{fig:Fig_inventory_Adjusted Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_order_waiting_time_Adjusted Scenario (36, 2, 3).png}
+	 \caption{Order Waiting of Adjusted Exp (36,2,3)}
+	 \label{fig:Fig_order_waiting_time_Adjusted Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_transp_working_Adjusted Scenario (36, 2, 3).png}
+	 \caption{Transp Working of Adjusted Exp (36,2,3)}
+	 \label{fig:Fig_transp_working_Adjusted Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_alpha_Adjusted Scenario (36, 2, 3).png}
+	 \caption{Alpha of Adjusted Exp (36,2,3)}
+	 \label{fig:Fig_alpha_Adjusted Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_total_reward_Adjusted Scenario (36, 2, 3).png}
+	 \caption{Total Reward of Adjusted Exp (36,2,3)}
+	 \label{fig:Fig_total_reward_Adjusted Scenario (36, 2, 3).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_total_reward_Mixed Scenario (36, 2, 3, 1).png}
+	 \caption{Total Reward of Mixed Exp_1 (36,2,3)}
+	 \label{fig:Fig_total_reward_Mixed Scenario (36, 2, 3, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_alpha_Mixed Scenario (36, 2, 3, 1).png}
+	 \caption{Alpha of Mixed Exp_1 (36,2,3)}
+	 \label{fig:Fig_alpha_Mixed Scenario (36, 2, 3, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_transp_working_Mixed Scenario (36, 2, 3, 1).png}
+	 \caption{Transp Working of Mixed Exp_1 (36,2,3)}
+	 \label{fig:Fig_transp_working_Mixed Scenario (36, 2, 3, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_order_waiting_time_Mixed Scenario (36, 2, 3, 1).png}
+	 \caption{Order Waiting of Mixed Exp_1 (36,2,3)}
+	 \label{fig:Fig_order_waiting_time_Mixed Scenario (36, 2, 3, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_inventory_Mixed Scenario (36, 2, 3, 1).png}
+	 \caption{Inventory of Mixed Exp_1 (36,2,3)}
+	 \label{fig:Fig_inventory_Mixed Scenario (36, 2, 3, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_processed_orders_Mixed Scenario (36, 2, 3, 1).png}
+	 \caption{Processed Orders of Mixed Exp_1 (36,2,3)}
+	 \label{fig:Fig_processed_orders_Mixed Scenario (36, 2, 3, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_machines_working_Mixed Scenario (36, 2, 3, 1).png}
+	 \caption{Machines Working of Mixed Exp_1 (36,2,3)}
+	 \label{fig:Fig_machines_working_Mixed Scenario (36, 2, 3, 1).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_inventory_Mixed Scenario (36, 2, 3, 5).png}
+	 \caption{Inventory of Mixed Exp_5 (36,2,3)}
+	 \label{fig:Fig_inventory_Mixed Scenario (36, 2, 3, 5).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_order_waiting_time_Mixed Scenario (36, 2, 3, 5).png}
+	 \caption{Order Waiting of Mixed Exp_5 (36,2,3)}
+	 \label{fig:Fig_order_waiting_time_Mixed Scenario (36, 2, 3, 5).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_processed_orders_Mixed Scenario (36, 2, 3, 5).png}
+	 \caption{Processed Orders of Mixed Exp_5 (36,2,3)}
+	 \label{fig:Fig_processed_orders_Mixed Scenario (36, 2, 3, 5).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_machines_working_Mixed Scenario (36, 2, 3, 5).png}
+	 \caption{Machines Working of Mixed Exp_5 (36,2,3)}
+	 \label{fig:Fig_machines_working_Mixed Scenario (36, 2, 3, 5).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_total_reward_Mixed Scenario (36, 2, 3, 5).png}
+	 \caption{Total Reward of Mixed Exp_5 (36,2,3)}
+	 \label{fig:Fig_total_reward_Mixed Scenario (36, 2, 3, 5).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_alpha_Mixed Scenario (36, 2, 3, 5).png}
+	 \caption{Alpha of Mixed Exp_5 (36,2,3)}
+	 \label{fig:Fig_alpha_Mixed Scenario (36, 2, 3, 5).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_transp_working_Mixed Scenario (36, 2, 3, 5).png}
+	 \caption{Transp Working of Mixed Exp_5 (36,2,3)}
+	 \label{fig:Fig_transp_working_Mixed Scenario (36, 2, 3, 5).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_total_reward_Mixed Scenario (36, 2, 3, 10).png}
+	 \caption{Total Reward of Mixed Exp_10 (36,2,3)}
+	 \label{fig:Fig_total_reward_Mixed Scenario (36, 2, 3, 10).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_processed_orders_Mixed Scenario (36, 2, 3, 10).png}
+	 \caption{Processed Orders of Mixed Exp_10 (36,2,3)}
+	 \label{fig:Fig_processed_orders_Mixed Scenario (36, 2, 3, 10).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_alpha_Mixed Scenario (36, 2, 3, 10).png}
+	 \caption{Alpha of Mixed Exp_10 (36,2,3)}
+	 \label{fig:Fig_alpha_Mixed Scenario (36, 2, 3, 10).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_transp_working_Mixed Scenario (36, 2, 3, 10).png}
+	 \caption{Transp Working of Mixed Exp_10 (36,2,3)}
+	 \label{fig:Fig_transp_working_Mixed Scenario (36, 2, 3, 10).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_inventory_Mixed Scenario (36, 2, 3, 10).png}
+	 \caption{Inventory of Mixed Exp_10 (36,2,3)}
+	 \label{fig:Fig_inventory_Mixed Scenario (36, 2, 3, 10).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_order_waiting_time_Mixed Scenario (36, 2, 3, 10).png}
+	 \caption{Order Waiting of Mixed Exp_10 (36,2,3)}
+	 \label{fig:Fig_order_waiting_time_Mixed Scenario (36, 2, 3, 10).png}
+\end{figure}
+\begin{figure}[ht]
+	 \centering
+	 \includegraphics[width=0.45\textwidth]{Bilder/Fig_machines_working_Mixed Scenario (36, 2, 3, 10).png}
+	 \caption{Machines Working of Mixed Exp_10 (36,2,3)}
+	 \label{fig:Fig_machines_working_Mixed Scenario (36, 2, 3, 10).png}
+\end{figure}
